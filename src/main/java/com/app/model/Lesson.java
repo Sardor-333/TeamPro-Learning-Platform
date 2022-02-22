@@ -37,6 +37,9 @@ public class Lesson {
     @OneToMany(mappedBy = "lesson")
     List<LessonReview> reviews;
 
+    @OneToMany(mappedBy = "lesson")
+    List<Video> videos;
+
     public Lesson(String theme) {
         this.theme = theme;
     }

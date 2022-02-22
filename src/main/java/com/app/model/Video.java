@@ -7,10 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -31,6 +28,10 @@ public class Video {
 
     @Column(name = "file_name", nullable = false)
     String fileName;
+
+    @ManyToOne
+    @JoinColumn(name = "lesson_id", nullable = false)
+    Lesson lesson;
 
     public Video(String fileLocation, String fileName) {
         this.fileLocation = fileLocation;
