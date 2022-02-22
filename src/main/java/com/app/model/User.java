@@ -59,4 +59,12 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     List<CourseVote> courseVotes;
+
+    public User(String firstName, String lastName, String email, String password, String bio) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.bio = bio;
+    }
 }

@@ -10,7 +10,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Component
 public class UserRepository implements BaseRepository<User, UUID> {
@@ -98,13 +101,26 @@ public class UserRepository implements BaseRepository<User, UUID> {
         }
     }
 
+    public User getByEmail(String email) {
+        Query query = session.createQuery("from users where email = ?");
+        query.setParameter(0, email);
+        Optional first = query.list().stream().findFirst();
+        return (User) first.orElse(null);
+    }
+
     public boolean existsByEmail(String email) {
-        Query query = session.createQuery("from users where email = '" + email + "'");
-        return query.list() != null;
+        return getByEmail(email) != null;
     }
 
     public boolean isValidEmail(String email) {
         EmailValidator emailValidator = EmailValidator.getInstance();
         return emailValidator.isValid(email);
+    }
+
+    public boolean isValidPassword(String password) {
+        String regex = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,50}$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(password);
+        return matcher.matches();
     }
 }

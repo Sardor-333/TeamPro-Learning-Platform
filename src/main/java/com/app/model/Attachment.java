@@ -35,6 +35,11 @@ public class Attachment {
     @OneToOne(mappedBy = "attachment")
     User user;
 
+    public Attachment(String fileLocation, String fileName, byte[] bytes) {
+        this.fileLocation = fileLocation;
+        this.fileName = fileName;
+        this.bytes = bytes;
+    }
 
     @Column(nullable = false)
     byte[] bytes;
