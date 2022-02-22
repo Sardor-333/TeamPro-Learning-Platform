@@ -1,6 +1,7 @@
 package com.app.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -9,7 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HomeController {
 
     @GetMapping
-    public String getHome() {
+    public String getHome(Model model) {
+        model.addAttribute("msg", "Welcome to our learning platform!");
         return "index";
     }
 }

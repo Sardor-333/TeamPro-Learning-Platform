@@ -7,11 +7,15 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+@Transactional
+@EnableTransactionManagement
 @Component
 public class CategoryRepository implements BaseRepository<Category, UUID> {
     private Session session;
@@ -41,9 +45,9 @@ public class CategoryRepository implements BaseRepository<Category, UUID> {
     public void save(Category elem) {
         try {
             session.clear();
-            Transaction transaction = session.beginTransaction();
+//            Transaction transaction = session.beginTransaction();
             session.save(elem);
-            transaction.commit();
+//            transaction.commit();
         } catch (Exception e) {
             e.printStackTrace();
         }

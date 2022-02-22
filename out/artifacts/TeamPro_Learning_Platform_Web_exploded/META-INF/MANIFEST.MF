@@ -1,10 +1,5 @@
 Manifest-Version: 1.0
 Created-By: IntelliJ IDEA
-<<<<<<< HEAD
-Built-By: m1lym
-Build-Jdk: 17.0.2
-=======
-Built-By: Islom
-Build-Jdk: Oracle OpenJDK version 17.0.2
->>>>>>> 958c1fa09f790d771bd651d112f529f080154fa9
+Built-By: user
+Build-Jdk: 17.0.1
 
