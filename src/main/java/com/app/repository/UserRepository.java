@@ -1,37 +1,34 @@
 package com.app.repository;
 
-import com.app.model.Course;
+import com.app.model.User;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-@Transactional
-@EnableTransactionManagement
-public class CourseRepository<T, I> implements BaseRepository<Course, UUID> {
+@Component
+public class UserRepository implements BaseRepository<User, UUID> {
     private Session session;
 
-    @Autowired
-    public CourseRepository(LocalSessionFactoryBean localSessionFactoryBean) {
+    public UserRepository(LocalSessionFactoryBean localSessionFactoryBean) {
         this.session = Objects.requireNonNull(localSessionFactoryBean.getObject()).openSession();
     }
 
     @Override
-    public List<Course> getAll() {
-        Query courses = session.createQuery("from courses ");
-        return courses.list();
+    public List<User> getAll() {
+        Query users = session.createQuery("from users");
+        return users.list();
     }
 
     @Override
-    public Course getById(UUID id) {
-        return session.get(Course.class, id);
+    public User getById(UUID id) {
+        return session.get(User.class, id);
     }
 
     @Override
@@ -40,7 +37,7 @@ public class CourseRepository<T, I> implements BaseRepository<Course, UUID> {
     }
 
     @Override
-    public void save(Course elem) {
+    public void save(User elem) {
         try {
             session.clear();
             Transaction transaction = session.beginTransaction();
@@ -52,7 +49,7 @@ public class CourseRepository<T, I> implements BaseRepository<Course, UUID> {
     }
 
     @Override
-    public void update(Course elem) {
+    public void update(User elem) {
         try {
             session.clear();
             Transaction transaction = session.beginTransaction();
@@ -64,7 +61,7 @@ public class CourseRepository<T, I> implements BaseRepository<Course, UUID> {
     }
 
     @Override
-    public void saveOrUpdate(Course elem) {
+    public void saveOrUpdate(User elem) {
         try {
             session.clear();
             Transaction transaction = session.beginTransaction();
@@ -76,13 +73,13 @@ public class CourseRepository<T, I> implements BaseRepository<Course, UUID> {
     }
 
     @Override
-    public Course deleteById(UUID id) {
+    public User deleteById(UUID id) {
         try {
             Transaction transaction = session.beginTransaction();
-            Course course = getById(id);
-            session.delete(course);
+            User user = getById(id);
+            session.delete(user);
             transaction.commit();
-            return course;
+            return user;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -93,11 +90,21 @@ public class CourseRepository<T, I> implements BaseRepository<Course, UUID> {
     public void clear() {
         try {
             Transaction transaction = session.beginTransaction();
-            Query query = session.createQuery("delete courses");
+            Query query = session.createQuery("delete users ");
             query.executeUpdate();
             transaction.commit();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean existsByEmail(String email) {
+        Query query = session.createQuery("from users where email = '" + email + "'");
+        return query.list() != null;
+    }
+
+    public boolean isValidEmail(String email) {
+        EmailValidator emailValidator = EmailValidator.getInstance();
+        return emailValidator.isValid(email);
     }
 }
