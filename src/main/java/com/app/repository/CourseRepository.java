@@ -2,6 +2,7 @@ package com.app.repository;
 
 import com.app.model.Course;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
@@ -35,33 +36,68 @@ public class CourseRepository<T, I> implements BaseRepository<Course, UUID> {
 
     @Override
     public boolean existsById(UUID id) {
-        return session.get(Course.class, id) != null;
+        return getById(id) != null;
     }
 
     @Override
     public void save(Course elem) {
-        session.save(elem);
+        try {
+            session.clear();
+            Transaction transaction = session.beginTransaction();
+            session.save(elem);
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void update(Course elem) {
-        session.update(elem);
+        try {
+            session.clear();
+            Transaction transaction = session.beginTransaction();
+            session.update(elem);
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void saveOrUpdate(Course elem) {
-        existsById(elem.getId());
+        try {
+            session.clear();
+            Transaction transaction = session.beginTransaction();
+            session.saveOrUpdate(elem);
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public Course deleteById(UUID id) {
-        Course course = getById(id);
-        session.delete(course);
-        return course;
+        try {
+            Transaction transaction = session.beginTransaction();
+            Course course = getById(id);
+            session.delete(course);
+            transaction.commit();
+            return course;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
     public void clear() {
-        session.createQuery("delete  courses ");
+        try {
+            Transaction transaction = session.beginTransaction();
+            Query query = session.createQuery("delete courses");
+            query.executeUpdate();
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
