@@ -40,7 +40,7 @@ public class User {
     String bio;
 
     @OneToOne
-    @JoinColumn(name = "attachment_id", nullable = false, referencedColumnName = "id")
+    @JoinColumn(name = "attachment_id", referencedColumnName = "id")
     Attachment attachment;
 
     @ManyToMany(cascade = {CascadeType.ALL})
