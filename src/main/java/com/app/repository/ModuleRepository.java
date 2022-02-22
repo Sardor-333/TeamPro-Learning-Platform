@@ -20,8 +20,8 @@ public class ModuleRepository implements BaseRepository<Module, UUID> {
         this.session = Objects.requireNonNull(localSessionFactoryBean.getObject()).openSession();
     }
 
-    public List<Module> getByCourseId(Integer courseId) {
-        Query modules = session.createQuery("from modules where course.id =" + courseId);
+    public List<Module> getByCourseId(UUID id) {
+        Query modules = session.createQuery("from modules where course.id =" + id);
         return modules.list();
     }
 
