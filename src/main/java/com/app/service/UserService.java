@@ -49,7 +49,10 @@ public class UserService {
                     }
                     user.setAttachment(attachment);
                 }
-                Role role = new Role("USER");
+                Role role = userRepository.getRole("USER");
+                if (role==null) {
+                    role = new Role("USER");
+                }
                 List<Role> roles = new ArrayList<>(List.of(role));
                 user.setRoles(roles);
                 userRepository.save(user);
@@ -67,7 +70,7 @@ public class UserService {
                 session.setAttribute("userId", user.getId());
                 if(user.getRoles().size()==1) {
                     session.setAttribute("role", user.getRoles().get(0));
-                    return "/courses";
+                    return "redirect:/courses";
                 }else {
                     model.addAttribute("user", user);
                     return "select-role";

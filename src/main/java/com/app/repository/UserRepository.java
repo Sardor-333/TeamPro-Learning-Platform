@@ -1,5 +1,6 @@
 package com.app.repository;
 
+import com.app.model.Role;
 import com.app.model.User;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.hibernate.Session;
@@ -126,5 +127,17 @@ public class UserRepository implements BaseRepository<User, UUID> {
 //        Matcher matcher = pattern.matcher(password);
 //        return matcher.matches();
         return password.length()>5;
+    }
+
+    public Role getRole(String role) {
+        try {
+            Transaction transaction = session.beginTransaction();
+            Query query = session.createQuery("from roles where name = '"+role+"' ");
+            Optional first = query.list().stream().findFirst();
+            transaction.commit();
+            return (Role) first.orElse(null);
+        }catch (Exception e){
+            return null;
+        }
     }
 }
