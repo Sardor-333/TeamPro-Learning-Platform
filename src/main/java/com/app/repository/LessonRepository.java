@@ -5,7 +5,7 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.transaction.Transactional;
@@ -13,7 +13,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-@Component
+@Transactional
+@EnableTransactionManagement
+
+@Repository
 public class LessonRepository implements BaseRepository<Lesson, UUID> {
     private Session session;
 
@@ -44,6 +47,11 @@ public class LessonRepository implements BaseRepository<Lesson, UUID> {
             return true;
         }
         return false;
+    }
+
+    public List<Lesson> getLessonsByModuleId(UUID id){
+        Query query = session.createQuery("from lessons where module.id = '" + id + "'");
+        return query.list();
     }
 
     @Override

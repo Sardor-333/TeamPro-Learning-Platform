@@ -1,5 +1,6 @@
 package com.app.repository;
 
+import com.app.model.Module;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
