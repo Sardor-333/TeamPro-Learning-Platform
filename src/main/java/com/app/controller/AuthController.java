@@ -6,8 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/auth")
@@ -32,7 +35,7 @@ public class AuthController {
             model.addAttribute("userDto", userDto);
             return "register-form";
         }
-        return "login-form";
+        return "redirect:/auth/login";
     }
 
     // login
@@ -42,7 +45,13 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(String email, String password) {
-        return null;
+    public String login(String email, String password, HttpServletRequest request, Model model) {
+        return userService.login(email, password, request, model);
+    }
+
+    @GetMapping("/role/{role}")
+    public String setRole(@PathVariable String role, HttpServletRequest req) {
+        return userService.setRole(role, req);
+
     }
 }

@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Component
 public class UserRepository implements BaseRepository<User, UUID> {
@@ -42,8 +40,8 @@ public class UserRepository implements BaseRepository<User, UUID> {
     @Override
     public void save(User elem) {
         try {
-            session.clear();
             Transaction transaction = session.beginTransaction();
+            session.save(elem.getAttachment());
             session.save(elem);
             transaction.commit();
         } catch (Exception e) {
@@ -102,10 +100,15 @@ public class UserRepository implements BaseRepository<User, UUID> {
     }
 
     public User getByEmail(String email) {
-        Query query = session.createQuery("from users where email = ?");
-        query.setParameter(0, email);
-        Optional first = query.list().stream().findFirst();
-        return (User) first.orElse(null);
+        try {
+            Transaction transaction = session.beginTransaction();
+            Query query = session.createQuery("from users where email = '"+email+"' ");
+            Optional first = query.list().stream().findFirst();
+            transaction.commit();
+            return (User) first.orElse(null);
+        }catch (Exception e){
+            return null;
+        }
     }
 
     public boolean existsByEmail(String email) {
@@ -118,9 +121,10 @@ public class UserRepository implements BaseRepository<User, UUID> {
     }
 
     public boolean isValidPassword(String password) {
-        String regex = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,50}$";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(password);
-        return matcher.matches();
+//        String regex = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,50}$";
+//        Pattern pattern = Pattern.compile(regex);
+//        Matcher matcher = pattern.matcher(password);
+//        return matcher.matches();
+        return password.length()>5;
     }
 }

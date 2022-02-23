@@ -7,8 +7,11 @@ import com.app.model.User;
 import com.app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,5 +57,37 @@ public class UserService {
             }
         }
         return false;
+    }
+
+    public String login(String email, String password, HttpServletRequest req, Model model) {
+        try {
+            User user = userRepository.getByEmail(email);
+            if (user != null && user.getPassword() != null && user.getPassword().equals(password)) {
+                HttpSession session = req.getSession();
+                session.setAttribute("userId", user.getId());
+                if(user.getRoles().size()==1) {
+                    session.setAttribute("role", user.getRoles().get(0));
+                    return "/courses";
+                }else {
+                    model.addAttribute("user", user);
+                    return "select-role";
+                }
+            }
+            else {
+                model.addAttribute("msg", "email or password error");
+            }
+        }catch (Exception e){}
+        return null;
+    }
+
+    public String setRole(String role, HttpServletRequest req) {
+        HttpSession session1 = req.getSession(false);
+        String userId = (String)session1.getAttribute("userId");
+        if (userId != null && userId.length()>2) {
+            HttpSession session = req.getSession();
+            session.setAttribute("role",role);
+            return "redirect:/courses";
+        }
+        return "redirect:/auth/login";
     }
 }
