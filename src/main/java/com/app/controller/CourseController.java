@@ -4,7 +4,6 @@ import com.app.dto.CourseDto;
 import com.app.model.Category;
 import com.app.model.Course;
 import com.app.model.User;
-import com.app.repository.CategoryRepository;
 import com.app.service.CourseService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,7 +22,7 @@ import java.util.UUID;
 public class CourseController {
     private CourseService courseService;
 
-    public CourseController(CourseService courseService, CategoryRepository categoryRepository) {
+    public CourseController(CourseService courseService) {
         this.courseService = courseService;
     }
 
@@ -64,7 +63,7 @@ public class CourseController {
         List<Category> categories = courseService.getCategories();
         model.addAttribute("authors", authors);
         model.addAttribute("categories", categories);
-        return "update-course";
+        return "add-course";
     }
 
     @PostMapping("/add")

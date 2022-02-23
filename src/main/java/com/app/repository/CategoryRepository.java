@@ -2,7 +2,6 @@ package com.app.repository;
 
 import com.app.model.Category;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
