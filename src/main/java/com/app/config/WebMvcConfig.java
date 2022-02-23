@@ -54,7 +54,7 @@ public class WebMvcConfig implements WebMvcConfigurer, ApplicationContextAware {
     @Bean(name = "hibernateProperties")
     public Properties getHibernateProperties() {
         Properties properties = new Properties();
-        properties.put(Environment.DIALECT, "org.hibernate.dialect.PostgreSQL9Dialect");
+        properties.put(Environment.DIALECT, "org.hibernate.dialect.PostgreSQL95Dialect");
         properties.put(Environment.SHOW_SQL, "true");
         properties.put(Environment.HBM2DDL_AUTO, "create");
         return properties;

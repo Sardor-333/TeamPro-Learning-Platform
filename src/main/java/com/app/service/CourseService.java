@@ -76,4 +76,8 @@ public class CourseService {
         course.setAuthors(authors);
         courseRepository.saveOrUpdate(course);
     }
+
+    public Course getById(UUID id) {
+        return courseRepository.getById(id);
+    }
 }
