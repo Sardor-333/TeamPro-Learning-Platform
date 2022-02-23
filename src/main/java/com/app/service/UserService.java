@@ -76,7 +76,7 @@ public class UserService {
             else {
                 model.addAttribute("msg", "email or password error");
             }
-        }catch (Exception e){}
+        }catch (Exception ignored){}
         return null;
     }
 
