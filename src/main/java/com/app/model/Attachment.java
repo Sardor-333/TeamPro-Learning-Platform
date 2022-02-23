@@ -20,13 +20,13 @@ public class Attachment {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(updatable = false, nullable = false)
+    @Column(updatable = false)
     UUID id;
 
-    @Column(name = "file_location", nullable = false)
+    @Column(name = "file_location")
     String fileLocation;
 
-    @Column(name = "file_name", nullable = false)
+    @Column(name = "file_name")
     String fileName;
 
     @OneToOne(mappedBy = "attachment")
