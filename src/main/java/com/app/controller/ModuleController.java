@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Controller
-@RequestMapping("/module")
+@RequestMapping("/modules")
 public class ModuleController {
     private final ModuleService moduleService;
 
