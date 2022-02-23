@@ -50,7 +50,7 @@ public class UserService {
                     user.setAttachment(attachment);
                 }
                 Role role = userRepository.getRole("USER");
-                if (role==null) {
+                if (role == null) {
                     role = new Role("USER");
                 }
                 List<Role> roles = new ArrayList<>(List.of(role));
@@ -68,27 +68,27 @@ public class UserService {
             if (user != null && user.getPassword() != null && user.getPassword().equals(password)) {
                 HttpSession session = req.getSession();
                 session.setAttribute("userId", user.getId());
-                if(user.getRoles().size()==1) {
+                if (user.getRoles().size() == 1) {
                     session.setAttribute("role", user.getRoles().get(0));
                     return "redirect:/courses";
-                }else {
+                } else {
                     model.addAttribute("user", user);
                     return "select-role";
                 }
-            }
-            else {
+            } else {
                 model.addAttribute("msg", "email or password error");
             }
-        }catch (Exception e){}
+        } catch (Exception ignored) {
+        }
         return null;
     }
 
     public String setRole(String role, HttpServletRequest req) {
         HttpSession session1 = req.getSession(false);
-        String userId = (String)session1.getAttribute("userId");
-        if (userId != null && userId.length()>2) {
+        String userId = (String) session1.getAttribute("userId");
+        if (userId != null && userId.length() > 2) {
             HttpSession session = req.getSession();
-            session.setAttribute("role",role);
+            session.setAttribute("role", role);
             return "redirect:/courses";
         }
         return "redirect:/auth/login";

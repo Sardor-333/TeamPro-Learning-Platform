@@ -60,6 +60,15 @@ public class User {
     @OneToMany(mappedBy = "user")
     List<CourseVote> courseVotes;
 
+
+    @ManyToMany(cascade = {CascadeType.ALL})
+    @JoinTable(
+            name = "users_courses",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "course_id")}
+    )
+    List<Course> courses;
+
     public User(String firstName, String lastName, String email, String password, String bio) {
         this.firstName = firstName;
         this.lastName = lastName;
