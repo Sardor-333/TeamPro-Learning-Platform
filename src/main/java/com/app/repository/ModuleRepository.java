@@ -1,5 +1,6 @@
 package com.app.repository;
 
+import com.app.model.Course;
 import com.app.model.Module;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -22,7 +23,7 @@ public class ModuleRepository implements BaseRepository<Module, UUID> {
     }
 
     public List<Module> getByCourseId(UUID id) {
-        Query modules = session.createQuery("from modules where course.id =" + id);
+        Query modules = session.createQuery("from modules where course.id = '" + id + "'");
         return modules.list();
     }
 
@@ -68,13 +69,10 @@ public class ModuleRepository implements BaseRepository<Module, UUID> {
 
     @Override
     public void saveOrUpdate(Module elem) {
-        try {
-            session.clear();
-            Transaction transaction = session.beginTransaction();
-            session.saveOrUpdate(elem);
-            transaction.commit();
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (existsById(elem.getId())) {
+            session.update(elem);
+        } else {
+            session.save(elem);
         }
     }
 
@@ -82,25 +80,17 @@ public class ModuleRepository implements BaseRepository<Module, UUID> {
     public Module deleteById(UUID id) {
         try {
             Transaction transaction = session.beginTransaction();
-            Module delete = getById(id);
-            session.delete(delete);
+            Module module = getById(id);
+            session.delete(module);
             transaction.commit();
-            return delete;
+            return module;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
-
     @Override
     public void clear() {
-        try {
-            Transaction transaction = session.beginTransaction();
-            Query query = session.createQuery("delete modules");
-            query.executeUpdate();
-            transaction.commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        session.createQuery("delete modules ");
     }
 }
