@@ -44,6 +44,8 @@ public class UserRepository implements BaseRepository<User, UUID> {
         try {
             session.clear();
             Transaction transaction = session.beginTransaction();
+            Attachment attachment = elem.getAttachment();
+            session.save(attachment);
             session.save(elem);
             transaction.commit();
         } catch (Exception e) {
