@@ -13,9 +13,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-@Transactional
-@EnableTransactionManagement
-
 @Repository
 public class LessonRepository implements BaseRepository<Lesson, UUID> {
     private Session session;

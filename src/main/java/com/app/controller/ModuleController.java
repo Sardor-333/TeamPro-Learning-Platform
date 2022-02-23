@@ -36,10 +36,10 @@ public class ModuleController {
         if (id != null) {
             Module module = moduleService.getModuleById(id);
             model.addAttribute("modules", module);
-            return "edit-form";
+            return "edit-module-form";
         }else {
         model.addAttribute("courseId", courseId);
-        return "save-form";
+        return "save-module-form";
         }
     }
 

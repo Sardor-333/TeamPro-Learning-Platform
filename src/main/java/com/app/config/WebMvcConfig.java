@@ -29,7 +29,6 @@ import java.util.Properties;
 
 @Configuration
 @EnableWebMvc
-@EnableTransactionManagement
 @ComponentScan(basePackages = "com.app")
 public class WebMvcConfig implements WebMvcConfigurer, ApplicationContextAware {
     private ApplicationContext applicationContext;
