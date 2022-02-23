@@ -39,19 +39,19 @@ public class UserService {
                 );
 
                 MultipartFile photo = userDto.getPhoto();
-                if (photo != null) {
-                    Attachment attachment = null;
+                if (photo.getSize() != 0) {
                     try {
-                        attachment = new Attachment();
+                        Attachment attachment = new Attachment();
                         attachment.setBytes(photo.getBytes());
+                        user.setAttachment(attachment);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    user.setAttachment(attachment);
                 }
                 Role role = userRepository.getRole("USER");
                 if (role == null) {
                     role = new Role("USER");
+                    userRepository.saveRole(role);
                 }
                 List<Role> roles = new ArrayList<>(List.of(role));
                 user.setRoles(roles);
@@ -62,10 +62,11 @@ public class UserService {
         return false;
     }
 
-    public String login(String email, String password, HttpServletRequest req, Model model) {
+    public String login(String email, String password,
+                        HttpServletRequest req, Model model) {
         try {
             User user = userRepository.getByEmail(email);
-            if (user != null && user.getPassword() != null && user.getPassword().equals(password)) {
+            if (user != null && user.getPassword().equals(password)) {
                 HttpSession session = req.getSession();
                 session.setAttribute("userId", user.getId());
                 if (user.getRoles().size() == 1) {

@@ -31,7 +31,7 @@ public class Course {
     String description;
 
     @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "category_id")
     Category category;
 
     @OneToMany(mappedBy = "course")
@@ -44,7 +44,12 @@ public class Course {
     @OneToMany(mappedBy = "course")
     List<CourseVote> votes;
 
-    @ManyToMany(mappedBy = "courses")
+    @ManyToMany
+    @JoinTable(
+            name = "courses_users",
+            joinColumns = {@JoinColumn(name = "course_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id")}
+    )
     List<User> authors;
 
     public Course(String name, String description) {

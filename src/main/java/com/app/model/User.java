@@ -43,7 +43,7 @@ public class User {
     @JoinColumn(name = "attachment_id", referencedColumnName = "id")
     Attachment attachment;
 
-    @ManyToMany(cascade = {CascadeType.ALL})
+    @ManyToMany
     @JoinTable(
             name = "users_roles",
             joinColumns = {@JoinColumn(name = "user_id")},
@@ -61,12 +61,7 @@ public class User {
     List<CourseVote> courseVotes;
 
 
-    @ManyToMany(cascade = {CascadeType.ALL})
-    @JoinTable(
-            name = "users_courses",
-            joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "course_id")}
-    )
+    @ManyToMany(mappedBy = "authors")
     List<Course> courses;
 
     public User(String firstName, String lastName, String email, String password, String bio) {

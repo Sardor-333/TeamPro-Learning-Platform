@@ -1,21 +1,18 @@
 package com.app.repository;
 
 import com.app.model.Course;
+import com.app.model.User;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-@Transactional
-@EnableTransactionManagement
 @Component
 public class CourseRepository implements BaseRepository<Course, UUID> {
     private Session session;
@@ -101,5 +98,22 @@ public class CourseRepository implements BaseRepository<Course, UUID> {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public List<Course> getAuthorCourses(UUID authorId) {
+        Query query = session.createQuery("" +
+                "from courses " +
+                "join courses .authors as authors " +
+                "where authors.id = ?");
+        query.setParameter(0, authorId);
+        return query.list();
+    }
+
+    public List<User> getAuthors() {
+        Query query = session.createQuery("" +
+                "from users u " +
+                "join u.roles r " +
+                "where r.name = 'MENTOR'");
+        return query.list();
     }
 }

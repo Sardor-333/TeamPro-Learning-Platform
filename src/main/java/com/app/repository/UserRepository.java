@@ -1,5 +1,6 @@
 package com.app.repository;
 
+import com.app.model.Attachment;
 import com.app.model.Role;
 import com.app.model.User;
 import org.apache.commons.validator.routines.EmailValidator;
@@ -41,8 +42,8 @@ public class UserRepository implements BaseRepository<User, UUID> {
     @Override
     public void save(User elem) {
         try {
+            session.clear();
             Transaction transaction = session.beginTransaction();
-            session.save(elem.getAttachment());
             session.save(elem);
             transaction.commit();
         } catch (Exception e) {
@@ -103,11 +104,11 @@ public class UserRepository implements BaseRepository<User, UUID> {
     public User getByEmail(String email) {
         try {
             Transaction transaction = session.beginTransaction();
-            Query query = session.createQuery("from users where email = '"+email+"' ");
+            Query query = session.createQuery("from users where email = '" + email + "' ");
             Optional first = query.list().stream().findFirst();
             transaction.commit();
             return (User) first.orElse(null);
-        }catch (Exception e){
+        } catch (Exception e) {
             return null;
         }
     }
@@ -126,18 +127,26 @@ public class UserRepository implements BaseRepository<User, UUID> {
 //        Pattern pattern = Pattern.compile(regex);
 //        Matcher matcher = pattern.matcher(password);
 //        return matcher.matches();
-        return password.length()>5;
+        return password.length() > 5;
     }
 
     public Role getRole(String role) {
         try {
-            Transaction transaction = session.beginTransaction();
-            Query query = session.createQuery("from roles where name = '"+role+"' ");
+            Query query = session.createQuery("from roles where name = '" + role + "' ");
             Optional first = query.list().stream().findFirst();
-            transaction.commit();
             return (Role) first.orElse(null);
-        }catch (Exception e){
+        } catch (Exception e) {
             return null;
+        }
+    }
+
+    public void saveRole(Role elem) {
+        try {
+            Transaction transaction = session.beginTransaction();
+            session.saveOrUpdate(elem);
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

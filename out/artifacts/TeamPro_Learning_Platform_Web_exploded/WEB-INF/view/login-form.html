@@ -5,6 +5,8 @@
     <title>Login</title>
 </head>
 <body>
+<h1 th:text="${msg}"></h1>
+
 <form action="/auth/login" method="post">
     <label for="email">Input Email</label>
     <input type="email" name="email" id="email">
