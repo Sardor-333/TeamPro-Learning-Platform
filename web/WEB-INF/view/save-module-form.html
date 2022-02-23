@@ -1,0 +1,19 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Module</title>
+</head>
+<body>
+<form action="/modules/save">
+    <label>Name:
+        <input type="text" name="name">
+    </label><br><br>
+    <label>Price:
+        <input type="text" name="price">
+    </label><br><br>
+    <!--/*@thymesVar id="courseId" type="com.app.controller.ModuleController"*/-->
+    <input type="hidden" name="course.id" th:value="${courseId}">
+    <button type="submit">Submit</button>
+</form>
+</body>
+</html>

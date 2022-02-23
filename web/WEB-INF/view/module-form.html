@@ -1,0 +1,20 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Module</title>
+</head>
+<body>
+
+<div th:each="modules : ${modules}">
+    <h3 th:text="${modules.name}"></h3>
+    <a th:href="@{'/module/get-save-form?id=' + ${modules.id}}">
+        <button>EDIT</button>
+    </a>
+</div>
+
+<a th:href="@{'/module/get-save-form?courseId=' + ${courseId}}">
+    <button>ADD</button>
+</a>
+
+</body>
+</html>
