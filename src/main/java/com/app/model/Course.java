@@ -44,6 +44,9 @@ public class Course {
     @OneToMany(mappedBy = "course")
     List<CourseVote> votes;
 
+    @ManyToMany(mappedBy = "courses")
+    List<User> authors;
+
     public Course(String name, String description) {
         this.name = name;
         this.description = description;

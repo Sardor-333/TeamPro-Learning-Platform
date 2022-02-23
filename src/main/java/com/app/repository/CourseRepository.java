@@ -6,6 +6,7 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,7 +16,8 @@ import java.util.UUID;
 
 @Transactional
 @EnableTransactionManagement
-public class CourseRepository<T, I> implements BaseRepository<Course, UUID> {
+@Component
+public class CourseRepository implements BaseRepository<Course, UUID> {
     private Session session;
 
     @Autowired
