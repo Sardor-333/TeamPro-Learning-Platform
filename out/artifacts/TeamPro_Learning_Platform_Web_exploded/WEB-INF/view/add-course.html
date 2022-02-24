@@ -2,32 +2,43 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Course form</title>
-    <link href="multiselect.css" rel="stylesheet">
+    <title>Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
 </head>
 <body>
-<form action="/courses/add" method="post">
-    <label for="name">Name: </label>
-    <input id="name" type="text" name="name">
+<div class="container">
 
-    <label for="description">Description: </label>
-    <input id="description" type="text" name="description">
+    <form th:action="@{/courses/add}" method="post">
 
-    <label for="category">Category</label>
-    <select id="category" name="categoryId">
-        <option th:each="category : *{categories}" th:value="${category.id}" th:text="${category.name}"></option>
-    </select>
+        <div class="form-group" style="margin-top:30px">
+            <label>Name</label>
+            <input class="form-control" type="text" name="name">
+        </div>
 
-    <label for="testSelect1">Authors: </label>
-    <select th:each="author:${authors}" id='testSelect1' multiple name="authorIds">
-        <option th:if="${session.get('userId') != author.getId()}"
-                th:value="${author.getId()}"
-                th:text="${author.getFirstName()}">
-        </option>
-    </select>
+        <div class="form-group" style="margin-top:30px">
+            <label>Description</label>
+            <input class="form-control" type="text" name="description">
+        </div>
 
-    <input type="submit" value="Save">
+        <label for="category">Category</label>
+        <select id="category" name="categoryId">
+            <option th:each="category : *{categories}" th:value="${category.id}" th:text="${category.name}"></option>
+        </select>
 
-</form>
+        <label for="testSelect1">Authors: </label>
+        <select th:each="author:${authors}" id='testSelect1' multiple name="authorIds">
+            <option th:if="${session.get('userId') != author.getId()}"
+                    th:value="${author.getId()}"
+                    th:text="${author.getFirstName()}">
+            </option>
+        </select>
+
+        <button type="submit" class="btn btn-success" style="margin-top:30px">Save</button>
+        <a th:href="@{'/courses'}" class="btn btn-primary" style="margin-top:30px; margin-left:15px">Back</a>
+
+    </form>
+</div>
 </body>
 </html>

@@ -1,10 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Select role</title>
 </head>
 <body>
+<!--/*@thymesVar id="categories" type="com.app.model.*"/-->
+<p th:each="role : ${roles}">
+    <a th:href="@{/auth/role/role.id}">
+    <a th:href="@{/auth/role/role.id}">
+    <a th:href="@{/auth/role/role.id}">
 
+</p>
 </body>
 </html>

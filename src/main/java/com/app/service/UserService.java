@@ -74,12 +74,11 @@ public class UserService {
                     session.setAttribute("role", user.getRoles().get(0));
                     return "redirect:/courses";
                 } else {
-                    model.addAttribute("user", user);
+                    model.addAttribute("roles",userRepository.getRoles(user.getId()));
                     return "select-role";
                 }
-            } else {
-                model.addAttribute("msg", "email or password error");
             }
+            model.addAttribute("msg", "email or password error");
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,5 +1,6 @@
 package com.app.repository;
 
+import com.app.model.Attachment;
 import com.app.model.Role;
 import com.app.model.User;
 import org.apache.commons.validator.routines.EmailValidator;
@@ -9,6 +10,8 @@ import org.hibernate.query.Query;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -100,10 +103,33 @@ public class UserRepository implements BaseRepository<User, UUID> {
         }
     }
 
+    public Role getRole(HttpServletRequest req) {
+        try {
+            HttpSession session = req.getSession(false);
+            Object userId = session.getAttribute("userId");
+            if (userId != null) {
+                return (Role) session.getAttribute("role");
+            }
+            return null;
+        }catch (Exception e){
+            return null;
+        }
+    }
+
+    public List<Role> getRoles(UUID userId) {
+        Query query = session.createQuery("from roles r " +
+                "join r.users u " +
+                "where u.id = '" + userId + "'");
+        List list = query.list();
+        return list;
+    }
+
     public User getByEmail(String email) {
         try {
+            Transaction transaction = session.beginTransaction();
             Query query = session.createQuery("from users where email = '" + email + "' ");
             Optional first = query.list().stream().findFirst();
+            transaction.commit();
             return (User) first.orElse(null);
         } catch (Exception e) {
             return null;
@@ -149,9 +175,8 @@ public class UserRepository implements BaseRepository<User, UUID> {
 
     public <T> void saveObj(T obj) {
         try {
-            session.clear();
             Transaction transaction = session.beginTransaction();
-            session.save(obj);
+            session.saveOrUpdate(obj);
             transaction.commit();
         } catch (Exception e) {
             e.printStackTrace();
