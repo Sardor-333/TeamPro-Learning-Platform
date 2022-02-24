@@ -30,7 +30,8 @@ public class CourseRepository implements BaseRepository<Course, UUID> {
 
     @Override
     public Course getById(UUID id) {
-        return session.get(Course.class, id);
+        Course course = session.get(Course.class, id);
+        return course;
     }
 
     @Override
@@ -111,9 +112,8 @@ public class CourseRepository implements BaseRepository<Course, UUID> {
 
     public List<User> getAuthors() {
         Query query = session.createQuery("" +
-                "from users u " +
-                "join u.roles r " +
-                "where r.name = 'MENTOR'");
-        return query.list();
+                "from users u join u.roles r where r.name = 'MENTOR'");
+        List list = query.list();
+        return list;
     }
 }

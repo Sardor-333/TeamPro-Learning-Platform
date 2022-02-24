@@ -1,6 +1,7 @@
 package com.app.repository;
 
 import com.app.model.Lesson;
+import com.app.model.Role;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,8 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
@@ -80,5 +83,14 @@ public class LessonRepository implements BaseRepository<Lesson, UUID> {
     @Override
     public void clear() {
         session.createQuery("delete lessons");
+    }
+
+    public Role getRole(HttpServletRequest req) {
+        HttpSession session = req.getSession(false);
+        Object userId = session.getAttribute("userId");
+        if (userId != null) {
+            return (Role) session.getAttribute("role");
+        }
+        return null;
     }
 }

@@ -1,6 +1,5 @@
 package com.app.repository;
 
-import com.app.model.Attachment;
 import com.app.model.Role;
 import com.app.model.User;
 import org.apache.commons.validator.routines.EmailValidator;
@@ -44,8 +43,6 @@ public class UserRepository implements BaseRepository<User, UUID> {
         try {
             session.clear();
             Transaction transaction = session.beginTransaction();
-            Attachment attachment = elem.getAttachment();
-            session.save(attachment);
             session.save(elem);
             transaction.commit();
         } catch (Exception e) {
@@ -105,10 +102,8 @@ public class UserRepository implements BaseRepository<User, UUID> {
 
     public User getByEmail(String email) {
         try {
-            Transaction transaction = session.beginTransaction();
             Query query = session.createQuery("from users where email = '" + email + "' ");
             Optional first = query.list().stream().findFirst();
-            transaction.commit();
             return (User) first.orElse(null);
         } catch (Exception e) {
             return null;
@@ -146,6 +141,17 @@ public class UserRepository implements BaseRepository<User, UUID> {
         try {
             Transaction transaction = session.beginTransaction();
             session.saveOrUpdate(elem);
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public <T> void saveObj(T obj) {
+        try {
+            session.clear();
+            Transaction transaction = session.beginTransaction();
+            session.save(obj);
             transaction.commit();
         } catch (Exception e) {
             e.printStackTrace();

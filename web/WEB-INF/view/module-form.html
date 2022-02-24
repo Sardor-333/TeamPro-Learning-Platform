@@ -7,12 +7,12 @@
 
 <div th:each="modules : ${modules}">
     <h3 th:text="${modules.name}"></h3>
-    <a th:href="@{'/module/get-save-form?id=' + ${modules.id}}">
+    <a th:href="@{'/modules/get-save-form?id=' + ${modules.id}}">
         <button>EDIT</button>
     </a>
 </div>
 
-<a th:href="@{'/module/get-save-form?courseId=' + ${courseId}}">
+<a th:href="@{'/modules/get-save-form?courseId=' + ${courseId}}">
     <button>ADD</button>
 </a>
 

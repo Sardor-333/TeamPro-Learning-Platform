@@ -2,6 +2,7 @@ package com.app.controller;
 
 import com.app.model.Lesson;
 import com.app.model.Module;
+import com.app.model.Role;
 import com.app.repository.LessonRepository;
 import com.app.repository.ModuleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.UUID;
 
 @Controller
@@ -24,10 +26,13 @@ public class LessonController {
     }
 
     @GetMapping("/{moduleId}")
-    public String getLessonsByModuleId(@PathVariable UUID moduleId, Model model){
-
-        model.addAttribute("lessons", lessonRepository.getLessonsByModuleId(moduleId));
-        return "view-lessons";
+    public String getLessonsByModuleId(@PathVariable UUID moduleId, Model model, HttpServletRequest req){
+        Role role = lessonRepository.getRole(req);
+        if (role != null) {
+            model.addAttribute("lessons", lessonRepository.getLessonsByModuleId(moduleId));
+            return "view-lessons";
+        }
+        return "redirect:/auth/login";
     }
 
     @GetMapping()
@@ -55,6 +60,11 @@ public class LessonController {
         lesson.setModule(module);
         lessonRepository.save(lesson);
         return "redirect:/lessons/"+module;
+    }
+
+    @GetMapping("/add")
+    public String getForm(){
+        return "add-lesson";
     }
 
 

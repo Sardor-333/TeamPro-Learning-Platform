@@ -11,7 +11,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -54,7 +53,7 @@ public class WebMvcConfig implements WebMvcConfigurer, ApplicationContextAware {
     @Bean(name = "hibernateProperties")
     public Properties getHibernateProperties() {
         Properties properties = new Properties();
-        properties.put(Environment.DIALECT, "org.hibernate.dialect.PostgreSQL9Dialect");
+        properties.put(Environment.DIALECT, "org.hibernate.dialect.PostgreSQL95Dialect");
         properties.put(Environment.SHOW_SQL, "true");
         properties.put(Environment.HBM2DDL_AUTO, "update");
         return properties;
