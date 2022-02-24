@@ -43,6 +43,7 @@ public class UserService {
                     try {
                         Attachment attachment = new Attachment();
                         attachment.setBytes(photo.getBytes());
+                        userRepository.saveObj(attachment);
                         user.setAttachment(attachment);
                     } catch (IOException e) {
                         e.printStackTrace();
