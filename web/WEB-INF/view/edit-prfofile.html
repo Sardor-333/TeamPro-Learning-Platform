@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - Reveal button on click and remove readonly 02</title>
+  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css'><link rel="stylesheet" href="./style.css">
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<div class="col-sm-6">
+  <div class="panel panel-default">
+    <div class="panel-body"><img class="img-user center-block img-circle img-size" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDIxLjAuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCAzNiAzNiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMzYgMzY7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KCS5zdDB7ZmlsbDojODE4QTkxO30KCS5zdDF7ZmlsbDojRkZGRkZGO30KPC9zdHlsZT4KPHJlY3QgeT0iMCIgY2xhc3M9InN0MCIgd2lkdGg9IjM2IiBoZWlnaHQ9IjM2Ii8+CjxnPgoJPHBhdGggY2xhc3M9InN0MSIgZD0iTTE4LDUwTDE4LDUwYy0zLjksMC03LjItMy03LjUtN2wtMC45LTEzYy0wLjMtNC40LDMuMS04LjEsNy41LTguMWgxLjljNC40LDAsNy44LDMuNyw3LjUsOC4xbC0wLjksMTMKCQlDMjUuMiw0NywyMS45LDUwLDE4LDUweiIvPgo8L2c+CjxnPgoJPGNpcmNsZSBjbGFzcz0ic3QxIiBjeD0iMTgiIGN5PSIxNCIgcj0iNSIvPgo8L2c+Cjwvc3ZnPgo="/>
+      <h4 class="text-center">John Doe</h4>
+      <h5 class="text-center">Premium level - test</h5>
+      <div class="divider iqr-mb"></div>
+      <form class="form-edit form-edit--edit">
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label class="control-label" for="bs-form-intput-29642">Name & Surname</label>
+              <input class="form-control form-preview" id="bs-form-intput-29642" type="text" value="Jhon Doe" readonly="readonly"/>
+            </div>
+            <div class="form-group">
+              <label class="control-label" for="bs-form-intput-496735">Email</label>
+              <input class="form-control form-preview" id="bs-form-intput-496735" type="email" value="john.doe@gmail.com" readonly="readonly"/>
+            </div>
+            <div class="form-group">
+              <label class="control-label" for="bs-form-intput-265536">Favorite Seat</label>
+              <div class="hideArrow noArrow">
+                <select class="form-control form-preview" id="bs-form-intput-265536" disabled="true">
+                  <option value="Aisle">Aisle</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                </select>
+              </div>
+            </div>
+            <div class="iqr-mt">
+              <div class="form-group">
+                <label class="control-label" for="bs-form-intput-555864">Phone Number</label>
+                <input class="form-control form-preview" id="bs-form-intput-555864" type="text" value="0090 786.886" readonly="readonly"/>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label class="control-label" for="bs-form-intput-141461">Address</label>
+              <input class="form-control form-preview" id="bs-form-intput-141461" type="text" value="Saarbruckener, Str.26" readonly="readonly"/>
+            </div>
+            <div class="form-group">
+              <label class="control-label" for="bs-form-intput-785936">City</label>
+              <input class="form-control form-preview" id="bs-form-intput-785936" type="text" value="Nurnberg" readonly="readonly"/>
+            </div>
+            <div class="form-group">
+              <label class="control-label" for="bs-form-intput-465282">Country</label>
+              <div class="noArrow hideArrow">
+                <select class="form-control form-preview context-menu" id="bs-form-intput-465282" disabled="true">
+                  <option value="Germany">Germany</option>
+                  <option value="Poland">Poland</option>
+                  <option value="France">France</option>
+                  <option value="Czech">Czech</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="buttons--edit collapse in"><a class="btn btn-default btn-wide button--edit">Edit Profile</a></div>
+        <div class="buttons--cancel collapse">
+          <div class="iqr-buttons--form">
+            <button class="btn btn-primary btn-wide" type="submit">Save Changes</button>
+            <button class="btn btn-default btn-wide button--cancel" type="reset">Cancel</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- partial -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script><script  src="./script.js"></script>
+
+</body>
+</html>
