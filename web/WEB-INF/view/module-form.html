@@ -11,7 +11,7 @@
 
 <div class="container">
     <br>
-    <a th:href="@{'/modules/get-save-form?courseId=' + ${courseId}}" class="btn btn-success"> + Add Course</a>
+    <a th:href="@{'/modules/get-save-form?courseId=' + ${courseId}}" class="btn btn-success"> + Add Module</a>
     <br>
     <br>
     <table class="table table-hover">
@@ -26,7 +26,10 @@
         <tbody>
         <tr th:each="module : ${modules}">
 
-            <td th:text="${module.name}"></td>
+            <td>
+                <a th:href="@{'/lessons/' + ${module.id}}"
+                   th:text="${module.name}"></a>
+            </td>
 
             <td th:text="${module.price}"></td>
 
@@ -36,22 +39,15 @@
                 </a>
             </td>
 
-            <td><a th:href="@{'/modules/delete/' + ${module.id}}" class="btn btn-danger btn-sm">
+            <td><a th:href="@{'/modules/delete/' + ${module.id}}"
+                   class="btn btn-danger btn-sm">
                 <span class="glyphicon glyphicon-trash"></span> Delete </a></td>
         </tr>
         </tbody>
     </table>
 </div>
 
-<script>
-    function makeDeleteUserRequest(url) {
-        console.log(url)
-        fetch(url,
-            {
-                method: 'DELETE'
-            }
-        ).then(response => location.reload())
-    }
-</script>
+<button><a style="text-decoration: none" href="/courses">COURSES</a></button>
+
 </body>
 </html>
