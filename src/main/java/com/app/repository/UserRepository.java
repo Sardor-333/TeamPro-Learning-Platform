@@ -105,10 +105,8 @@ public class UserRepository implements BaseRepository<User, UUID> {
 
     public User getByEmail(String email) {
         try {
-            Transaction transaction = session.beginTransaction();
             Query query = session.createQuery("from users where email = '" + email + "' ");
             Optional first = query.list().stream().findFirst();
-            transaction.commit();
             return (User) first.orElse(null);
         } catch (Exception e) {
             return null;
