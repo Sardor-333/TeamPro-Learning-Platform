@@ -86,11 +86,15 @@ public class LessonRepository implements BaseRepository<Lesson, UUID> {
     }
 
     public Role getRole(HttpServletRequest req) {
-        HttpSession session = req.getSession(false);
-        Object userId = session.getAttribute("userId");
-        if (userId != null) {
-            return (Role) session.getAttribute("role");
+        try {
+            HttpSession session = req.getSession(false);
+            Object userId = session.getAttribute("userId");
+            if (userId != null) {
+                return (Role) session.getAttribute("role");
+            }
+            return null;
+        }catch (Exception e){
+            return null;
         }
-        return null;
     }
 }
