@@ -43,6 +43,7 @@ public class UserService {
                     try {
                         Attachment attachment = new Attachment();
                         attachment.setBytes(photo.getBytes());
+                        userRepository.saveObj(attachment);
                         user.setAttachment(attachment);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -76,12 +77,12 @@ public class UserService {
                     model.addAttribute("user", user);
                     return "select-role";
                 }
-            } else {
-                model.addAttribute("msg", "email or password error");
             }
-        } catch (Exception ignored) {
+            model.addAttribute("msg", "email or password error");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return null;
+        return "redirect:/auth/login";
     }
 
     public String setRole(String role, HttpServletRequest req) {

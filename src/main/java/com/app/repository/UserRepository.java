@@ -44,8 +44,6 @@ public class UserRepository implements BaseRepository<User, UUID> {
         try {
             session.clear();
             Transaction transaction = session.beginTransaction();
-            Attachment attachment = elem.getAttachment();
-            session.save(attachment);
             session.save(elem);
             transaction.commit();
         } catch (Exception e) {
@@ -146,6 +144,16 @@ public class UserRepository implements BaseRepository<User, UUID> {
         try {
             Transaction transaction = session.beginTransaction();
             session.saveOrUpdate(elem);
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public <T> void saveObj(T obj) {
+        try {
+            Transaction transaction = session.beginTransaction();
+            session.saveOrUpdate(obj);
             transaction.commit();
         } catch (Exception e) {
             e.printStackTrace();
