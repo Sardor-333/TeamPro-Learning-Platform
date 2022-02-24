@@ -5,6 +5,7 @@ import com.app.model.Module;
 import com.app.model.Role;
 import com.app.repository.LessonRepository;
 import com.app.repository.ModuleRepository;
+import com.app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,16 +19,19 @@ import java.util.UUID;
 public class LessonController {
     private LessonRepository lessonRepository;
     private ModuleRepository moduleRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    LessonController(LessonRepository lessonRepository, ModuleRepository moduleRepository){
+    LessonController(LessonRepository lessonRepository, ModuleRepository moduleRepository, UserRepository userRepository){
         this.lessonRepository = lessonRepository;
         this.moduleRepository = moduleRepository;
+        this.userRepository = userRepository;
+
     }
 
     @GetMapping("/{moduleId}")
     public String getLessonsByModuleId(@PathVariable UUID moduleId, Model model, HttpServletRequest req){
-        Role role = lessonRepository.getRole(req);
+        Role role = userRepository.getRole(req);
         if (role != null) {
             model.addAttribute("lessons", lessonRepository.getLessonsByModuleId(moduleId));
             return "view-lessons";
@@ -37,7 +41,7 @@ public class LessonController {
 
     @GetMapping()
     public String getLessonById(@RequestParam UUID lessonId, Model model, HttpServletRequest req){
-        Role role = lessonRepository.getRole(req);
+        Role role = userRepository.getRole(req);
         if (role!=null) {
             model.addAttribute("lesson", lessonRepository.getById(lessonId));
             return "view_lesson";
@@ -47,7 +51,7 @@ public class LessonController {
 
     @PostMapping("/{moduleId}")
     public String saveModule(@PathVariable UUID moduleId, Lesson lesson, HttpServletRequest req) {
-        Role role = lessonRepository.getRole(req);
+        Role role = userRepository.getRole(req);
         if (role != null) {
             lesson.setModule(moduleRepository.getById(moduleId));
             lessonRepository.save(lesson);
@@ -58,7 +62,7 @@ public class LessonController {
 
     @GetMapping("/edit")
     public String editLesson(@RequestParam UUID lessonId, Model model, HttpServletRequest req) {
-        Role role = lessonRepository.getRole(req);
+        Role role = userRepository.getRole(req);
         if (role!= null) {
             model.addAttribute("lesson", lessonRepository.getById(lessonId));
             return "update-lesson";
@@ -68,7 +72,7 @@ public class LessonController {
 
     @PostMapping("/update")
     public String updateLesson(@RequestParam UUID moduleId, Lesson lesson, HttpServletRequest request){
-        Role role = lessonRepository.getRole(request);
+        Role role = userRepository.getRole(request);
         if (role!= null) {
             Module module = moduleRepository.getById(moduleId);
             lesson.setModule(module);
@@ -80,7 +84,7 @@ public class LessonController {
 
     @GetMapping("/add")
     public String getForm(HttpServletRequest request){
-        Role role = lessonRepository.getRole(request);
+        Role role = userRepository.getRole(request);
         if (role!=null) {
             return "add-lesson";
         }
@@ -89,7 +93,7 @@ public class LessonController {
 
     @PostMapping("/add/{moduleId}")
     public String addLesson(Lesson lesson, @PathVariable UUID moduleId, HttpServletRequest req){
-        Role role = lessonRepository.getRole(req);
+        Role role = userRepository.getRole(req);
         if (role!=null) {
             lessonRepository.save(lesson);
             return "redirect:/lessons/"+moduleId;
@@ -99,7 +103,7 @@ public class LessonController {
 
     @ModelAttribute(value = "modelId")
     public Role getModelId(HttpServletRequest req){
-       return lessonRepository.getRole(req);
+       return userRepository.getRole(req);
     }
 
 
