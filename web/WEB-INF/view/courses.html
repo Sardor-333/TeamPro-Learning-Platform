@@ -4,12 +4,55 @@
 <head>
     <meta charset="UTF-8">
     <title>Courses</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 <body>
 
-<h1 th:if="${courses.size() > 0}">
-    Courses exist
-</h1>
+<div class="container">
+    <br>
+    <a th:href="@{/courses/add}" class="btn btn-success"> + Add Course</a>
+    <br>
+    <br>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="course : ${courses}">
 
+            <td th:text="${course.name}"/>
+
+            <td th:text="${course.description}"/>
+
+            <td><a th:href="@{'/courses/update/' + ${course.id}}" class="btn btn-primary btn-sm">
+                <span class="glyphicon glyphicon-edit"></span> Edit </a></td>
+
+            <td>
+                <button th:onclick="'javascript:makeDeleteRequest(/courses/delete/' + ${course.id} + ')'"
+                        class="btn btn-danger btn-sm"> Delete
+                </button>
+            </td>
+
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function makeDeleteUserRequest(url) {
+        console.log(url)
+        fetch(url,
+            {
+                method: 'DELETE'
+            }
+        ).then(response => location.reload())
+    }
+</script>
 </body>
 </html>

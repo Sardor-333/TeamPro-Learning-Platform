@@ -52,6 +52,5 @@ public class AuthController {
     @GetMapping("/role/{role}")
     public String setRole(@PathVariable String role, HttpServletRequest req) {
         return userService.setRole(role, req);
-
     }
 }

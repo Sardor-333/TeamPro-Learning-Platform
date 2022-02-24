@@ -34,12 +34,10 @@ public class CourseService {
 
     public List<Course> getCourses(HttpSession session) {
         Role role = (Role) session.getAttribute("role");
-
         if (role.getName().equals("MENTOR")) {
             UUID authorId = UUID.fromString(session.getAttribute("userId").toString());
             return courseRepository.getAuthorCourses(authorId);
         }
-
         return courseRepository.getAll();
     }
 
@@ -79,5 +77,9 @@ public class CourseService {
 
     public Course getById(UUID id) {
         return courseRepository.getById(id);
+    }
+
+    public Course deleteCourse(UUID courseId) {
+        return courseRepository.deleteById(courseId);
     }
 }

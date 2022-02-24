@@ -7,10 +7,7 @@ import com.app.model.User;
 import com.app.service.CourseService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -26,11 +23,10 @@ public class CourseController {
         this.courseService = courseService;
     }
 
-
     @GetMapping
     public String getCourses(Model model, HttpServletRequest request) {
         HttpSession session = request.getSession();
-        if (!sessionHasAttribute(session, "userId") && !sessionHasAttribute(session, "role")) {
+        if (sessionHasAttribute(session, "userId") && sessionHasAttribute(session, "role")) {
             model.addAttribute("msg", "Please login first");
             return "login-form";
         }
@@ -43,7 +39,7 @@ public class CourseController {
     @GetMapping("/{courseId}")
     public String getCourse(@PathVariable UUID courseId, Model model, HttpServletRequest request) {
         HttpSession session = request.getSession();
-        if (!sessionHasAttribute(session, "userId") && !sessionHasAttribute(session, "role")) {
+        if (sessionHasAttribute(session, "userId") && sessionHasAttribute(session, "role")) {
             model.addAttribute("msg", "Please login first");
             return "login-form";
         }
@@ -53,10 +49,11 @@ public class CourseController {
     }
 
 
+
     @GetMapping("/add")
     public String getAddForm(Model model, HttpServletRequest request) {
         HttpSession session = request.getSession();
-        if (!sessionHasAttribute(session, "userId") && !sessionHasAttribute(session, "role")) {
+        if (sessionHasAttribute(session, "userId") && sessionHasAttribute(session, "role")) {
             model.addAttribute("msg", "Please login first");
             return "login-form";
         }
@@ -75,10 +72,11 @@ public class CourseController {
     }
 
 
+
     @GetMapping("/update/{courseId}")
     public String getUpdateForm(@PathVariable UUID courseId, HttpServletRequest request, Model model) {
         HttpSession session = request.getSession();
-        if (!sessionHasAttribute(session, "userId") && !sessionHasAttribute(session, "role")) {
+        if (sessionHasAttribute(session, "userId") && sessionHasAttribute(session, "role")) {
             model.addAttribute("msg", "Please login first");
             return "login-form";
         }
@@ -93,8 +91,17 @@ public class CourseController {
         return "update-course";
     }
 
+
+
+    @DeleteMapping("/delete/{courseId}")
+    public String deleteCourse(@PathVariable UUID courseId) {
+        Course deletedCourse = courseService.deleteCourse(courseId);
+        return "redirect:/courses";
+    }
+
+
+
     private boolean sessionHasAttribute(HttpSession httpSession, String value) {
-        Object attribute = httpSession.getAttribute(value);
-        return attribute != null;
+        return httpSession.getAttribute(value) == null;
     }
 }

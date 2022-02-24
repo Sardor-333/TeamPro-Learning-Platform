@@ -4,6 +4,7 @@ import com.app.model.Course;
 import com.app.model.User;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
@@ -102,17 +103,21 @@ public class CourseRepository implements BaseRepository<Course, UUID> {
     }
 
     public List<Course> getAuthorCourses(UUID authorId) {
-        Query query = session.createQuery("" +
-                "from courses " +
-                "join courses .authors as authors " +
-                "where authors.id = ?");
-        query.setParameter(0, authorId);
-        return query.list();
+        NativeQuery sqlQuery = session.createSQLQuery("select c.* from courses c\n" +
+                "join courses_authors ca on c.id = ca.course_id\n" +
+                "join users u on ca.user_id = u.id\n" +
+                "join users_roles ur on u.id = ur.user_id\n" +
+                "join roles r on ur.role_id = r.id\n" +
+                "where r.name = 'MENTOR' and u.id = '" + authorId + "'");
+        List list = sqlQuery.list();
+        return list;
     }
 
     public List<User> getAuthors() {
         Query query = session.createQuery("" +
-                "from users u join u.roles r where r.name = 'MENTOR'");
+                "from users u " +
+                "join u.roles r " +
+                "where r.name = 'MENTOR'");
         List list = query.list();
         return list;
     }
