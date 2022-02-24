@@ -82,17 +82,4 @@ public class LessonRepository implements BaseRepository<Lesson, UUID> {
     public void clear() {
         session.createQuery("delete lessons");
     }
-
-    public Role getRole(HttpServletRequest req) {
-        try {
-            HttpSession session = req.getSession(false);
-            Object userId = session.getAttribute("userId");
-            if (userId != null) {
-                return (Role) session.getAttribute("role");
-            }
-            return null;
-        }catch (Exception e){
-            return null;
-        }
-    }
 }

@@ -10,6 +10,8 @@ import org.hibernate.query.Query;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -99,6 +101,27 @@ public class UserRepository implements BaseRepository<User, UUID> {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public Role getRole(HttpServletRequest req) {
+        try {
+            HttpSession session = req.getSession(false);
+            Object userId = session.getAttribute("userId");
+            if (userId != null) {
+                return (Role) session.getAttribute("role");
+            }
+            return null;
+        }catch (Exception e){
+            return null;
+        }
+    }
+
+    public List<Role> getRoles(UUID userId) {
+        Query query = session.createQuery("from roles r " +
+                "join r.users u " +
+                "where u.id = '" + userId + "'");
+        List list = query.list();
+        return list;
     }
 
     public User getByEmail(String email) {
