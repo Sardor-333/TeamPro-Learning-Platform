@@ -26,10 +26,7 @@
         <tbody>
         <tr th:each="course : ${courses}">
 
-            <td>
-                <a th:href="@{'/modules/' + ${course.id}}"
-                   th:text="${course.name}"></a>
-            </td>
+            <td th:text="${course.name}"></td>
 
             <td th:text="${course.description}"></td>
 
@@ -41,9 +38,6 @@
 
             <td><a th:href="@{/courses/delete(id=${course.id})}" class="btn btn-danger btn-sm">
                 <span class="glyphicon glyphicon-trash"></span> Delete </a></td>
-
-            <td><a th:href="@{'/courses/' + ${course.id}}" class="btn btn-success btn-sm">
-                <span class="glyphicon glyphicon-trash"></span> View </a></td>
 
         </tr>
         </tbody>
