@@ -30,14 +30,14 @@
 
             <td th:text="${course.description}"></td>
 
-            <td><a th:href="@{'/courses/update/' + ${course.id}}" class="btn btn-primary btn-sm">
-                <span class="glyphicon glyphicon-edit"></span> Edit </a></td>
-
             <td>
-                <button th:onclick="'javascript:makeDeleteRequest(/courses/delete/' + ${course.id} + ')'"
-                        class="btn btn-danger btn-sm"> Delete
-                </button>
+                <a th:href="@{'/courses/update/' + ${course.id}}" class="btn btn-primary btn-sm">
+                    Edit
+                </a>
             </td>
+
+            <td><a th:href="@{/courses/delete(id=${course.id})}" class="btn btn-danger btn-sm">
+                <span class="glyphicon glyphicon-trash"></span> Delete </a></td>
 
         </tr>
         </tbody>

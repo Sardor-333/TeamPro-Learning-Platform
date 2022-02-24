@@ -49,7 +49,6 @@ public class CourseController {
     }
 
 
-
     @GetMapping("/add")
     public String getAddForm(Model model, HttpServletRequest request) {
         HttpSession session = request.getSession();
@@ -72,7 +71,6 @@ public class CourseController {
     }
 
 
-
     @GetMapping("/update/{courseId}")
     public String getUpdateForm(@PathVariable UUID courseId, HttpServletRequest request, Model model) {
         HttpSession session = request.getSession();
@@ -92,14 +90,11 @@ public class CourseController {
     }
 
 
-
-    @DeleteMapping("/delete/{courseId}")
-    public String deleteCourse(@PathVariable UUID courseId) {
-        Course deletedCourse = courseService.deleteCourse(courseId);
+    @GetMapping("/delete")
+    public String deleteCourse(@RequestParam UUID id) {
+        Course deletedCourse = courseService.deleteCourse(id);
         return "redirect:/courses";
     }
-
-
 
     private boolean sessionHasAttribute(HttpSession httpSession, String value) {
         return httpSession.getAttribute(value) == null;
