@@ -7,14 +7,16 @@
 
 <div th:each="modules : ${modules}">
     <h3 th:text="${modules.name}"></h3>
-    <a th:href="@{'/modules/get-save-form?id=' + ${modules.id}}">
+    <a style="text-decoration: none" th:href="@{'/modules/get-save-form?id=' + ${modules.id}}">
         <button>EDIT</button>
+    </a>
+    <a style="text-decoration: none" th:href="@{'/modules/delete/' + ${modules.id}}">
+        <button>DELETE</button>
     </a>
 </div>
 
 <a th:href="@{'/modules/get-save-form?courseId=' + ${courseId}}">
     <button>ADD</button>
 </a>
-
 </body>
 </html>

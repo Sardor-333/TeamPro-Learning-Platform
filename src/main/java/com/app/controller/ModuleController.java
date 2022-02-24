@@ -53,6 +53,6 @@ public class ModuleController {
     @RequestMapping("/delete/{id}")
     public String getDelete(@PathVariable UUID id) {
         moduleService.getDelete(id);
-        return "module-form";
+        return "index";
     }
 }
