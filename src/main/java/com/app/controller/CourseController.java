@@ -1,5 +1,4 @@
 package com.app.controller;
-
 import com.app.dto.CourseDto;
 import com.app.model.Category;
 import com.app.model.Course;
@@ -8,7 +7,6 @@ import com.app.service.CourseService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -88,7 +86,6 @@ public class CourseController {
 
         return "update-course";
     }
-
 
     @GetMapping("/delete")
     public String deleteCourse(@RequestParam UUID id) {
