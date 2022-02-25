@@ -1,6 +1,5 @@
 package com.app.controller;
 
-import com.app.model.Course;
 import com.app.model.Module;
 import com.app.repository.CourseRepository;
 import com.app.service.ModuleService;
@@ -22,7 +21,7 @@ public class ModuleController {
     private final CourseRepository courseRepository;
 
     @Autowired
-    public ModuleController(ModuleService moduleService,CourseRepository courseRepository) {
+    public ModuleController(ModuleService moduleService, CourseRepository courseRepository) {
         this.moduleService = moduleService;
         this.courseRepository = courseRepository;
     }
@@ -52,14 +51,17 @@ public class ModuleController {
     public String getEdit(Module module, Model model) {
         String save = moduleService.save(module);
         model.addAttribute("msg", save);
-        return "index";
+        return "redirect:/modules/" + module.getCourse().getId();
     }
 
     @GetMapping("/delete/{id}")
     public String getDeleteModule(@PathVariable UUID id, Model model) {
-        moduleService.getDelete(id);
-        List<Course> all = courseRepository.getAll();
-        model.addAttribute("courses",all);
-        return "redirect:/courses/";
+        Module module = moduleService.getModuleById(id);
+        UUID courseId = null;
+        if (model != null) {
+            courseId = module.getCourse().getId();
+            moduleService.getDelete(id);
+        }
+        return "redirect:/modules/" + courseId;
     }
 }
