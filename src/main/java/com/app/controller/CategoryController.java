@@ -45,6 +45,11 @@ public class CategoryController {
         return "redirect:/categories";
     }
 
+    @GetMapping("/edit-profile")
+    public String editCategory(){
+        return "edit-profile";
+    }
+
     @PostMapping({"/update"})
     public String update(Category category) {
         this.categoryRepository.update(category);

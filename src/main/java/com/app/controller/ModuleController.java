@@ -1,10 +1,13 @@
 package com.app.controller;
 
+import com.app.model.Course;
 import com.app.model.Module;
+import com.app.repository.CourseRepository;
 import com.app.service.ModuleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,10 +19,12 @@ import java.util.UUID;
 @RequestMapping("/modules")
 public class ModuleController {
     private final ModuleService moduleService;
+    private final CourseRepository courseRepository;
 
     @Autowired
-    public ModuleController(ModuleService moduleService) {
+    public ModuleController(ModuleService moduleService,CourseRepository courseRepository) {
         this.moduleService = moduleService;
+        this.courseRepository = courseRepository;
     }
 
     @RequestMapping("/{courseId}")
@@ -37,9 +42,9 @@ public class ModuleController {
             Module module = moduleService.getModuleById(id);
             model.addAttribute("modules", module);
             return "edit-module-form";
-        }else {
-        model.addAttribute("courseId", courseId);
-        return "save-module-form";
+        } else {
+            model.addAttribute("courseId", courseId);
+            return "save-module-form";
         }
     }
 
@@ -50,9 +55,11 @@ public class ModuleController {
         return "index";
     }
 
-    @RequestMapping("/delete/{id}")
-    public String getDelete(@PathVariable UUID id) {
+    @GetMapping("/delete/{id}")
+    public String getDeleteModule(@PathVariable UUID id, Model model) {
         moduleService.getDelete(id);
-        return "module-form";
+        List<Course> all = courseRepository.getAll();
+        model.addAttribute("courses",all);
+        return "redirect:/courses/";
     }
 }

@@ -34,7 +34,7 @@ public class AuthController {
         boolean isRegistered = userService.registerUser(userDto);
         if (!isRegistered) {
             model.addAttribute("userDto", userDto);
-            return "register-form";
+            return "login-form";
         }
         return "redirect:/auth/login";
     }
