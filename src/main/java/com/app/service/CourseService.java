@@ -3,7 +3,6 @@ package com.app.service;
 import com.app.dto.CourseDto;
 import com.app.model.Category;
 import com.app.model.Course;
-import com.app.model.Role;
 import com.app.model.User;
 import com.app.repository.CategoryRepository;
 import com.app.repository.CourseRepository;
