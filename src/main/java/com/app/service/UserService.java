@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class UserService {
@@ -71,8 +72,8 @@ public class UserService {
                 HttpSession session = req.getSession();
                 session.setAttribute("userId", user.getId());
                 if (user.getRoles().size() == 1) {
-                    session.setAttribute("role", user.getRoles().get(0));
-                    return "redirect:/courses";
+                    session.setAttribute("userRoles", user.getRoles().get(0));
+                    return "courses";
                 } else {
                     model.addAttribute("roles",userRepository.getRoles(user.getId()));
                     return "select-role";
@@ -82,13 +83,13 @@ public class UserService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "redirect:/auth/login";
+        return "login";
     }
 
     public String setRole(String role, HttpServletRequest req) {
         HttpSession session1 = req.getSession(false);
-        String userId = (String) session1.getAttribute("userId");
-        if (userId != null && userId.length() > 2) {
+        Object userId = session1.getAttribute("userId");
+        if (userId != null) {
             HttpSession session = req.getSession();
             session.setAttribute("role", role);
             return "redirect:/courses";

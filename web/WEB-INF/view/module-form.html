@@ -1,20 +1,53 @@
-<!doctype html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
-    <title>Module</title>
+    <meta charset="UTF-8">
+    <title>Courses</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 <body>
 
-<div th:each="modules : ${modules}">
-    <h3 th:text="${modules.name}"></h3>
-    <a th:href="@{'/module/get-save-form?id=' + ${modules.id}}">
-        <button>EDIT</button>
-    </a>
+<div class="container">
+    <br>
+    <a th:href="@{'/modules/get-save-form?courseId=' + ${courseId}}" class="btn btn-success"> + Add Module</a>
+    <br>
+    <br>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="module : ${modules}">
+
+            <td>
+                <a th:href="@{'/lessons/' + ${module.id}}"
+                   th:text="${module.name}"></a>
+            </td>
+
+            <td th:text="${module.price}"></td>
+
+            <td>
+                <a th:href="@{'/modules/get-save-form?id=' + ${module.id}}" class="btn btn-primary btn-sm">
+                    Edit
+                </a>
+            </td>
+
+            <td><a th:href="@{'/modules/delete/' + ${module.id}}"
+                   class="btn btn-danger btn-sm">
+                <span class="glyphicon glyphicon-trash"></span> Delete </a></td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 
-<a th:href="@{'/module/get-save-form?courseId=' + ${courseId}}">
-    <button>ADD</button>
-</a>
+<button><a style="text-decoration: none" href="/courses">COURSES</a></button>
 
 </body>
 </html>

@@ -117,11 +117,12 @@ public class UserRepository implements BaseRepository<User, UUID> {
     }
 
     public List<Role> getRoles(UUID userId) {
-        Query query = session.createQuery("from roles r " +
-                "join r.users u " +
-                "where u.id = '" + userId + "'");
-        List list = query.list();
-        return list;
+        try {
+            User user = session.get(User.class, userId);
+            return user.getRoles();
+        }catch (Exception e) {
+            return null;
+        }
     }
 
     public User getByEmail(String email) {

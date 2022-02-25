@@ -1,16 +1,18 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Select role</title>
 </head>
 <body>
-<!--/*@thymesVar id="categories" type="com.app.model.*"/-->
-<p th:each="role : ${roles}">
-    <a th:href="@{/auth/role/role.id}">
-    <a th:href="@{/auth/role/role.id}">
-    <a th:href="@{/auth/role/role.id}">
+<form action="/auth/role">
+    <label for="role">Choose role</label>
+    <select id="role" name="role">
+        <!--/*@thymesVar id="userRole" type="com.app.model.Role"*/-->
+        <option th:each="userRole : ${roles}" th:value="${userRole.getName()}" th:text="${userRole.getName()}"></option>
+    </select>
+    <button type="submit">SEND</button>
 
-</p>
+</form>
 </body>
 </html>

@@ -15,5 +15,8 @@
     <input type="hidden" name="course.id" th:value="${modules.course.id}">
     <button type="submit">Submit</button>
 </form>
+
+<button><a th:href="@{'/modules/' + ${modules.course.id}}" th:text="BACK"></a></button>
+
 </body>
 </html>
