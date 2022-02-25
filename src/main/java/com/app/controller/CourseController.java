@@ -26,7 +26,7 @@ public class CourseController {
     @GetMapping
     public String getCourses(Model model, HttpServletRequest request) {
         HttpSession session = request.getSession();
-        if (sessionHasAttribute(session, "userId") && sessionHasAttribute(session, "role")) {
+        if (!sessionHasAttribute(session, "userId") && !sessionHasAttribute(session, "role")) {
             model.addAttribute("msg", "Please login first");
             return "login-form";
         }
@@ -39,7 +39,7 @@ public class CourseController {
     @GetMapping("/{courseId}")
     public String getCourse(@PathVariable UUID courseId, Model model, HttpServletRequest request) {
         HttpSession session = request.getSession();
-        if (sessionHasAttribute(session, "userId") && sessionHasAttribute(session, "role")) {
+        if (!sessionHasAttribute(session, "userId") && !sessionHasAttribute(session, "role")) {
             model.addAttribute("msg", "Please login first");
             return "login-form";
         }
@@ -48,11 +48,10 @@ public class CourseController {
         return "course";
     }
 
-
     @GetMapping("/add")
     public String getAddForm(Model model, HttpServletRequest request) {
         HttpSession session = request.getSession();
-        if (sessionHasAttribute(session, "userId") && sessionHasAttribute(session, "role")) {
+        if (!sessionHasAttribute(session, "userId") && !sessionHasAttribute(session, "role")) {
             model.addAttribute("msg", "Please login first");
             return "login-form";
         }
@@ -70,11 +69,10 @@ public class CourseController {
         return "redirect:/courses";
     }
 
-
     @GetMapping("/update/{courseId}")
     public String getUpdateForm(@PathVariable UUID courseId, HttpServletRequest request, Model model) {
         HttpSession session = request.getSession();
-        if (sessionHasAttribute(session, "userId") && sessionHasAttribute(session, "role")) {
+        if (!sessionHasAttribute(session, "userId") && !sessionHasAttribute(session, "role")) {
             model.addAttribute("msg", "Please login first");
             return "login-form";
         }
@@ -89,7 +87,6 @@ public class CourseController {
         return "update-course";
     }
 
-
     @GetMapping("/delete")
     public String deleteCourse(@RequestParam UUID id) {
         Course deletedCourse = courseService.deleteCourse(id);
@@ -97,6 +94,6 @@ public class CourseController {
     }
 
     private boolean sessionHasAttribute(HttpSession httpSession, String value) {
-        return httpSession.getAttribute(value) == null;
+        return httpSession.getAttribute(value) != null;
     }
 }
