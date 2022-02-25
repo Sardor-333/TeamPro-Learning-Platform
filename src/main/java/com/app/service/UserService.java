@@ -72,7 +72,7 @@ public class UserService {
                 HttpSession session = req.getSession();
                 session.setAttribute("userId", user.getId());
                 if (user.getRoles().size() == 1) {
-                    session.setAttribute("userRoles", user.getRoles().get(0));
+                    session.setAttribute("role", user.getRoles().get(0));
                     return "courses";
                 } else {
                     model.addAttribute("roles",userRepository.getRoles(user.getId()));
