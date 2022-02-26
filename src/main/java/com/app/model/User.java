@@ -60,7 +60,6 @@ public class User {
     @OneToMany(mappedBy = "user")
     List<CourseVote> courseVotes;
 
-
     @ManyToMany(mappedBy = "authors")
     List<Course> courses;
 

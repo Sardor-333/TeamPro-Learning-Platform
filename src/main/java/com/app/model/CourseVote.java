@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -33,4 +34,10 @@ public class CourseVote {
 
     @Column(nullable = false)
     Integer rank;
+
+    public CourseVote(Course course, User user, Integer rank){
+        this.course = course;
+        this.user = user;
+        this.rank = rank;
+    }
 }

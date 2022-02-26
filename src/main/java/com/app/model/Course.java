@@ -41,7 +41,7 @@ public class Course {
     @OneToMany(mappedBy = "course")
     List<CourseReview> reviews;
 
-    @OneToMany(mappedBy = "course")
+    @OneToMany(mappedBy = "course", cascade = CascadeType.REMOVE)
     List<CourseVote> votes;
 
     @ManyToMany
@@ -51,6 +51,10 @@ public class Course {
             inverseJoinColumns = {@JoinColumn(name = "user_id")}
     )
     List<User> authors;
+
+    @OneToOne
+    @JoinColumn(name = "attachment_id", referencedColumnName = "id")
+    Attachment attachment;
 
     public Course(String name, String description) {
         this.name = name;
