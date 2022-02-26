@@ -25,7 +25,10 @@
         <tbody>
         <tr th:each="course : ${courses}">
 
-            <td><a th:href="@{/modules/${course.id}}" th:text="${course.name}"></a></td>
+            <td>
+                <a th:href="@{'/modules/' + ${course.id}}"
+                   th:text="${course.name}"></a>
+            </td>
 
             <td th:text="${course.description}"></td>
 

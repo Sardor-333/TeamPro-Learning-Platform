@@ -28,6 +28,7 @@ public class Course {
     @Column(nullable = false)
     String name;
 
+    @Column(nullable = false)
     String description;
 
     @ManyToOne

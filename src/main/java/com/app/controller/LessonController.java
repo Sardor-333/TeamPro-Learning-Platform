@@ -107,6 +107,4 @@ public class LessonController {
         HttpSession session = req.getSession();
         return (String) session.getAttribute("role");
     }
-
-
 }
