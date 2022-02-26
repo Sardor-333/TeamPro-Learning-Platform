@@ -81,7 +81,7 @@ public class UserService {
             }
             model.addAttribute("msg", "email or password error");
         } catch (Exception e) {
-            e.printStackTrace();
+            return "login";
         }
         return "login";
     }

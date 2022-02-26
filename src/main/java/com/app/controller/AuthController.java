@@ -50,7 +50,7 @@ public class AuthController {
         String login = userService.login(email, password, request, model);
         if(login.equals("login")){
 
-            return "riderect:/auth/login";
+            return "login-form";
         }
         else if(login.equals("select-role")){
 
