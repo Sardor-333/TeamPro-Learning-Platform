@@ -103,12 +103,12 @@ public class UserRepository implements BaseRepository<User, UUID> {
         }
     }
 
-    public Role getRole(HttpServletRequest req) {
+    public String getRole(HttpServletRequest req) {
         try {
-            HttpSession session = req.getSession(false);
+            HttpSession session = req.getSession();
             Object userId = session.getAttribute("userId");
             if (userId != null) {
-                return (Role) session.getAttribute("role");
+                return (String) session.getAttribute("role");
             }
             return null;
         }catch (Exception e){

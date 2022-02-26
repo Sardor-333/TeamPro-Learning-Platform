@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.UUID;
 
 @Controller
@@ -22,7 +23,7 @@ public class LessonController {
     private UserRepository userRepository;
 
     @Autowired
-    LessonController(LessonRepository lessonRepository, ModuleRepository moduleRepository, UserRepository userRepository){
+    LessonController(LessonRepository lessonRepository, ModuleRepository moduleRepository, UserRepository userRepository) {
         this.lessonRepository = lessonRepository;
         this.moduleRepository = moduleRepository;
         this.userRepository = userRepository;
@@ -30,8 +31,8 @@ public class LessonController {
     }
 
     @GetMapping("/{moduleId}")
-    public String getLessonsByModuleId(@PathVariable UUID moduleId, Model model, HttpServletRequest req){
-        Role role = userRepository.getRole(req);
+    public String getLessonsByModuleId(@PathVariable UUID moduleId, Model model, HttpServletRequest req) {
+        String role = userRepository.getRole(req);
         if (role != null) {
             model.addAttribute("lessons", lessonRepository.getLessonsByModuleId(moduleId));
             return "view-lessons";
@@ -40,9 +41,9 @@ public class LessonController {
     }
 
     @GetMapping()
-    public String getLessonById(@RequestParam UUID lessonId, Model model, HttpServletRequest req){
-        Role role = userRepository.getRole(req);
-        if (role!=null) {
+    public String getLessonById(@RequestParam UUID lessonId, Model model, HttpServletRequest req) {
+        String role = userRepository.getRole(req);
+        if (role != null) {
             model.addAttribute("lesson", lessonRepository.getById(lessonId));
             return "view_lesson";
         }
@@ -51,19 +52,19 @@ public class LessonController {
 
     @PostMapping("/{moduleId}")
     public String saveModule(@PathVariable UUID moduleId, Lesson lesson, HttpServletRequest req) {
-        Role role = userRepository.getRole(req);
+        String role = userRepository.getRole(req);
         if (role != null) {
             lesson.setModule(moduleRepository.getById(moduleId));
             lessonRepository.save(lesson);
-            return "redirect:/lessons/"+moduleId;
+            return "redirect:/lessons/" + moduleId;
         }
         return "redirect:/auth/login";
     }
 
     @GetMapping("/edit")
     public String editLesson(@RequestParam UUID lessonId, Model model, HttpServletRequest req) {
-        Role role = userRepository.getRole(req);
-        if (role!= null) {
+        String role = userRepository.getRole(req);
+        if (role != null) {
             model.addAttribute("lesson", lessonRepository.getById(lessonId));
             return "update-lesson";
         }
@@ -71,39 +72,40 @@ public class LessonController {
     }
 
     @PostMapping("/update")
-    public String updateLesson(@RequestParam UUID moduleId, Lesson lesson, HttpServletRequest request){
-        Role role = userRepository.getRole(request);
-        if (role!= null) {
+    public String updateLesson(@RequestParam UUID moduleId, Lesson lesson, HttpServletRequest request) {
+        String role = userRepository.getRole(request);
+        if (role != null) {
             Module module = moduleRepository.getById(moduleId);
             lesson.setModule(module);
             lessonRepository.save(lesson);
-            return "redirect:/lessons/"+module;
+            return "redirect:/lessons/" + module;
         }
         return "redirect:/auth/login";
     }
 
     @GetMapping("/add")
-    public String getForm(HttpServletRequest request){
-        Role role = userRepository.getRole(request);
-        if (role!=null) {
+    public String getForm(HttpServletRequest request) {
+        String role = userRepository.getRole(request);
+        if (role != null) {
             return "add-lesson";
         }
         return "redirect:/auth/login";
     }
 
     @PostMapping("/add/{moduleId}")
-    public String addLesson(Lesson lesson, @PathVariable UUID moduleId, HttpServletRequest req){
-        Role role = userRepository.getRole(req);
-        if (role!=null) {
+    public String addLesson(Lesson lesson, @PathVariable UUID moduleId, HttpServletRequest req) {
+        String role = userRepository.getRole(req);
+        if (role != null) {
             lessonRepository.save(lesson);
-            return "redirect:/lessons/"+moduleId;
+            return "redirect:/lessons/" + moduleId;
         }
         return "redirect:/auth/login";
     }
 
-    @ModelAttribute(value = "modelId")
-    public Role getModelId(HttpServletRequest req){
-       return userRepository.getRole(req);
+    @ModelAttribute(value = "role")
+    public String getModelId(HttpServletRequest req) {
+        HttpSession session = req.getSession();
+        return (String) session.getAttribute("moduleId");
     }
 
 
