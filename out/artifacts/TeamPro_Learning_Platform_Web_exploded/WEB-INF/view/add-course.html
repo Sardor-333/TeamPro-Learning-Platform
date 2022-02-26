@@ -10,7 +10,7 @@
 <body>
 <div class="container">
 
-    <form th:action="@{/courses/add}" method="post">
+    <form th:action="@{/courses/add}" method="post" enctype="multipart/form-data">
 
         <div class="form-group" style="margin-top:30px">
             <label>Name</label>
@@ -22,6 +22,12 @@
             <input class="form-control" type="text" name="description">
         </div>
 
+        <div class="form-group mt-4">
+            <label for="formFileLg" class="form-label">Upload course image</label>
+            <input id="formFileLg" class="form-control form-control-lg" type="file" name="img"
+                   accept="image/jpeg, image/png">
+        </div>
+
         <label for="category">Category</label>
         <select id="category" name="categoryId">
             <option th:each="category : *{categories}" th:value="${category.id}" th:text="${category.name}"></option>
@@ -29,9 +35,9 @@
 
         <label for="testSelect1">Authors: </label>
         <select th:each="author:${authors}" id='testSelect1' multiple name="authorIds">
-            <option th:if="${session.get('userId') != author.getId()}"
-                    th:value="${author.getId()}"
-                    th:text="${author.getFirstName()}">
+            <option th:if="${session.get('userId') != author.id}"
+                    th:value="${author.id}"
+                    th:text="${author.firstName}">
             </option>
         </select>
 

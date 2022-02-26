@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.Parameter;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -120,5 +121,15 @@ public class CourseRepository implements BaseRepository<Course, UUID> {
                 "where r.name = 'MENTOR'");
         List list = query.list();
         return list;
+    }
+
+    public Integer getCourseRate(UUID courseId) {
+        NativeQuery sqlQuery = session.createSQLQuery("select cast((sum(rank) / count(rank)) as int) as rate from courses c\n" +
+                "join course_votes cv on c.id = cv.course_id\n" +
+                "join users u on cv.user_id = u.id\n" +
+                "where course_id = '" + courseId + "';\n");
+
+        Integer rate = (Integer) sqlQuery.list().get(0);
+        return rate;
     }
 }

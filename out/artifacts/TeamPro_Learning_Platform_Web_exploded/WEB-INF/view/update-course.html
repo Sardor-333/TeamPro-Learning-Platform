@@ -3,14 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <title>Update course</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 <body>
-<form action="/courses/add" method="post">
+
+<form th:action="@{/courses/add}" method="post" enctype="multipart/form-data">
+
     <input type="hidden" name="id" th:value="${course.id}">
 
-    <input type="text" name="name" th:value="${course.name}">
+    <div class="form-group" style="margin-top:30px">
+        <label>Name</label>
+        <input class="form-control" type="text" name="name" th:value="${course.name}">
+    </div>
 
-    <input type="text" name="description" th:value="${course.description}">
+    <div class="form-group" style="margin-top:30px">
+        <label>Description</label>
+        <input class="form-control" type="text" name="description" th:value="${course.description}">
+    </div>
+
+    <div class="form-group mt-4">
+        <label for="formFileLg" class="form-label">Upload course image</label>
+        <input id="formFileLg" class="form-control form-control-lg" type="file" name="img"
+               accept="image/jpeg, image/png">
+    </div>
 
     <label for="category">Category</label>
     <select id="category" name="categoryId">
@@ -26,8 +42,10 @@
         </option>
     </select>
 
-    <input type="submit" value="Save">
+    <button type="submit" class="btn btn-success" style="margin-top:30px">Save</button>
+    <a th:href="@{'/courses'}" class="btn btn-primary" style="margin-top:30px; margin-left:15px">Back</a>
 
 </form>
+
 </body>
 </html>

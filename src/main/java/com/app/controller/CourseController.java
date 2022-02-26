@@ -1,4 +1,5 @@
 package com.app.controller;
+
 import com.app.dto.CourseDto;
 import com.app.model.Category;
 import com.app.model.Course;
@@ -7,8 +8,11 @@ import com.app.service.CourseService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.UnsupportedEncodingException;
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,6 +47,17 @@ public class CourseController {
         }
         Course course = courseService.getCourse(courseId);
         model.addAttribute("course", course);
+        try {
+            if (course.getAttachment() != null) {
+                byte[] encode = Base64.getEncoder().encode(course.getAttachment().getBytes());
+                String base64Encode = new String(encode, "UTF-8");
+                model.addAttribute("img", base64Encode);
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        Integer courseRate = courseService.getCourseRate(courseId);
+        model.addAttribute("courseRate", courseRate);
         return "course";
     }
 
@@ -93,5 +108,22 @@ public class CourseController {
 
     private boolean sessionHasAttribute(HttpSession httpSession, String value) {
         return httpSession.getAttribute(value) != null;
+    }
+
+    @PostMapping("/rate/{courseId}")
+    public String rateCourse(@PathVariable UUID courseId, @RequestParam(name = "rank") Integer rank, HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession();
+        if (!sessionHasAttribute(session, "userId") && !sessionHasAttribute(session, "role")) {
+            model.addAttribute("msg", "Please login first");
+            return "login-form";
+        }
+
+        UUID userId = UUID.fromString(sessionGetAttribute(session, "userId"));
+        courseService.rateCourse(courseId, userId, rank);
+        return "redirect:/course/" + courseId;
+    }
+
+    public String sessionGetAttribute(HttpSession session, String value) {
+        return session.getAttribute(value).toString();
     }
 }
