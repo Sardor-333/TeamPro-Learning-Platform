@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -18,6 +19,7 @@ public class CourseDto {
     String description;
     UUID[] authorIds;
     UUID categoryId;
+    MultipartFile img;
 
     public CourseDto(String name, String description) {
         this.name = name;

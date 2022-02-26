@@ -1,21 +1,172 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
     <title>Course</title>
+    <meta charset="UTF-8">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+
+    <style>
+        @import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
+
+        /* Styling h1 and links
+        ––––––––––––––––––––––––––––––––– */
+        h1[alt="Simple"] {
+            color: white;
+        }
+
+        a[href], a[href]:hover {
+            color: white;
+            font-size: 0.5em;
+            text-decoration: none
+        }
+
+
+        body {
+            background: white !important;
+        }
+
+        .starrating > input {
+            display: none;
+        }
+
+        /* Remove radio buttons */
+
+        .starrating > label:before {
+            content: "\f005"; /* Star */
+            margin: 2px;
+            font-size: 8em;
+            font-family: FontAwesome,sans-serif;
+            display: inline-block;
+        }
+
+        .starrating > label {
+            color: #222222; /* Start color when not clicked */
+        }
+
+        .starrating > input:checked ~ label {
+            color: darkblue;
+        }
+
+        /* Set yellow color when star checked */
+
+        .starrating > input:hover ~ label {
+            color: darkblue;
+        }
+    </style>
+
+    <!--    temp    -->
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+          integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 </head>
 <body>
-
 <div class="card" style="width: 18rem;">
-    <img class="card-img-top" src="#" alt="Card image cap">
+    <img th:src="@{'data:image/jpeg;data:image/png;base64,'+${img}}" class="card-img-top"/>
+
     <div class="card-body">
-        <h5 class="card-title" th:text="${course.name}"></h5>
-        <h6 class="card-subtitle mb-2 text-muted" th:text="${course.category.name}"></h6>
-        <p class="card-text" th:text="${course.description}"></p>
+        <h5 th:text="${course.name}" class="card-title"></h5>
+        <p th:text="${course.description}" class="card-text"></p>
+    </div>
+</div>
+<h1 class="text-center" alt="Simple">Rate our course</h1>
+<div class="container">
+    <div class="starrating risingstar d-flex justify-content-center flex-row-reverse">
+        <input
+                type="radio"
+                id="star5"
+                name="rating"
+                value="5"
+                th:onchange="@{'makePostRequest(' + ${course.id} + ', 5)'}"
+                th:checked="${courseRate == 5}"
+        />
+        <label for="star5" title="5 star"></label>
+
+        <input
+                type="radio"
+                id="star4"
+                name="rating"
+                value="4"
+                th:onchange="@{'makePostRequest(' + ${course.id} + ', 4)'}"
+                th:checked="${courseRate == 4}"
+        />
+        <label for="star4" title="4 star"></label>
+
+        <input
+                type="radio"
+                id="star3"
+                name="rating"
+                value="3"
+                th:onchange="@{'makePostRequest(' + ${course.id} + ', 3)'}"
+                th:checked="${courseRate == 3}"
+        />
+        <label for="star3" title="3 star"></label>
+
+        <input
+                type="radio"
+                id="star2"
+                name="rating"
+                value="2"
+                th:onchange="@{'makePostRequest(' + ${course.id} + ', 2)'}"
+                th:checked="${courseRate == 2}"
+        />
+        <label for="star2" title="2 star"></label>
+
+        <input
+                type="radio"
+                id="star1"
+                name="rating"
+                value="1"
+                th:onchange="@{'makePostRequest(' + ${course.id} + ', 1)'}"
+                th:checked="${courseRate == 1}"
+        />
+        <label for="star1" title="1 star"></label>
     </div>
 </div>
 
+<script>
+
+    jQuery(document).ready(function ($) {
+
+        $(".btnrating").on('click', (function (e) {
+
+            var previous_value = $("#selected_rating").val();
+
+            var selected_value = $(this).attr("data-attr");
+            $("#selected_rating").val(selected_value);
+
+            $(".selected-rating").empty();
+            $(".selected-rating").html(selected_value);
+
+            for (i = 1; i <= selected_value; ++i) {
+                $("#rating-star-" + i).toggleClass('btn-warning');
+                $("#rating-star-" + i).toggleClass('btn-default');
+            }
+
+            for (ix = 1; ix <= previous_value; ++ix) {
+                $("#rating-star-" + ix).toggleClass('btn-warning');
+                $("#rating-star-" + ix).toggleClass('btn-default');
+            }
+
+        }));
+
+
+    });
+
+
+    function makePostRequest(courseId, rank) {
+        const url = '/courses/rate/' + courseId + '?rank=' + rank + '';
+        console.log(url);
+
+        fetch('/courses/rate/' + courseId + '?rank=' + rank + '',
+            {
+                method: 'POST'
+            }
+        ).then(response => location.reload())
+    }
+
+</script>
 </body>
 </html>

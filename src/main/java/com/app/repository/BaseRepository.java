@@ -19,4 +19,5 @@ public interface BaseRepository<T, I> {
     T deleteById(I id);
 
     void clear();
+
 }

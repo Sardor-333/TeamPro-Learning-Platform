@@ -35,12 +35,20 @@ public class Attachment {
     @OneToOne(mappedBy = "attachment")
     User user;
 
+    @OneToOne(mappedBy = "attachment")
+    Course course;
+
+    @Column(nullable = false)
+    byte[] bytes;
+
     public Attachment(String fileLocation, String fileName, byte[] bytes) {
         this.fileLocation = fileLocation;
         this.fileName = fileName;
         this.bytes = bytes;
     }
 
-    @Column(nullable = false)
-    byte[] bytes;
+    public Attachment(String fileLocation, byte[] bytes) {
+        this.fileLocation = fileLocation;
+        this.bytes = bytes;
+    }
 }
