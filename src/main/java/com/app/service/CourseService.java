@@ -33,8 +33,8 @@ public class CourseService {
     }
 
     public List<Course> getCourses(HttpSession session) {
-        Role role = (Role) session.getAttribute("role");
-        if (role.getName().equals("MENTOR")) {
+        String role = (String) session.getAttribute("role");
+        if (role.equals("MENTOR")) {
             UUID authorId = UUID.fromString(session.getAttribute("userId").toString());
             return courseRepository.getAuthorCourses(authorId);
         }
