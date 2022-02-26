@@ -105,7 +105,7 @@ public class LessonController {
     @ModelAttribute(value = "role")
     public String getModelId(HttpServletRequest req) {
         HttpSession session = req.getSession();
-        return (String) session.getAttribute("moduleId");
+        return (String) session.getAttribute("role");
     }
 
 
