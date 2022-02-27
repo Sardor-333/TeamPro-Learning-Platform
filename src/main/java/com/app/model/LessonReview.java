@@ -25,7 +25,7 @@ public class LessonReview {
     UUID id;
 
     @JoinColumn(name = "lesson_id", nullable = false)
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     Lesson lesson;
 
     @ManyToOne
@@ -37,4 +37,11 @@ public class LessonReview {
 
     @Column(name = "posted_at")
     LocalDateTime postedAt;
+
+    public LessonReview(Lesson lesson, User user, String body, LocalDateTime postedAt) {
+        this.lesson = lesson;
+        this.user = user;
+        this.body = body;
+        this.postedAt = postedAt;
+    }
 }

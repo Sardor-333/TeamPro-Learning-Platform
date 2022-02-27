@@ -56,7 +56,7 @@ public class User {
     @OneToMany(mappedBy = "user")
     List<LessonReview> lessonReviews;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     List<CourseReview> courseReviews;
 
     @OneToMany(mappedBy = "user")

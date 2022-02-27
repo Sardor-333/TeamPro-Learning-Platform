@@ -81,7 +81,7 @@ public class UserService {
             }
             model.addAttribute("msg", "email or password error");
         } catch (Exception e) {
-            e.printStackTrace();
+            return "login";
         }
         return "login";
     }
@@ -95,5 +95,10 @@ public class UserService {
             return "redirect:/courses";
         }
         return "redirect:/auth/login";
+    }
+
+    public void logOut(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        session.invalidate();
     }
 }
