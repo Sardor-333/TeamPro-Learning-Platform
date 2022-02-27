@@ -1,6 +1,7 @@
 package com.app.controller;
 
 import com.app.dto.CourseDto;
+import com.app.dto.CourseReviewDto;
 import com.app.model.Category;
 import com.app.model.Course;
 import com.app.model.User;
@@ -28,10 +29,7 @@ public class CourseController {
     @GetMapping
     public String getCourses(Model model, HttpServletRequest request) {
         HttpSession session = request.getSession();
-        if (!sessionHasAttribute(session, "userId") && !sessionHasAttribute(session, "role")) {
-            model.addAttribute("msg", "Please login first");
-            return "login-form";
-        }
+        if (!sessionHasAttributes(session, "userId", "role")) return "login-form";
 
         List<Course> courses = courseService.getCourses(session);
         model.addAttribute("courses", courses);
@@ -41,33 +39,27 @@ public class CourseController {
     @GetMapping("/{courseId}")
     public String getCourse(@PathVariable UUID courseId, Model model, HttpServletRequest request) {
         HttpSession session = request.getSession();
-        if (!sessionHasAttribute(session, "userId") && !sessionHasAttribute(session, "role")) {
-            model.addAttribute("msg", "Please login first");
-            return "login-form";
-        }
+        if (!sessionHasAttributes(session, "userId", "role")) return "login-form";
+
         Course course = courseService.getCourse(courseId);
         model.addAttribute("course", course);
-        try {
-            if (course.getAttachment() != null) {
-                byte[] encode = Base64.getEncoder().encode(course.getAttachment().getBytes());
-                String base64Encode = new String(encode, "UTF-8");
-                model.addAttribute("img", base64Encode);
-            }
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+
+        if (course.getAttachment() != null)
+            model.addAttribute("img", getBase64Encode(course.getAttachment().getBytes()));
+
         Integer courseRate = courseService.getCourseRate(courseId);
         model.addAttribute("courseRate", courseRate);
+
+        List<CourseReviewDto> courseReviews = courseService.getCourseReviewDtos(courseId);
+        model.addAttribute("courseComments", courseReviews);
+
         return "course";
     }
 
     @GetMapping("/add")
     public String getAddForm(Model model, HttpServletRequest request) {
         HttpSession session = request.getSession();
-        if (!sessionHasAttribute(session, "userId") && !sessionHasAttribute(session, "role")) {
-            model.addAttribute("msg", "Please login first");
-            return "login-form";
-        }
+        if (!sessionHasAttributes(session, "userId", "role")) return "login-form";
 
         List<User> authors = courseService.getAuthors();
         List<Category> categories = courseService.getCategories();
@@ -85,10 +77,7 @@ public class CourseController {
     @GetMapping("/update/{courseId}")
     public String getUpdateForm(@PathVariable UUID courseId, HttpServletRequest request, Model model) {
         HttpSession session = request.getSession();
-        if (!sessionHasAttribute(session, "userId") && !sessionHasAttribute(session, "role")) {
-            model.addAttribute("msg", "Please login first");
-            return "login-form";
-        }
+        if (!sessionHasAttributes(session, "userId", "role")) return "login-form";
 
         model.addAttribute("course", courseService.getById(courseId));
 
@@ -102,28 +91,41 @@ public class CourseController {
 
     @GetMapping("/delete")
     public String deleteCourse(@RequestParam UUID id) {
-        Course deletedCourse = courseService.deleteCourse(id);
+        courseService.deleteCourse(id);
         return "redirect:/courses";
-    }
-
-    private boolean sessionHasAttribute(HttpSession httpSession, String value) {
-        return httpSession.getAttribute(value) != null;
     }
 
     @PostMapping("/rate/{courseId}")
     public String rateCourse(@PathVariable UUID courseId, @RequestParam(name = "rank") Integer rank, HttpServletRequest request, Model model) {
         HttpSession session = request.getSession();
-        if (!sessionHasAttribute(session, "userId") && !sessionHasAttribute(session, "role")) {
-            model.addAttribute("msg", "Please login first");
-            return "login-form";
-        }
+        if (!sessionHasAttributes(session, "userId", "role")) return "login-form";
 
-        UUID userId = UUID.fromString(sessionGetAttribute(session, "userId"));
+        UUID userId = UUID.fromString(session.getAttribute("userId").toString());
         courseService.rateCourse(courseId, userId, rank);
         return "redirect:/course/" + courseId;
     }
 
-    public String sessionGetAttribute(HttpSession session, String value) {
-        return session.getAttribute(value).toString();
+    @PostMapping("/addComment/{courseId}")
+    public String leaveComment(@PathVariable UUID courseId, @RequestParam(name = "comment") String comment, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        if (!sessionHasAttributes(session, "userId", "role")) return "login-form";
+        UUID userId = UUID.fromString(session.getAttribute("userId").toString());
+        courseService.leaveComment(courseId, userId, comment);
+        return "redirect:/courses/" + courseId;
+    }
+
+    private String getBase64Encode(byte[] bytes) {
+        try {
+            byte[] encode = Base64.getEncoder().encode(bytes);
+            return new String(encode, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            return null;
+        }
+    }
+
+    private boolean sessionHasAttributes(HttpSession session, String... values) {
+        for (String value : values)
+            if (session.getAttribute(value) == null) return false;
+        return true;
     }
 }

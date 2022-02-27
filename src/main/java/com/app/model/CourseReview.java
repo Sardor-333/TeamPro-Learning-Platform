@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -38,6 +37,12 @@ public class CourseReview {
 
     @Column(name = "posted_at")
     LocalDateTime postedAt;
+
+    public CourseReview(Course course, User user, String body) {
+        this.course = course;
+        this.user = user;
+        this.body = body;
+    }
 
     public CourseReview(Course course, User user, String body, LocalDateTime postedAt) {
         this.course = course;

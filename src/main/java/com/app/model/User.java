@@ -8,7 +8,9 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
@@ -69,5 +71,18 @@ public class User {
         this.email = email;
         this.password = password;
         this.bio = bio;
+    }
+
+    public String getEncode64() {
+        try {
+            if (attachment != null) {
+                byte[] encode = Base64.getEncoder().encode(attachment.getBytes());
+                return new String(encode, "UTF-8");
+            }
+            return null;
+        } catch (UnsupportedEncodingException e) {
+            System.out.println("Exception: " + e.getMessage());
+            return null;
+        }
     }
 }

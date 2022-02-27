@@ -1,6 +1,7 @@
 package com.app.service;
 
 import com.app.dto.CourseDto;
+import com.app.dto.CourseReviewDto;
 import com.app.model.*;
 import com.app.repository.CategoryRepository;
 import com.app.repository.CourseRepository;
@@ -11,10 +12,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.io.UnsupportedEncodingException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Component
 public class CourseService {
@@ -117,5 +118,50 @@ public class CourseService {
 
     public Integer getCourseRate(UUID courseId) {
         return courseRepository.getCourseRate(courseId);
+    }
+
+    public List<CourseReviewDto> getCourseReviewDtos(UUID courseId) {
+        List<CourseReview> courseReviews = courseRepository.getById(courseId).getReviews();
+
+        if (courseReviews != null) {
+            List<CourseReviewDto> courseReviewDtoList = new ArrayList<>();
+            for (CourseReview cr : courseReviews) {
+                CourseReviewDto courseReviewDto = new CourseReviewDto();
+                if (cr.getUser().getAttachment() != null)
+                    courseReviewDto.setBase64(getBase64Encode(cr.getUser().getAttachment().getBytes()));
+                courseReviewDto.setId(cr.getId());
+                courseReviewDto.setBody(cr.getBody());
+                courseReviewDto.setPostedTime(getPostedFormat(cr.getPostedAt()));
+                courseReviewDto.setUserFirstName(cr.getUser().getFirstName());
+                courseReviewDto.setUserLastName(cr.getUser().getLastName());
+
+                courseReviewDtoList.add(courseReviewDto);
+            }
+            return courseReviewDtoList;
+        }
+        return null;
+    }
+
+    private String getBase64Encode(byte[] bytes) {
+        try {
+            byte[] encode = Base64.getEncoder().encode(bytes);
+            return new String(encode, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            return null;
+        }
+    }
+
+    public String getPostedFormat(LocalDateTime localDateTime) {
+        if (localDateTime != null) {
+            return localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a"));
+        }
+        return null;
+    }
+
+    public void leaveComment(UUID courseId, UUID userId, String comment) {
+        Course course = courseRepository.getById(courseId);
+        User user = userRepository.getById(userId);
+        CourseReview review = new CourseReview(course, user, comment, LocalDateTime.now());
+        userRepository.saveObj(review);
     }
 }
