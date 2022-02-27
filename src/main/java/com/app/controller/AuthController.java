@@ -46,14 +46,13 @@ public class AuthController {
     @PostMapping("/login")
     public String login(String email, String password, HttpServletRequest request, Model model) {
         String login = userService.login(email, password, request, model);
-        if(login.equals("login")){
+        if (login.equals("login")) {
 
             return "login-form";
-        }
-        else if(login.equals("select-role")){
+        } else if (login.equals("select-role")) {
 
             return "select-role";
-        }else {
+        } else {
             return "redirect:/courses";
         }
     }
@@ -65,7 +64,7 @@ public class AuthController {
     }
 
     @GetMapping("/role")
-    public String setRole(HttpServletRequest req, String  role) {
+    public String setRole(HttpServletRequest req, String role) {
         return userService.setRole(role, req);
     }
 }

@@ -11,7 +11,9 @@
 
 <div class="container">
     <br>
-    <a th:href="@{'/modules/get-save-form?courseId=' + ${courseId}}" class="btn btn-success"> + Add Module</a>
+    <a th:href="@{'/modules/get-save-form?courseId=' + ${courseId}}"
+       th:if="${role == 'ADMIN' and role == 'SUPER ADMIN'}"
+       class="btn btn-success"> + Add Module</a>
     <br>
     <br>
     <table class="table table-hover">
@@ -19,8 +21,8 @@
         <tr>
             <th>Name</th>
             <th>Price</th>
-            <th>Edit</th>
-            <th>Delete</th>
+            <th th:if="${role == 'ADMIN' and role == 'SUPER ADMIN'}">Edit</th>
+            <th th:if="${role == 'ADMIN' and role == 'SUPER ADMIN'}">Delete</th>
         </tr>
         </thead>
         <tbody>
@@ -34,12 +36,15 @@
             <td th:text="${module.price}"></td>
 
             <td>
-                <a th:href="@{'/modules/get-save-form?id=' + ${module.id}}" class="btn btn-primary btn-sm">
+                <a th:href="@{'/modules/get-save-form?id=' + ${module.id}}"
+                   th:if="${role == 'ADMIN' and role == 'SUPER ADMIN'}"
+                   class="btn btn-primary btn-sm">
                     Edit
                 </a>
             </td>
 
             <td><a th:href="@{'/modules/delete/' + ${module.id}}"
+                   th:if="${role == 'ADMIN' and role == 'SUPER ADMIN'}"
                    class="btn btn-danger btn-sm">
                 <span class="glyphicon glyphicon-trash"></span> Delete </a></td>
         </tr>
