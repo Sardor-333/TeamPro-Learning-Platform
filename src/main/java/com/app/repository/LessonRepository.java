@@ -1,8 +1,6 @@
 package com.app.repository;
 
-import com.app.model.Lesson;
-import com.app.model.LessonReview;
-import com.app.model.Video;
+import com.app.model.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
@@ -11,9 +9,9 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.io.UnsupportedEncodingException;
+import java.util.*;
+
 @Component
 public class LessonRepository implements BaseRepository<Lesson, UUID> {
     private Session session;
@@ -129,5 +127,31 @@ public class LessonRepository implements BaseRepository<Lesson, UUID> {
         session.delete(video);
         transaction.commit();
         return video.getLesson().getId();
+    }
+
+    public void saveTask(Task task, Attachment attachment) {
+        Transaction transaction = session.beginTransaction();
+        session.save(attachment);
+        session.save(task);
+        transaction.commit();
+    }
+
+    public List<String> getTasksByLId(UUID id) {
+        List<String > tasks = new ArrayList<>();
+        Transaction transaction = session.beginTransaction();
+        Query query = session.createQuery("from tasks where lesson.id = '" + id + "' ");
+        transaction.commit();
+        List<Task> list = query.list();
+        for (Task task : list) {
+            try {
+                byte[] bytes = task.getAttachment().getBytes();
+                byte[] encode = Base64.getEncoder().encode(bytes);
+                String s = new String(encode, "UTF-8");
+                tasks.add(s);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+        return tasks;
     }
 }

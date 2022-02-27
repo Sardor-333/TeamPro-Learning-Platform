@@ -1,16 +1,15 @@
 package com.app.service;
 
 import com.app.dto.LessonReviewDto;
-import com.app.model.Lesson;
-import com.app.model.LessonReview;
-import com.app.model.User;
-import com.app.model.Video;
+import com.app.model.*;
 import com.app.repository.LessonRepository;
 import com.app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -99,5 +98,19 @@ public class LessonService {
 
     public UUID deleteVideo(UUID videoId) {
         return lessonRepository.deleteVideo(videoId);
+    }
+
+    public void saveTask(UUID lessonId, MultipartFile file) {
+        Task task = new Task();
+        Lesson byId = lessonRepository.getById(lessonId);
+        Attachment attachment = null;
+        try {
+            attachment = new Attachment(UUID.randomUUID()+"", file.getOriginalFilename(),file.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        task.setLesson(byId);
+        task.setAttachment(attachment);
+        lessonRepository.saveTask(task, attachment);
     }
 }

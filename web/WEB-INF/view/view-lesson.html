@@ -237,9 +237,9 @@
 
 <div class="d-flex">
 
-    <a th:if="role == 'ADMIN' or role == 'SUPER ADMIN'" th:href="'lessons/add/video/'+${lesson.getId()}" class="btn btn-success">+ ADD VIDEO</a>
-    <a th:if="role == 'ADMIN' or role == 'SUPER ADMIN'" th:href="'lessons/add/task/'+${lesson.getId()}"
-       class="btn btn-success">+ ADD TASK</a>
+    <a th:if="role == 'ADMIN' or role == 'SUPER ADMIN'" th:href="'lessons/add/video/'+${lesson.getId()}"
+       class="btn btn-success">+ ADD VIDEO</a>
+    <a th:if="role == 'ADMIN' or role == 'SUPER ADMIN'" th:href="'lessons/add/task/'+${lesson.getId()}" class="btn btn-success">+ ADD TASK</a>
 </div>
 <div class="container">
     <br>
@@ -258,8 +258,13 @@
         <tr class="table-info">
             <th scope="row" th:text="'Theme: '+${lesson.getTheme()}"></th>
         </tr>
-        <tr class="table-info" th:each="task: ${lesson.getTasks()}">
-            <th scope="row" th:text="'TASK'"></th>
+        <tr class="table-info">
+            <th scope="row">
+                <div th:each="task : ${tasks}">
+                    <a th:href="'data:image/jpg;base64, '+${task}" type="image/jpg" th:text="'task'" download></a>
+                </div>
+            </th>
+
         </tr>
         </tbody>
     </table>
