@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -52,7 +51,6 @@ public class LessonController {
             model.addAttribute("comments", lessonService.getComment(id));
             model.addAttribute("photo", getPhoto(req));
             model.addAttribute("videos", lessonRepository.getVideoByLessonId(id));
-            model.addAttribute("tasks", lessonRepository.getTasksByLId(id));
             return "view-lesson";
         }
         return "redirect:/auth/login";
@@ -155,17 +153,6 @@ public class LessonController {
     @GetMapping("/del/video/{videoId}")
     public String deleteVideo(@PathVariable UUID videoId){
         UUID lessonId = lessonService.deleteVideo(videoId);
-        return "redirect:/lessons?id="+lessonId;
-    }
-
-    @GetMapping("/add/task/{lessonId}")
-    public String addTask(@PathVariable UUID lessonId, Model model){
-        model.addAttribute("lessonId", lessonId);
-        return "add-task";
-    }
-    @PostMapping("/add/task/{lessonId}")
-    public String saveTask(@PathVariable UUID lessonId, MultipartFile file){
-        lessonService.saveTask(lessonId,file);
         return "redirect:/lessons?id="+lessonId;
     }
 

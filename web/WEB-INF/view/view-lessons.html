@@ -150,11 +150,10 @@
 </nav>
 <!-- Navbar -->
 
-
 <!-- partial:index.partial.html -->
 <div class="container">
     <br>
-    <a  th:href="'/lessons/add'+${moduleId}" th:if="role == 'ADMIN' or role == 'SUPER ADMIN'" class="btn btn-success"> + ADD LESSON </a>
+    <a  th:href="@{/lessons/add}" th:if="${role=='ADMIN' or role =='SUPER ADMIN'}"  class="btn btn-success"> + ADD LESSON </a>
     <br>
     <br>
     <table class="table table-hover">

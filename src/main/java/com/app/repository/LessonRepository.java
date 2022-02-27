@@ -1,6 +1,8 @@
 package com.app.repository;
 
-import com.app.model.*;
+import com.app.model.Lesson;
+import com.app.model.LessonReview;
+import com.app.model.Video;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
@@ -9,9 +11,9 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.UnsupportedEncodingException;
-import java.util.*;
-
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 @Component
 public class LessonRepository implements BaseRepository<Lesson, UUID> {
     private Session session;
