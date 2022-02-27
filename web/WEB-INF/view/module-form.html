@@ -12,7 +12,7 @@
 <div class="container">
     <br>
     <a th:href="@{'/modules/get-save-form?courseId=' + ${courseId}}"
-       th:if="${role == 'ADMIN' and role == 'SUPER ADMIN'}"
+       th:if="${role=='ADMIN' or role =='SUPER ADMIN'}"
        class="btn btn-success"> + Add Module</a>
     <br>
     <br>

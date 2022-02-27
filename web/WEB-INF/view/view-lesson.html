@@ -237,8 +237,9 @@
 
 <div class="d-flex">
 
-    <a th:if="role == 'ADMIN' or role == 'SUPER ADMIN'" th:href="'lessons/add/video/'+${lesson.getId()}" class="btn btn-success">+ ADD VIDEO</a>
-    <a th:if="role == 'ADMIN' or role == 'SUPER ADMIN'" th:href="'lessons/add/task/'+${lesson.getId()}"
+    <a th:if="${role=='ADMIN' or role =='SUPER ADMIN'}" th:href="'lessons/add/video/'+${lesson.getId()}"
+       class="btn btn-success">+ ADD VIDEO</a>
+    <a th:if="${role=='ADMIN' or role =='SUPER ADMIN'}"  th:href="'lessons/add/task/'+${lesson.getId()}"
        class="btn btn-success">+ ADD TASK</a>
 </div>
 <div class="container">
@@ -277,7 +278,7 @@
             </div>
         </div>
         <div>
-            <a th:href="'/lessons/del/video/'+${video.getId()}" th:if="role == 'ADMIN' or role == 'SUPER ADMIN'"
+            <a th:href="'/lessons/del/video/'+${video.getId()}" th:if="${role=='ADMIN' or role =='SUPER ADMIN'}"
                th:text="'DELETE VIDEO'" class="btn btn-danger"></a>
         </div>
     </div>
