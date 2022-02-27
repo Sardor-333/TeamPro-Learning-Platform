@@ -38,4 +38,11 @@ public class CourseReview {
 
     @Column(name = "posted_at")
     LocalDateTime postedAt;
+
+    public CourseReview(Course course, User user, String body, LocalDateTime postedAt) {
+        this.course = course;
+        this.user = user;
+        this.body = body;
+        this.postedAt = postedAt;
+    }
 }

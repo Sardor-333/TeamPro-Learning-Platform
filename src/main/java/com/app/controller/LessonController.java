@@ -1,11 +1,11 @@
 package com.app.controller;
 
-import com.app.model.Lesson;
+import com.app.model.*;
 import com.app.model.Module;
-import com.app.model.Role;
 import com.app.repository.LessonRepository;
 import com.app.repository.ModuleRepository;
 import com.app.repository.UserRepository;
+import com.app.service.LessonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Controller
@@ -21,12 +22,14 @@ public class LessonController {
     private LessonRepository lessonRepository;
     private ModuleRepository moduleRepository;
     private UserRepository userRepository;
+    private LessonService lessonService;
 
     @Autowired
-    LessonController(LessonRepository lessonRepository, ModuleRepository moduleRepository, UserRepository userRepository) {
+    LessonController(LessonRepository lessonRepository, ModuleRepository moduleRepository, UserRepository userRepository, LessonService lessonService) {
         this.lessonRepository = lessonRepository;
         this.moduleRepository = moduleRepository;
         this.userRepository = userRepository;
+        this.lessonService = lessonService;
 
     }
 
@@ -41,11 +44,13 @@ public class LessonController {
     }
 
     @GetMapping()
-    public String getLessonById(@RequestParam UUID lessonId, Model model, HttpServletRequest req) {
+    public String getLessonById(@RequestParam(value = "id") UUID id, Model model, HttpServletRequest req) {
         String role = userRepository.getRole(req);
         if (role != null) {
-            model.addAttribute("lesson", lessonRepository.getById(lessonId));
-            return "view_lesson";
+            model.addAttribute("lesson", lessonRepository.getById(id));
+            model.addAttribute("comments", lessonService.getComment(id));
+            model.addAttribute("photo", getPhoto(req));
+            return "view-lesson";
         }
         return "redirect:/auth/login";
     }
@@ -102,9 +107,34 @@ public class LessonController {
         return "redirect:/auth/login";
     }
 
+    @PostMapping("/addComment/{lessonId}")
+    public String addComment(LessonReview comment, HttpServletRequest req, @PathVariable UUID lessonId){
+        lessonService.save(comment, req, lessonId);
+        return "redirect:/lessons?id="+comment.getLesson().getId()+"";
+    }
+
     @ModelAttribute(value = "role")
     public String getModelId(HttpServletRequest req) {
         HttpSession session = req.getSession();
         return (String) session.getAttribute("role");
     }
+
+    @ModelAttribute(value = "userId")
+    public UUID getUserId(HttpServletRequest req) {
+        HttpSession session = req.getSession();
+        return  (UUID) session.getAttribute("userId");
+    }
+//    @ModelAttribute(value = "photo")
+    public String getPhoto(HttpServletRequest req) {
+        HttpSession session = req.getSession();
+        UUID userId= (UUID) session.getAttribute("userId");
+        return lessonService.getPhoto(userId);
+    }
+
+    @GetMapping("/del/{lesId}/{com}")
+    public String deletePost(@PathVariable UUID lesId, @PathVariable UUID com){
+        lessonService.deleteComment(com);
+        return "redirect:/lessons?id="+lesId;
+    }
+
 }

@@ -154,7 +154,7 @@
 <!-- partial:index.partial.html -->
 <div class="container">
     <br>
-        <a  th:href="@{/lessons/add}" th:if="role == '%ADMIN%'" class="btn btn-success"> + ADD LESSON </a>
+    <a  th:href="@{/lessons/add}" th:if="role == 'ADMIN' or role == 'SUPER ADMIN'" class="btn btn-success"> + ADD LESSON </a>
     <br>
     <br>
     <table class="table table-hover">
@@ -170,61 +170,18 @@
         <tbody>
         <tr th:each="lesson : ${lessons}">
             <!--/*@thymesVar id="name" type="com.app.model.Category"*/-->
-            <td th:text="${lesson.getTheme()}"/>
+            <td> <a th:href="@{/lessons(id=${lesson.getId()})}"th:text="${lesson.getTheme()}" > </a> </td>
             <!--/*@thymesVar id="name" type="com.app.model.Category"*/-->
-            <td> <a th:if="${role == '*USER*'}" th:href="@{'/lessons/edit/' + ${lesson.getId()}}" class="btn btn-primary btn-sm">
+            <td> <a th:if="${role == 'ADMIN' or role == 'SUPER ADMIN'}" th:href="@{'/lessons/edit/' + ${lesson.getId()}}" class="btn btn-primary btn-sm">
                 <span  class="glyphicon glyphicon-edit"></span> Edit </a></td>
             <!--/*@thymesVar id="name" type="com.app.model.Category"*/-->
-            <td> <a th:if="${role == '*USER*'}" th:href="@{/lessons/delete(id=${lesson.getId()})}" class="btn btn-danger btn-sm">
+            <td> <a th:if="${role == 'ADMIN' or role == 'SUPER ADMIN'}" th:href="@{/lessons/delete(id=${lesson.getId()})}" class="btn btn-danger btn-sm">
                 <span  class="glyphicon glyphicon-trash"></span> Delete </a></td>
 
         </tr>
         </tbody>
     </table>
-
-    <div class="row d-flex justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="card shadow-0 border" style="background-color: #f0f2f5;">
-                <div class="card-body p-4">
-                    <div class="form mb-4" th:action="'/lessons/addComment'" th:method="post">
-                        <input
-                                type="text"
-                                id="addANote"
-                                class="form-control"
-                                placeholder="Type comment..."
-                        />
-                        <button type="submit"><i class="fas fa-paper-plane fa-2x"></i></button>
-                    </div>
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <p>Type your note, and hit enter to add it</p>
-
-                            <div class="d-flex justify-content-between">
-                                <div class="d-flex flex-row align-items-center">
-                                    <img
-                                            src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(4).webp"
-                                            alt="avatar"
-                                            width="25"
-                                            height="25"
-                                    />
-                                    <p class="small mb-0 ms-2">Martha</p>
-                                </div>
-                                <div class="d-flex flex-row align-items-center">
-                                    <p class="small text-muted mb-0">Upvote?</p>
-                                    <i class="far fa-thumbs-up mx-2 fa-xs text-black"
-                                            style="margin-top: -0.16rem;"></i>
-                                    <p class="small text-muted mb-0">3</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-
 </div>
-
 </body>
 </html>
+

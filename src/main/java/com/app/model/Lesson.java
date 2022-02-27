@@ -34,7 +34,7 @@ public class Lesson {
     @OneToMany(mappedBy = "lesson")
     List<Task> tasks;
 
-    @OneToMany(mappedBy = "lesson")
+    @OneToMany(mappedBy = "lesson", cascade = CascadeType.REMOVE)
     List<LessonReview> reviews;
 
     @OneToMany(mappedBy = "lesson")

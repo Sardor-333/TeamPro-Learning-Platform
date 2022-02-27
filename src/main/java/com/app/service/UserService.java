@@ -96,4 +96,9 @@ public class UserService {
         }
         return "redirect:/auth/login";
     }
+
+    public void logOut(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        session.invalidate();
+    }
 }
