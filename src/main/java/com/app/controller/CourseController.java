@@ -128,4 +128,10 @@ public class CourseController {
             if (session.getAttribute(value) == null) return false;
         return true;
     }
+
+    @ModelAttribute(value = "role")
+    public String getRole(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        return (String) session.getAttribute("role");
+    }
 }
