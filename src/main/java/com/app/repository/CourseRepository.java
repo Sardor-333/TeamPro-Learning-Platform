@@ -1,5 +1,6 @@
 package com.app.repository;
 
+import com.app.model.Category;
 import com.app.model.Course;
 import com.app.model.CourseReview;
 import com.app.model.User;
@@ -131,6 +132,24 @@ public class CourseRepository implements BaseRepository<Course, UUID> {
 
         Integer rate = (Integer) sqlQuery.list().get(0);
         return rate;
+    }
+
+    public Integer getCourseCount(){
+        Transaction transaction = session.beginTransaction();
+        Query query = session.createQuery("select count(c.id) from courses c");
+        Long aLong = (Long)query.uniqueResult();
+        transaction.commit();
+        return Integer.parseInt(aLong.toString());
+    }
+
+    public List<Course> getCoursesL(int page, int limit) {
+        Transaction transaction = session.beginTransaction();
+        Query query = session.createQuery("from courses");
+        query.setFirstResult((page-1)*limit);
+        query.setMaxResults(limit);
+        List<Course> list = query.list();
+        transaction.commit();
+        return list;
     }
 
 }

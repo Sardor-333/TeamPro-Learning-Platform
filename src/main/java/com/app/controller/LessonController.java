@@ -92,9 +92,10 @@ public class LessonController {
     }
 
     @GetMapping("/add")
-    public String getForm(HttpServletRequest request) {
+    public String getForm(@RequestParam UUID moduleId,HttpServletRequest request, Model model) {
         String role = userRepository.getRole(request);
         if (role != null) {
+            model.addAttribute("moduleId",moduleId);
             return "add-lesson";
         }
         return "redirect:/auth/login";

@@ -185,5 +185,40 @@
 
 </div>
 
+<div class="Display flex justi fy content center">
+    <div  class="d-flex" th:if="${pageCount>1}">
+
+        <div th:if="${currentPage>1}">
+            <a class="btn btn-warning" style="color: black" th:href="'/categories?page='+(${currentPage}-1)" th:text="'PREV'"></a>
+        </div>
+
+            <a class="btn btn-warning" style="color: black" th:href="'/categories?page=1'" th:text="'1'"></a>
+            <a class="btn btn-warning" style="color: black" th:href="'/categories?page=2'" th:text="'2'"></a>
+        <div th:if="${beginPage>3}">
+            <button class="btn btn-warning" style="color: black" disabled th:text="'...'"></button>
+        </div>
+<!--//////////////////////////////////////////////////////////////////////-->
+
+        <div th:each="v_page: ${listPage}">
+            <a class="btn btn-warning" style="color: black" th:href="'/categories?page='+${v_page}" th:text="${v_page}"></a>
+        </div>
+
+<!--//////////////////////////////////////////////////////////////////////-->
+        <div th:if="${endPage} < ${pageCount}-2">
+           <button class="btn btn-warning" style="color: black" disabled  th:text="'...'"></button>
+        </div>
+        <div th:if="${pageCount>3}">
+            <a class="btn btn-warning" style="color: black" th:href="'/categories?page='+(${pageCount}-1)" th:text="${pageCount}-1"></a>
+        </div>
+        <div th:if="${pageCount>2}">
+            <a class="btn btn-warning" style="color: black" th:href="'/categories?page='+${pageCount}" th:text="${pageCount}"></a>
+        </div>
+        <div th:if = "${pageCount>currentPage}">
+            <a class="btn btn-warning" style="color: black" th:href="'/categories?page='+(${currentPage}+1)" th:text="'NEXT'"></a>
+        </div>
+
+    </div>
+</div>
+
 </body>
 </html>

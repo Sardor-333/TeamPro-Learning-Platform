@@ -27,12 +27,18 @@ public class CourseController {
     }
 
     @GetMapping
-    public String getCourses(Model model, HttpServletRequest request) {
+    public String getCourses(Model model, HttpServletRequest request, @RequestParam(required = false, defaultValue = "1") int page) {
         HttpSession session = request.getSession();
         if (!sessionHasAttributes(session, "userId", "role")) return "login-form";
-
-        List<Course> courses = courseService.getCourses(session);
-        model.addAttribute("courses", courses);
+        if(page>1) courseService.page = page;
+//        List<Course> courses = courseService.getCourses(session);
+//        model.addAttribute("courses", courses);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("courses",courseService.getCoursesL(page, courseService.limit ));
+        model.addAttribute("endPage", courseService.endPage(page));
+        model.addAttribute("beginPage", courseService.beginPage(page));
+        model.addAttribute("pageCount", courseService.pageCount());
+        model.addAttribute("listPage", courseService.getPageList(courseService.beginPage(page), courseService.endPage(page)));
         return "courses";
     }
 

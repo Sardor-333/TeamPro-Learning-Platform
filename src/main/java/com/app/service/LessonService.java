@@ -16,6 +16,8 @@ import java.util.*;
 
 @Service
 public class LessonService {
+    private int page;
+    private int limit;
 
     UserRepository userRepository;
     LessonRepository lessonRepository;

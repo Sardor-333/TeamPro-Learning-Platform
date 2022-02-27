@@ -8,6 +8,7 @@ import com.app.repository.CourseRepository;
 import com.app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
@@ -22,6 +23,9 @@ public class CourseService {
     private CourseRepository courseRepository;
     private CategoryRepository categoryRepository;
     private UserRepository userRepository;
+
+    public int limit = 5;
+    public int page = 1;
 
     @Autowired
     public CourseService(
@@ -163,5 +167,40 @@ public class CourseService {
         User user = userRepository.getById(userId);
         CourseReview review = new CourseReview(course, user, comment, LocalDateTime.now());
         userRepository.saveObj(review);
+    }
+
+
+    public int beginPage(int page){
+        if (page>4) {
+            return page-2;
+        }else {
+            return 3;
+        }
+    }
+
+    public int pageCount(){
+        int categoryCount = courseRepository.getCourseCount();
+        return categoryCount%limit==0? categoryCount/limit : categoryCount/limit+1;
+    }
+
+    public int endPage(int page){
+        int pageCount = pageCount();
+        if (page + 2<pageCount-2) {
+            return page+2;
+        }else {
+            return pageCount-2;
+        }
+    }
+
+    public List<Integer> getPageList(int beginPage, int endPage) {
+        List<Integer> pageList = new ArrayList<>();
+        for (int i=beginPage; i <= endPage; i++){
+            pageList.add(i);
+        }
+        return pageList;
+    }
+
+    public List<Course> getCoursesL(int page, int limit) {
+        return courseRepository.getCoursesL(page,limit);
     }
 }
