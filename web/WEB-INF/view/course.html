@@ -274,6 +274,11 @@
                             <p class="text-justify comment-text mb-0"
                                th:text="${comment.body}">
                             </p>
+                            <a
+                                    th:if="${#session.getAttribute('userId')} == ${comment.userId}"
+                                    th:href="@{/courses/comments/delete(commentId=${comment.id})}"
+                                    class="btn btn-danger">Delete
+                            </a>
                         </div>
                     </div>
                 </div>

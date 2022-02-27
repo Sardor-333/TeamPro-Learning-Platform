@@ -10,7 +10,7 @@
 <body>
 <div class="container">
 
-    <form th:action="@{/courses/add}" method="post" enctype="multipart/form-data">
+    <form th:action="@{/courses/add}" method="post" enctype="multipart/form-data" id="nameform">
 
         <div class="form-group" style="margin-top:30px">
             <label>Name</label>
@@ -41,12 +41,10 @@
                     th:text="${author.firstName}">
             </option>
         </select>
-
-        <button class="btn btn-success">Save</button>
-
-        <a th:href="@{'/courses'}" class="btn btn-primary" style="margin-top:30px; margin-left:15px">Back</a>
-
     </form>
+
+    <button type="submit" form="nameform">Submit</button>
+    <a th:href="@{'/courses'}">Back</a>
 </div>
 </body>
 </html>

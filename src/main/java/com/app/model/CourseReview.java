@@ -24,7 +24,7 @@ public class CourseReview {
     @Column(updatable = false, nullable = false)
     UUID id;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
     Course course;
 

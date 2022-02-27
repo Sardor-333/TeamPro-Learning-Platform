@@ -27,8 +27,7 @@ public class CourseReviewRepository implements BaseRepository<CourseReview, UUID
 
     @Override
     public CourseReview getById(UUID id) {
-        CourseReview courseReview = session.get(CourseReview.class, id);
-        return courseReview;
+        return session.get(CourseReview.class, id);
     }
 
     @Override

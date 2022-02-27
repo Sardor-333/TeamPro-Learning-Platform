@@ -1,6 +1,6 @@
 package com.app.controller;
 
-import com.app.model.CourseReview;
+import com.app.model.Course;
 import com.app.service.CourseReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,11 +30,11 @@ public class CourseReviewController {
     }
 
     @GetMapping("/delete")
-    public String deleteComment(@RequestParam(name = "commentId") UUID commentId) {
-        CourseReview commentToBeDeleted = courseReviewService.getById(commentId);
-        UUID courseId = commentToBeDeleted.getCourse().getId();
-        CourseReview deleted = courseReviewService.deleteComment(commentId);
-        return "redirect:/courses/" + courseId + "";
+    public String deleteComment(@RequestParam(name = "commentId") UUID commentId, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        if (!sessionHasAttributes(session, "userId", "role")) return "login-form";
+        Course course = courseReviewService.deleteComment(commentId, session);
+        return "redirect:/courses/" + course.getId() + "";
     }
 
     private boolean sessionHasAttributes(HttpSession session, String... values) {

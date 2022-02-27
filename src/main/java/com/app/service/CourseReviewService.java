@@ -9,6 +9,7 @@ import com.app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -26,8 +27,15 @@ public class CourseReviewService {
         this.courseRepository = courseRepository;
     }
 
-    public CourseReview deleteComment(UUID commentId) {
-        return courseReviewRepository.deleteById(commentId);
+    public Course deleteComment(UUID commentId, HttpSession session) {
+        User sessionUser = userRepository.getById(UUID.fromString(session.getAttribute("userId").toString()));
+        CourseReview targetComment = courseReviewRepository.getById(commentId);
+        if (targetComment.getUser().getId().equals(sessionUser.getId())) {
+            Course commentCourse = targetComment.getCourse();
+            courseReviewRepository.deleteById(commentId);
+            return commentCourse;
+        }
+        return null;
     }
 
     public List<CourseReview> getAll() {

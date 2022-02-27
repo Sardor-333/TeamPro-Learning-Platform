@@ -135,6 +135,7 @@ public class CourseService {
                 courseReviewDto.setId(cr.getId());
                 courseReviewDto.setBody(cr.getBody());
                 courseReviewDto.setPostedTime(getPostedFormat(cr.getPostedAt()));
+                courseReviewDto.setUserId(cr.getUser().getId());
                 courseReviewDto.setUserFirstName(cr.getUser().getFirstName());
                 courseReviewDto.setUserLastName(cr.getUser().getLastName());
 
