@@ -98,7 +98,7 @@ public class CourseController {
 
         UUID userId = UUID.fromString(session.getAttribute("userId").toString());
         courseService.rateCourse(courseId, userId, rank);
-        return "redirect:/course/" + courseId;
+        return "redirect:/courses/" + courseId;
     }
 
     private String getBase64Encode(byte[] bytes) {
