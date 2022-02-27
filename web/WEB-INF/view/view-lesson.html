@@ -55,14 +55,14 @@
             margin-top: 12px
         }
 
-        .vidwrapper{
+        .vidwrapper {
             width: 100%;
             max-width: 800px;
             margin: 3em auto;
             border: 3px solid green;
         }
 
-        .vidcontainer{
+        .vidcontainer {
             width: 100%;
             max-width: 100%;
             height: 0;
@@ -71,9 +71,13 @@
             position: relative;
         }
 
-        .vidcontainer iframe, .vidcontainer video{
-            width: 100%; max-width: 100%; height: 100%;
-            position: absolute; top: 0; left: 0;
+        .vidcontainer iframe, .vidcontainer video {
+            width: 100%;
+            max-width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
     </style>
     <meta charset="UTF-8">
@@ -232,9 +236,10 @@
 <!-- partial:index.partial.html -->
 
 <div class="d-flex">
-    <!--th:if="role == 'ADMIN' or role == 'SUPER ADMIN'"-->
-    <a  th:href="'lessons/add/video/'+${lesson.getId()}" class="btn btn-success">+ ADD VIDEO</a>
-    <a th:if="role == 'ADMIN' or role == 'SUPER ADMIN'" th:href="'lessons/add/task/'+${lesson.getId()}" class="btn btn-success">+ ADD TASK</a>
+
+    <a th:if="role == 'ADMIN' or role == 'SUPER ADMIN'" th:href="'lessons/add/video/'+${lesson.getId()}" class="btn btn-success">+ ADD VIDEO</a>
+    <a th:if="role == 'ADMIN' or role == 'SUPER ADMIN'" th:href="'lessons/add/task/'+${lesson.getId()}"
+       class="btn btn-success">+ ADD TASK</a>
 </div>
 <div class="container">
     <br>
@@ -258,25 +263,31 @@
         </tr>
         </tbody>
     </table>
-    <h3 style="color: green">Videos</h3>
-<div th:each="video: ${videos}">
-    <div  class="vidwrapper">
-        <div class="vidcontainer">
-            <iframe th:src="''+${video.getFileLocation()}"
-                    title="YouTube video player" frameborder="0" allow="accelerometer;
+    <div>
+        <h3 th:if="${videos.size()>0}" style="color: green">Videos</h3>
+        <h3 th:if="${videos.size()<1}" style="color: red">NO VIDEO YET</h3>
+    </div>
+    <div th:each="video: ${videos}">
+        <div class="vidwrapper">
+            <div class="vidcontainer">
+                <iframe th:src="''+${video.getFileLocation()}"
+                        title="YouTube video player" frameborder="0" allow="accelerometer;
                     autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowfullscreen></iframe>
+                        allowfullscreen></iframe>
+            </div>
+        </div>
+        <div>
+            <a th:href="'/lessons/del/video/'+${video.getId()}" th:if="role == 'ADMIN' or role == 'SUPER ADMIN'"
+               th:text="'DELETE VIDEO'" class="btn btn-danger"></a>
         </div>
     </div>
-    <a th:href="'/lessons/del/video/'+${video.getId()}" class="btn btn-danger">DELETE VIDEO</a>
-</div>
-
     <div class="container mt-5 mb-5">
         <div class="row height d-flex justify-content-center align-items-center">
             <div class="col-md-7">
                 <div class="card">
                     <div class="p-3">
-                        <h6>Comments</h6>
+                        <h5 th:if="${comments.size()>0}" style="color: green">Comments</h5>
+                        <h5 th:if="${comments.size()<1}" style="color: red">NO COMMENT YET</h5>
                     </div>
                     <form th:action="'lessons/addComment/'+${lesson.getId()}" method="post">
                         <div class="mt-3 d-flex flex-row align-items-center p-3 form-color">
@@ -285,13 +296,22 @@
                         </div>
                     </form>
                     <div class="mt-2" th:each="comment : ${comments}">
-                        <div class="d-flex flex-row p-3"> <img th:src="'data:image/jpg;base64, '+${comment.getAttachment()}"  width="40" height="40" class="rounded-circle mr-3" alt="any sing">
+                        <div class="d-flex flex-row p-3"><img
+                                th:src="'data:image/jpg;base64, '+${comment.getAttachment()}" width="40" height="40"
+                                class="rounded-circle mr-3" alt="any sing">
                             <div class="w-100">
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <div class="d-flex flex-row align-items-center"> <span th:text="${comment.getUserFullName()}" class="mr-2"></span> <small class="c-badge">Top Comment</small> </div> <small th:text="${comment.getPostedAt()}"></small><small th:if="${userId == comment.getUserId()}"><a th:href="'/lessons/del/'+${lesson.getId()}+'/'+${comment.getId()}"><i class="fas fa-trash fa-sm"></i></a> </small>
+                                    <div class="d-flex flex-row align-items-center"><span
+                                            th:text="${comment.getUserFullName()}" class="mr-2"></span> <small
+                                            class="c-badge">Top Comment</small></div>
+                                    <small th:text="${comment.getPostedAt()}"></small><small
+                                        th:if="${userId == comment.getUserId()}"><a
+                                        th:href="'/lessons/del/'+${lesson.getId()}+'/'+${comment.getId()}"><i
+                                        class="fas fa-trash fa-sm"></i></a> </small>
                                 </div>
                                 <p class="text-justify comment-text mb-0" th:text="${comment.getBody()}"></p>
-                                <div class="d-flex flex-row user-feed"> <span class="wish"><i class="fa fa-heartbeat mr-2"></i>24</span></div>
+                                <div class="d-flex flex-row user-feed"><span class="wish"><i
+                                        class="fa fa-heartbeat mr-2"></i>24</span></div>
                             </div>
                         </div>
                     </div>
