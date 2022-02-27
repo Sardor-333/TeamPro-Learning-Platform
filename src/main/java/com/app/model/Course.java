@@ -9,6 +9,8 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.io.UnsupportedEncodingException;
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
@@ -60,5 +62,17 @@ public class Course {
     public Course(String name, String description) {
         this.name = name;
         this.description = description;
+    }
+
+    public String getBase64Encode() {
+        try {
+            if (this.attachment != null) {
+                byte[] encode = Base64.getEncoder().encode(this.attachment.getBytes());
+                return new String(encode, "UTF-8");
+            }
+            return null;
+        } catch (UnsupportedEncodingException e) {
+            return null;
+        }
     }
 }

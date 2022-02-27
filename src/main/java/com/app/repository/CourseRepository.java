@@ -1,7 +1,6 @@
 package com.app.repository;
 
 import com.app.model.Course;
-import com.app.model.CourseReview;
 import com.app.model.User;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -104,13 +103,8 @@ public class CourseRepository implements BaseRepository<Course, UUID> {
     }
 
     public List<Course> getAuthorCourses(UUID authorId) {
-        NativeQuery sqlQuery = session.createSQLQuery("select c.* from courses c\n" +
-                "join courses_authors ca on c.id = ca.course_id\n" +
-                "join users u on ca.user_id = u.id\n" +
-                "join users_roles ur on u.id = ur.user_id\n" +
-                "join roles r on ur.role_id = r.id\n" +
-                "where r.name = 'MENTOR' and u.id = '" + authorId + "'");
-        List list = sqlQuery.list();
+        Query query = session.createQuery("from courses course join course.authors author where author.id = '" + authorId + "'");
+        List list = query.list();
         return list;
     }
 

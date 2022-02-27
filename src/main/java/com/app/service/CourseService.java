@@ -22,15 +22,18 @@ public class CourseService {
     private CourseRepository courseRepository;
     private CategoryRepository categoryRepository;
     private UserRepository userRepository;
+    private CourseReviewService courseReviewService;
 
     @Autowired
     public CourseService(
             CourseRepository courseRepository,
             CategoryRepository categoryRepository,
-            UserRepository userRepository) {
+            UserRepository userRepository,
+            CourseReviewService courseReviewService) {
         this.courseRepository = courseRepository;
         this.categoryRepository = categoryRepository;
         this.userRepository = userRepository;
+        this.courseReviewService = courseReviewService;
     }
 
     public List<Course> getCourses(HttpSession session) {
@@ -121,7 +124,7 @@ public class CourseService {
     }
 
     public List<CourseReviewDto> getCourseReviewDtos(UUID courseId) {
-        List<CourseReview> courseReviews = courseRepository.getById(courseId).getReviews();
+        List<CourseReview> courseReviews = courseReviewService.getCourseReviews(courseId);
 
         if (courseReviews != null) {
             List<CourseReviewDto> courseReviewDtoList = new ArrayList<>();

@@ -34,14 +34,16 @@
         </select>
 
         <label for="testSelect1">Authors: </label>
-        <select th:each="author:${authors}" id='testSelect1' multiple name="authorIds">
-            <option th:if="${session.get('userId') != author.id}"
+        <select id='testSelect1' multiple name="authorIds">
+            <option th:each="author:${authors}"
+                    th:if="${session.get('userId') != author.id}"
                     th:value="${author.id}"
                     th:text="${author.firstName}">
             </option>
         </select>
 
-        <button type="submit" class="btn btn-success" style="margin-top:30px">Save</button>
+        <button class="btn btn-success">Save</button>
+
         <a th:href="@{'/courses'}" class="btn btn-primary" style="margin-top:30px; margin-left:15px">Back</a>
 
     </form>
