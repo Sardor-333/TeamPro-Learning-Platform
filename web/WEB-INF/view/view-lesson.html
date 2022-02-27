@@ -54,6 +54,27 @@
             font-size: 14px;
             margin-top: 12px
         }
+
+        .vidwrapper{
+            width: 100%;
+            max-width: 800px;
+            margin: 3em auto;
+            border: 3px solid green;
+        }
+
+        .vidcontainer{
+            width: 100%;
+            max-width: 100%;
+            height: 0;
+            padding-bottom: 56.25%;
+            border: 3px solid orange;
+            position: relative;
+        }
+
+        .vidcontainer iframe, .vidcontainer video{
+            width: 100%; max-width: 100%; height: 100%;
+            position: absolute; top: 0; left: 0;
+        }
     </style>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -211,7 +232,8 @@
 <!-- partial:index.partial.html -->
 
 <div class="d-flex">
-    <a th:if="role == 'ADMIN' or role == 'SUPER ADMIN'" th:href="'lessons/add/video/'+${lesson.getId()}" class="btn btn-success">+ ADD VIDEO</a>
+    <!--th:if="role == 'ADMIN' or role == 'SUPER ADMIN'"-->
+    <a  th:href="'lessons/add/video/'+${lesson.getId()}" class="btn btn-success">+ ADD VIDEO</a>
     <a th:if="role == 'ADMIN' or role == 'SUPER ADMIN'" th:href="'lessons/add/task/'+${lesson.getId()}" class="btn btn-success">+ ADD TASK</a>
 </div>
 <div class="container">
@@ -234,11 +256,20 @@
         <tr class="table-info" th:each="task: ${lesson.getTasks()}">
             <th scope="row" th:text="'TASK'"></th>
         </tr>
-        <tr class="table-info" th:each="video: ${lesson.getVideos()}">
-            <th scope="row" th:text="'video'"></th>
-        </tr>
         </tbody>
     </table>
+    <h3 style="color: green">Videos</h3>
+<div th:each="video: ${videos}">
+    <div  class="vidwrapper">
+        <div class="vidcontainer">
+            <iframe th:src="''+${video.getFileLocation()}"
+                    title="YouTube video player" frameborder="0" allow="accelerometer;
+                    autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen></iframe>
+        </div>
+    </div>
+    <a th:href="'/lessons/del/video/'+${video.getId()}" class="btn btn-danger">DELETE VIDEO</a>
+</div>
 
     <div class="container mt-5 mb-5">
         <div class="row height d-flex justify-content-center align-items-center">

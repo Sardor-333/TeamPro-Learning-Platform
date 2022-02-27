@@ -4,6 +4,7 @@ import com.app.dto.LessonReviewDto;
 import com.app.model.Lesson;
 import com.app.model.LessonReview;
 import com.app.model.User;
+import com.app.model.Video;
 import com.app.repository.LessonRepository;
 import com.app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,5 +83,21 @@ public class LessonService {
 
     public void deleteComment(UUID commentId) {
         lessonRepository.deleteComment(commentId);
+    }
+
+    public void saveVideo(Video video, HttpServletRequest request, UUID lessonId) {
+        try {
+            Lesson lesson = lessonRepository.getById(lessonId);
+            String fileName = "file_name="+UUID.randomUUID();
+            video.setLesson(lesson);
+            video.setFileName(fileName);
+            lessonRepository.saveVideo(video);
+        }catch (Exception e){
+            return;
+        }
+    }
+
+    public UUID deleteVideo(UUID videoId) {
+        return lessonRepository.deleteVideo(videoId);
     }
 }

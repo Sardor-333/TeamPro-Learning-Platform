@@ -2,6 +2,7 @@ package com.app.repository;
 
 import com.app.model.Lesson;
 import com.app.model.LessonReview;
+import com.app.model.Video;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
@@ -103,5 +104,30 @@ public class LessonRepository implements BaseRepository<Lesson, UUID> {
         LessonReview comment = getComment(commentId);
         session.delete(comment);
         transaction.commit();
+    }
+
+    public void saveVideo(Video video) {
+        Transaction transaction = session.beginTransaction();
+        session.save(video);
+        transaction.commit();
+    }
+
+    public List<Video> getVideoByLessonId(UUID id) {
+        Transaction transaction = session.beginTransaction();
+        Query query = session.createQuery("from videos where lesson.id = '" + id + "'");
+        transaction.commit();
+        return query.list();
+    }
+
+    public Video getVideoByVId(UUID videoId){
+        return session.get(Video.class,videoId);
+    }
+
+    public UUID deleteVideo(UUID videoId) {
+        Transaction transaction = session.beginTransaction();
+        Video video = getVideoByVId(videoId);
+        session.delete(video);
+        transaction.commit();
+        return video.getLesson().getId();
     }
 }
