@@ -9,11 +9,11 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+
 @Component
 public class LessonRepository implements BaseRepository<Lesson, UUID> {
     private Session session;
@@ -31,8 +31,8 @@ public class LessonRepository implements BaseRepository<Lesson, UUID> {
 
     @Override
     public Lesson getById(UUID id) {
-        Query query = session.createQuery("from lessons where id = '"+id+"'");
-        if (query.list()!=null && query.list().size()>0) {
+        Query query = session.createQuery("from lessons where id = '" + id + "'");
+        if (query.list() != null && query.list().size() > 0) {
             return (Lesson) query.list().get(0);
         }
         return null;
@@ -47,7 +47,7 @@ public class LessonRepository implements BaseRepository<Lesson, UUID> {
         return false;
     }
 
-    public List<Lesson> getLessonsByModuleId(UUID id){
+    public List<Lesson> getLessonsByModuleId(UUID id) {
         Query query = session.createQuery("from lessons where module.id = '" + id + "'");
         return query.list();
     }
@@ -64,18 +64,28 @@ public class LessonRepository implements BaseRepository<Lesson, UUID> {
 
     @Override
     public void saveOrUpdate(Lesson elem) {
-        if (existsById(elem.getId())) {
-            session.update(elem);
-        }else {
-            session.save(elem);
+        try {
+            session.clear();
+            Transaction transaction = session.beginTransaction();
+            session.saveOrUpdate(elem);
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     @Override
     public Lesson deleteById(UUID id) {
-        Lesson lesson = getById(id);
-        session.delete(lesson);
-        return lesson;
+        try {
+            Transaction transaction = session.beginTransaction();
+            Lesson delete = getById(id);
+            session.delete(delete);
+            transaction.commit();
+            return delete;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
@@ -89,7 +99,7 @@ public class LessonRepository implements BaseRepository<Lesson, UUID> {
         transaction.commit();
     }
 
-    public List<LessonReview> getComments(UUID lessonId){
+    public List<LessonReview> getComments(UUID lessonId) {
         Query query = session.createQuery("from lesson_reviews where lesson.id = '" + lessonId + "'");
         return query.list();
     }
@@ -119,8 +129,8 @@ public class LessonRepository implements BaseRepository<Lesson, UUID> {
         return query.list();
     }
 
-    public Video getVideoByVId(UUID videoId){
-        return session.get(Video.class,videoId);
+    public Video getVideoByVId(UUID videoId) {
+        return session.get(Video.class, videoId);
     }
 
     public UUID deleteVideo(UUID videoId) {

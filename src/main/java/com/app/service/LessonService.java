@@ -100,4 +100,13 @@ public class LessonService {
     public UUID deleteVideo(UUID videoId) {
         return lessonRepository.deleteVideo(videoId);
     }
+
+    public void deleteLesson(UUID id){
+        lessonRepository.deleteById(id);
+    }
+
+    public Lesson getLessonById(UUID id){
+        return lessonRepository.getById(id);
+    }
+
 }

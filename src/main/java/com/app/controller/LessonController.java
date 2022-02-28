@@ -68,8 +68,8 @@ public class LessonController {
         return "redirect:/auth/login";
     }
 
-    @GetMapping("/edit")
-    public String editLesson(@RequestParam UUID lessonId, Model model, HttpServletRequest req) {
+    @GetMapping("/get-edit/{lessonId}")
+    public String getEditLesson(@PathVariable UUID lessonId, Model model, HttpServletRequest req) {
         String role = userRepository.getRole(req);
         if (role != null) {
             model.addAttribute("lesson", lessonRepository.getById(lessonId));
@@ -78,14 +78,13 @@ public class LessonController {
         return "redirect:/auth/login";
     }
 
-    @PostMapping("/update")
-    public String updateLesson(@RequestParam UUID moduleId, Lesson lesson, HttpServletRequest request) {
+    @PostMapping("/edit")
+    public String updateLesson(Lesson lesson, HttpServletRequest request) {
         String role = userRepository.getRole(request);
         if (role != null) {
-            Module module = moduleRepository.getById(moduleId);
-            lesson.setModule(module);
-            lessonRepository.save(lesson);
-            return "redirect:/lessons/" + module;
+            UUID moduleId = lesson.getModule().getId();
+            lessonRepository.saveOrUpdate(lesson);
+            return "redirect:/lessons/" + moduleId;
         }
         return "redirect:/auth/login";
     }
@@ -108,7 +107,7 @@ public class LessonController {
             Module module = new Module();
             module.setId(moduleId);
             lesson.setModule(module);
-            lessonRepository.save(lesson);
+            lessonRepository.saveOrUpdate(lesson);
             return "redirect:/lessons/" + lesson.getModule().getId();
         }
         return "redirect:/auth/login";
@@ -163,4 +162,11 @@ public class LessonController {
         return "redirect:/lessons?id=" + lessonId;
     }
 
+    @RequestMapping("/delete/{lessonId}")
+    public String deleteLesson(@PathVariable UUID lessonId) {
+        Lesson lessonById = lessonService.getLessonById(lessonId);
+        UUID moduleId = lessonById.getModule().getId();
+        lessonService.deleteLesson(lessonId);
+        return "redirect:/lessons/" + moduleId;
+    }
 }
