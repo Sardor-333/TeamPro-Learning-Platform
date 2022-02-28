@@ -98,4 +98,24 @@ public class CategoryRepository implements BaseRepository<Category, UUID> {
             e.printStackTrace();
         }
     }
+
+
+    public Integer categoryCount(){
+        Transaction transaction = session.beginTransaction();
+        Query query = session.createQuery("select count(c.id) from categories c");
+        transaction.commit();
+        Object o = query.uniqueResult();
+        Long value = (Long) o;
+        return Integer.parseInt(value.toString());
+    }
+
+    public List<Category> getCategoriesL(int page, int limit) {
+        Transaction transaction = session.beginTransaction();
+        Query query = session.createQuery("from categories");
+        query.setFirstResult((page-1)*limit);
+        query.setMaxResults(limit);
+        List<Category> list = query.list();
+        transaction.commit();
+        return list;
+    }
 }

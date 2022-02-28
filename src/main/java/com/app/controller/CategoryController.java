@@ -2,6 +2,7 @@ package com.app.controller;
 
 import com.app.model.Category;
 import com.app.repository.CategoryRepository;
+import com.app.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,15 +16,24 @@ import java.util.UUID;
 @RequestMapping({"/categories"})
 public class CategoryController {
     private CategoryRepository categoryRepository;
+    private CategoryService categoryService;
 
     @Autowired
-    public CategoryController(CategoryRepository categoryRepository) {
+    public CategoryController(CategoryRepository categoryRepository, CategoryService categoryService) {
         this.categoryRepository = categoryRepository;
+        this.categoryService = categoryService;
     }
 
     @GetMapping
-    public String getCategory(Model model) {
-        model.addAttribute("categories", this.categoryRepository.getAll());
+    public String getCategory(Model model, @RequestParam(required = false, defaultValue = "1") int page) {
+//        model.addAttribute("categories", this.categoryRepository.getAll());
+        if(page>1){categoryService.page = page;}
+        model.addAttribute("categories",categoryRepository.getCategoriesL(page, categoryService.limit ) );
+        model.addAttribute("currentPage", page);
+        model.addAttribute("endPage", categoryService.endPage(page));
+        model.addAttribute("beginPage", categoryService.beginPage(page));
+        model.addAttribute("pageCount", categoryService.pageCount());
+        model.addAttribute("listPage", categoryService.getPageList(categoryService.beginPage(page), categoryService.endPage(page)));
         return "view-categories";
     }
 

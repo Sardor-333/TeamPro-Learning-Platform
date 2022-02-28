@@ -1,6 +1,8 @@
 package com.app.repository;
 
+import com.app.model.Category;
 import com.app.model.Course;
+import com.app.model.CourseReview;
 import com.app.model.User;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -103,10 +105,20 @@ public class CourseRepository implements BaseRepository<Course, UUID> {
     }
 
     public List<Course> getAuthorCourses(UUID authorId) {
-        Query query = session.createQuery("from courses course join course.authors author where author.id = '" + authorId + "'");
-        List list = query.list();
+        NativeQuery sqlQuery = session.createSQLQuery("select c.* from courses c\n" +
+                "join courses_authors ca on c.id = ca.course_id\n" +
+                "join users u on ca.user_id = u.id\n" +
+                "join users_roles ur on u.id = ur.user_id\n" +
+                "join roles r on ur.role_id = r.id\n" +
+                "where r.name = 'MENTOR' and u.id = '" + authorId + "'");
+        List list = sqlQuery.list();
         return list;
     }
+//    public List<Course> getAuthorCourses(UUID authorId) {
+//        Query query = session.createQuery("from courses course join course.authors author where author.id = '" + authorId + "'");
+//        List list = query.list();
+//        return list;
+//    }
 
     public List<User> getAuthors() {
         Query query = session.createQuery("" +
@@ -127,4 +139,23 @@ public class CourseRepository implements BaseRepository<Course, UUID> {
         Integer rate = (Integer) sqlQuery.list().get(0);
         return rate;
     }
+
+    public Integer getCourseCount(){
+        Transaction transaction = session.beginTransaction();
+        Query query = session.createQuery("select count(c.id) from courses c");
+        Long aLong = (Long)query.uniqueResult();
+        transaction.commit();
+        return Integer.parseInt(aLong.toString());
+    }
+
+    public List<Course> getCoursesL(int page, int limit) {
+        Transaction transaction = session.beginTransaction();
+        Query query = session.createQuery("from courses");
+        query.setFirstResult((page-1)*limit);
+        query.setMaxResults(limit);
+        List<Course> list = query.list();
+        transaction.commit();
+        return list;
+    }
+
 }
