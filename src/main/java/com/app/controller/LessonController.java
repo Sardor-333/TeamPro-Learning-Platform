@@ -90,21 +90,26 @@ public class LessonController {
         return "redirect:/auth/login";
     }
 
-    @GetMapping("/add")
-    public String getForm(HttpServletRequest request) {
+    @GetMapping("/get-add/{moduleId}")
+    public String getForm(HttpServletRequest request, Model model, @PathVariable UUID moduleId) {
         String role = userRepository.getRole(request);
         if (role != null) {
+            model.addAttribute("moduleId", moduleId);
             return "add-lesson";
         }
         return "redirect:/auth/login";
     }
 
-    @PostMapping("/add/{moduleId}")
-    public String addLesson(Lesson lesson, @PathVariable UUID moduleId, HttpServletRequest req) {
+    @PostMapping("/add")
+    public String addLesson(Lesson lesson, HttpServletRequest req, @RequestParam(required = false, name = "moduleId")
+            UUID moduleId) {
         String role = userRepository.getRole(req);
         if (role != null) {
+            Module module = new Module();
+            module.setId(moduleId);
+            lesson.setModule(module);
             lessonRepository.save(lesson);
-            return "redirect:/lessons/" + moduleId;
+            return "redirect:/lessons/" + lesson.getModule().getId();
         }
         return "redirect:/auth/login";
     }

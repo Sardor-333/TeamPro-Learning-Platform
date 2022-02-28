@@ -10,16 +10,15 @@
 <body>
 <div class="container">
 
-    <form th:action="@{/categories/add}" method="post">
-
-        <!--/*@thymesVar id="categories" type="com.app.model.Lesson"*/-->
+    <form th:action="'/lessons/add'" method="post">
         <div class="form-group" style="margin-top:30px">
             <label>Theme</label>
+            <input th:type="hidden" th:name="moduleId" th:value="${moduleId}">
             <input class="form-control" type="text" name="theme">
         </div>
         <button type="submit" class="btn btn-success" style="margin-top:30px">Save</button>
-        <a th:href="@{'/lessons/'+${moduleId}" class="btn btn-primary" style="margin-top:30px; margin-left:15px">Back</a>
-
+        <a th:href="@{'/lessons/'+${moduleId}}" class="btn btn-primary" style="margin-top:30px; margin-left:15px">
+            Back</a>
     </form>
 </div>
 
