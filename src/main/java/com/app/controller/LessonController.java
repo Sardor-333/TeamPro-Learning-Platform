@@ -52,6 +52,7 @@ public class LessonController {
             model.addAttribute("comments", lessonService.getComment(id));
             model.addAttribute("photo", getPhoto(req));
             model.addAttribute("videos", lessonRepository.getVideoByLessonId(id));
+            model.addAttribute("tasks", lessonRepository.getTasksByLId(id));
             return "view-lesson";
         }
         return "redirect:/auth/login";

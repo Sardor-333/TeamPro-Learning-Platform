@@ -185,9 +185,7 @@
 
 </div>
 
-<div class="Display flex justi fy content center">
-    <div  class="d-flex" th:if="${pageCount>1}">
-
+<div class="d-flex justify-content-center" th:if="${pageCount>1}">
         <div th:if="${currentPage>1}">
             <a class="btn btn-warning" style="color: black" th:href="'/categories?page='+(${currentPage}-1)" th:text="'PREV'"></a>
         </div>
@@ -220,8 +218,6 @@
         <div th:if = "${pageCount>currentPage}">
             <a class="btn btn-warning" style="color: black" th:href="'/categories?page='+(${currentPage}+1)" th:text="'NEXT'"></a>
         </div>
-
-    </div>
 </div>
 
 </body>

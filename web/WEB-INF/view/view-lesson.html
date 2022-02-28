@@ -223,13 +223,13 @@
         </thead>
         <tbody>
         <tr class="table-info">
-            <th scope="row" th:text="'Module: '+${lesson.getModule().getName()}"></th>
+            <th scope="row" th:text="'Module: '+${lesson.getModule().getName()}"><a th:href="'/lessons/'+${lesson.getModule().getId()}"></a></th>
         </tr>
         <tr class="table-info">
             <th scope="row" th:text="'Theme: '+${lesson.getTheme()}"></th>
         </tr>
-        <tr class="table-info" th:each="task: ${lesson.getTasks()}">
-            <th scope="row" th:text="'TASK'"></th>
+        <tr class="table-info" th:each="task: ${tasks}">
+            <th scope="row"><a th:href="'data:image/jpg;base64, '+${task}" download>Task<i class="fas fa-file-download"></i></a></th>
         </tr>
         </tbody>
     </table>
@@ -240,7 +240,7 @@
     <div th:each="video: ${videos}">
         <div class="vidwrapper">
             <div class="vidcontainer">
-                <iframe th:src="''+${video.getFileLocation()}"
+                <iframe th:src="'https://www.youtube.com/embed/'+${video.getFileLocation()}"
                         title="YouTube video player" frameborder="0" allow="accelerometer;
                     autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowfullscreen></iframe>
@@ -275,9 +275,9 @@
                                             th:text="${comment.getUserFullName()}" class="mr-2"></span> <small
                                             class="c-badge">Top Comment</small></div>
                                     <small th:text="${comment.getPostedAt()}"></small><small
-                                        th:if="${userId == comment.getUserId()}"><a
+                                        th:if="${userId == comment.getUserId() or role == 'ADMIN' or role == 'SUPER ADMIN'}"><a
                                         th:href="'/lessons/del/'+${lesson.getId()}+'/'+${comment.getId()}"><i
-                                        class="fas fa-trash fa-sm"></i></a> </small>
+                                        class="fas fa-trash fa-sm" style="color: red"></i></a> </small>
                                 </div>
                                 <p class="text-justify comment-text mb-0" th:text="${comment.getBody()}"></p>
                                 <div class="d-flex flex-row user-feed"><span class="wish"><i
