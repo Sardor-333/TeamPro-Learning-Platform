@@ -16,6 +16,7 @@ public class CourseReviewDto {
     UUID id;
     String base64;
     String body;
+    UUID userId;
     String userFirstName;
     String userLastName;
     String postedTime;

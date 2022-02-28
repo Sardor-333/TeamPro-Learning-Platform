@@ -1,10 +1,10 @@
 package com.app.controller;
 
 import com.app.dto.CourseDto;
-import com.app.dto.CourseReviewDto;
 import com.app.model.Category;
 import com.app.model.Course;
 import com.app.model.User;
+import com.app.service.CourseReviewService;
 import com.app.service.CourseService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,7 +22,7 @@ import java.util.UUID;
 public class CourseController {
     private CourseService courseService;
 
-    public CourseController(CourseService courseService) {
+    public CourseController(CourseService courseService, CourseReviewService courseReviewService) {
         this.courseService = courseService;
     }
 
@@ -52,12 +52,8 @@ public class CourseController {
 
         if (course.getAttachment() != null)
             model.addAttribute("img", getBase64Encode(course.getAttachment().getBytes()));
-
-        Integer courseRate = courseService.getCourseRate(courseId);
-        model.addAttribute("courseRate", courseRate);
-
-        List<CourseReviewDto> courseReviews = courseService.getCourseReviewDtos(courseId);
-        model.addAttribute("courseComments", courseReviews);
+        model.addAttribute("courseRate", courseService.getCourseRate(courseId));
+        model.addAttribute("courseComments", courseService.getCourseReviewDtos(courseId));
 
         return "course";
     }
@@ -108,15 +104,6 @@ public class CourseController {
 
         UUID userId = UUID.fromString(session.getAttribute("userId").toString());
         courseService.rateCourse(courseId, userId, rank);
-        return "redirect:/course/" + courseId;
-    }
-
-    @PostMapping("/addComment/{courseId}")
-    public String leaveComment(@PathVariable UUID courseId, @RequestParam(name = "comment") String comment, HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        if (!sessionHasAttributes(session, "userId", "role")) return "login-form";
-        UUID userId = UUID.fromString(session.getAttribute("userId").toString());
-        courseService.leaveComment(courseId, userId, comment);
         return "redirect:/courses/" + courseId;
     }
 

@@ -21,12 +21,6 @@ public class AuthController {
         this.userService = userService;
     }
 
-    // register
-    @GetMapping("/register")
-    public String getRegister() {
-        return "register-form";
-    }
-
     @PostMapping("/register")
     public String register(UserDto userDto, Model model) {
         boolean isRegistered = userService.registerUser(userDto);

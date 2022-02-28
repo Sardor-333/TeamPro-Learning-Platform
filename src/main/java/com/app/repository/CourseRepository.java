@@ -114,6 +114,11 @@ public class CourseRepository implements BaseRepository<Course, UUID> {
         List list = sqlQuery.list();
         return list;
     }
+//    public List<Course> getAuthorCourses(UUID authorId) {
+//        Query query = session.createQuery("from courses course join course.authors author where author.id = '" + authorId + "'");
+//        List list = query.list();
+//        return list;
+//    }
 
     public List<User> getAuthors() {
         Query query = session.createQuery("" +
@@ -125,7 +130,8 @@ public class CourseRepository implements BaseRepository<Course, UUID> {
     }
 
     public Integer getCourseRate(UUID courseId) {
-        NativeQuery sqlQuery = session.createSQLQuery("select coalesce(cast((sum(rank) / count(rank)) as int), 0) as rate from courses c\n" +
+        NativeQuery sqlQuery = session.createSQLQuery("select coalesce(cast(" +
+                "(round(avg(rank))) as int), 0) as rate from courses c\n" +
                 "join course_votes cv on c.id = cv.course_id\n" +
                 "join users u on cv.user_id = u.id\n" +
                 "where course_id = '" + courseId + "';\n");

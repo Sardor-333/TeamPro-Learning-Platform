@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
@@ -27,6 +28,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 @Configuration
+@PropertySource("classpath:application.properties")
 @EnableWebMvc
 @ComponentScan(basePackages = "com.app")
 public class WebMvcConfig implements WebMvcConfigurer, ApplicationContextAware {
@@ -38,9 +40,7 @@ public class WebMvcConfig implements WebMvcConfigurer, ApplicationContextAware {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/assets/**").addResourceLocations("/assets/");
-        registry.addResourceHandler("/assets/images/**").addResourceLocations("/assets/images/");
-        registry.addResourceHandler("/assets/videos/**").addResourceLocations("/assets/videos/");
+
     }
 
     @Bean(name = "multipartResolver")

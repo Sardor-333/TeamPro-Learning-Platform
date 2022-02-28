@@ -23,6 +23,7 @@ public class CourseService {
     private CourseRepository courseRepository;
     private CategoryRepository categoryRepository;
     private UserRepository userRepository;
+    private CourseReviewService courseReviewService;
 
     public int limit = 3;
     public int page = 1;
@@ -31,10 +32,12 @@ public class CourseService {
     public CourseService(
             CourseRepository courseRepository,
             CategoryRepository categoryRepository,
-            UserRepository userRepository) {
+            UserRepository userRepository,
+            CourseReviewService courseReviewService) {
         this.courseRepository = courseRepository;
         this.categoryRepository = categoryRepository;
         this.userRepository = userRepository;
+        this.courseReviewService = courseReviewService;
     }
 
     public List<Course> getCourses(HttpSession session) {
@@ -125,7 +128,7 @@ public class CourseService {
     }
 
     public List<CourseReviewDto> getCourseReviewDtos(UUID courseId) {
-        List<CourseReview> courseReviews = courseRepository.getById(courseId).getReviews();
+        List<CourseReview> courseReviews = courseReviewService.getCourseReviews(courseId);
 
         if (courseReviews != null) {
             List<CourseReviewDto> courseReviewDtoList = new ArrayList<>();
@@ -136,6 +139,7 @@ public class CourseService {
                 courseReviewDto.setId(cr.getId());
                 courseReviewDto.setBody(cr.getBody());
                 courseReviewDto.setPostedTime(getPostedFormat(cr.getPostedAt()));
+                courseReviewDto.setUserId(cr.getUser().getId());
                 courseReviewDto.setUserFirstName(cr.getUser().getFirstName());
                 courseReviewDto.setUserLastName(cr.getUser().getLastName());
 
