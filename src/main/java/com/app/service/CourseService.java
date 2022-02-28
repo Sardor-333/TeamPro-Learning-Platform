@@ -24,7 +24,7 @@ public class CourseService {
     private CategoryRepository categoryRepository;
     private UserRepository userRepository;
 
-    public int limit = 5;
+    public int limit = 3;
     public int page = 1;
 
     @Autowired
