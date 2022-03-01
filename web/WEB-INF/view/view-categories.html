@@ -2,7 +2,9 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"><link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css'>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css'>
 
     <title>Category</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -30,9 +32,6 @@
 
 </head>
 <body>
-
-
-
 
 
 <!-- Navbar -->
@@ -66,7 +65,7 @@
             <!-- Left links -->
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active rounded   " style="background-color: gainsboro; "   href="#">Categories</a>
+                    <a class="nav-link active rounded   " style="background-color: gainsboro; " href="#">Categories</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/courses">Courses</a>
@@ -80,9 +79,9 @@
         <!-- Right elements -->
         <div class="d-flex align-items-center">
             <!-- Icon -->
-<!--            <a class="text-reset me-3" href="#">-->
-<!--                <i class="fas fa-shopping-cart"></i>-->
-<!--            </a>-->
+            <!--            <a class="text-reset me-3" href="#">-->
+            <!--                <i class="fas fa-shopping-cart"></i>-->
+            <!--            </a>-->
 
             <!-- Notifications -->
             <div class="dropdown">
@@ -139,7 +138,7 @@
                     </li>
 
                     <li>
-                        <a class="dropdown-item" href="#">Logout</a>
+                        <a class="dropdown-item" href="/auth/logOut">Logout</a>
                     </li>
                 </ul>
             </div>
@@ -151,32 +150,32 @@
 <!-- Navbar -->
 
 
-
-
-
 <!-- partial:index.partial.html -->
 <div class="container">
     <br>
-    <a th:href="@{/categories/add}" class="btn btn-success"> + Add Category </a>
+    <a th:if="${role == 'ADMIN' or role == 'SUPER ADMIN'}" th:href="@{/categories/add}" class="btn btn-success"> + Add
+        Category </a>
     <br>
     <br>
     <table class="table table-hover">
         <thead>
         <tr>
             <th>Name</th>
-            <th>Edit</th>
-            <th>Delete</th>
+            <th th:if="${role == 'ADMIN' or role == 'SUPER ADMIN'}">Edit</th>
+            <th th:if="${role == 'ADMIN' or role == 'SUPER ADMIN'}">Delete</th>
 
         </tr>
         </thead>
         <tbody>
         <tr th:each="category : ${categories}">
-            <td th:text="${category.name}"/>
+            <td th:text="${category.name}"></td>
 
-            <td><a th:href="@{'/categories/edit/' + ${category.id}}" class="btn btn-primary btn-sm">
+            <td><a th:if="${role == 'ADMIN' or role == 'SUPER ADMIN'}" th:href="@{'/categories/edit/' + ${category.id}}"
+                   class="btn btn-primary btn-sm">
                 <span class="glyphicon glyphicon-edit"></span> Edit </a></td>
 
-            <td><a th:href="@{/categories/delete(id=${category.id})}" class="btn btn-danger btn-sm">
+            <td><a th:if="${role == 'ADMIN' or role == 'SUPER ADMIN'}"
+                   th:href="@{/categories/delete(id=${category.id})}" class="btn btn-danger btn-sm">
                 <span class="glyphicon glyphicon-trash"></span> Delete </a></td>
         </tr>
 

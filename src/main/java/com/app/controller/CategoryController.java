@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.UUID;
 
 @Controller
@@ -53,7 +55,7 @@ public class CategoryController {
     }
 
     @GetMapping("/edit-profile")
-    public String editCategory(){
+    public String editCategory() {
         return "edit-profile";
     }
 
@@ -73,5 +75,11 @@ public class CategoryController {
     public String deleteCategory(@RequestParam UUID id) {
         this.categoryRepository.deleteById(id);
         return "redirect:/categories";
+    }
+
+    @ModelAttribute(value = "role")
+    public String getRole(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        return (String) session.getAttribute("role");
     }
 }

@@ -1,6 +1,5 @@
-
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Login/Registration</title>
@@ -61,6 +60,7 @@
         background: #fff;
         transition: transform 1.2s ease-in-out;
     }
+
     .cont.s--signup .sub-cont {
         transform: translate3d(-640px, 0, 0);
     }
@@ -86,6 +86,7 @@
         height: 100%;
         padding-top: 360px;
     }
+
     .img:before {
         content: "";
         position: absolute;
@@ -97,6 +98,7 @@
         background-size: cover;
         transition: transform 1.2s ease-in-out;
     }
+
     .img:after {
         content: "";
         position: absolute;
@@ -106,9 +108,11 @@
         height: 100%;
         background: rgba(0, 0, 0, 0.6);
     }
+
     .cont.s--signup .img:before {
         transform: translate3d(640px, 0, 0);
     }
+
     .img__text {
         z-index: 2;
         position: absolute;
@@ -120,23 +124,29 @@
         color: #fff;
         transition: transform 1.2s ease-in-out;
     }
+
     .img__text h2 {
         margin-bottom: 10px;
         font-weight: normal;
     }
+
     .img__text p {
         font-size: 14px;
         line-height: 1.5;
     }
+
     .cont.s--signup .img__text.m--up {
         transform: translateX(520px);
     }
+
     .img__text.m--in {
         transform: translateX(-520px);
     }
+
     .cont.s--signup .img__text.m--in {
         transform: translateX(0);
     }
+
     .img__btn {
         overflow: hidden;
         z-index: 2;
@@ -150,6 +160,7 @@
         font-size: 15px;
         cursor: pointer;
     }
+
     .img__btn:after {
         content: "";
         z-index: 2;
@@ -161,6 +172,7 @@
         border: 2px solid #fff;
         border-radius: 30px;
     }
+
     .img__btn span {
         position: absolute;
         left: 0;
@@ -172,12 +184,15 @@
         height: 100%;
         transition: transform 1.2s;
     }
+
     .img__btn span.m--in {
         transform: translateY(-72px);
     }
+
     .cont.s--signup .img__btn span.m--in {
         transform: translateY(0);
     }
+
     .cont.s--signup .img__btn span.m--up {
         transform: translateY(72px);
     }
@@ -194,6 +209,7 @@
         margin: 20px auto 0;
         text-align: center;
     }
+
     label span {
         font-size: 12px;
         color: #cfcfcf;
@@ -228,6 +244,7 @@
         border: 2px solid #d3dae9;
         color: #8fa1c7;
     }
+
     .fb-btn span {
         font-weight: bold;
         color: #455a81;
@@ -236,6 +253,7 @@
     .sign-in {
         transition-timing-function: ease-out;
     }
+
     .cont.s--signup .sign-in {
         transition-timing-function: ease-in-out;
         transition-duration: 1.2s;
@@ -245,6 +263,7 @@
     .sign-up {
         transform: translate3d(-900px, 0, 0);
     }
+
     .cont.s--signup .sign-up {
         transform: translate3d(0, 0, 0);
     }
@@ -255,10 +274,12 @@
         bottom: 5px;
         width: 32px;
     }
+
     .icon-link img {
         width: 100%;
         vertical-align: top;
     }
+
     .icon-link--twitter {
         left: auto;
         right: 5px;
@@ -267,78 +288,76 @@
 <body>
 
 <h1 th:text="${msg}"></h1>
-<!-- partial:index.partial.html -->
-<p class="tip">Click on button in image container</p>
-
-
-
+<br>
+<br>
+<br>
 <div class="cont">
-    <form action="/auth/login"  method="post"  style="margin-top: 60px">
-    <div class="form sign-in">
-        <h2>Welcome back,</h2>
-        <label>
-            <input type="email" name="email" id="email" placeholder="Email">
-        </label>
-        <label>
-            <input type="password" name="password" id = "password" placeholder="Password">
-        </label>
-        <p class="forgot-pass">Forgot password?</p>
-        <button type="submit" class="submit">Sign In</button>
-    </div>
+    <form action="/auth/login" method="post" style="margin-top: 60px">
+        <div class="form sign-in">
+            <h2>Welcome back,</h2>
+            <label>
+                <input type="email" name="email" id="email" placeholder="Email">
+            </label>
+            <label>
+                <input type="password" name="password" id="password" placeholder="Password">
+            </label>
+            <p class="forgot-pass">Forgot password?</p>
+            <button type="submit" class="submit">Sign In</button>
+        </div>
     </form>
 
 
     <form action="/auth/register" method="post" enctype="multipart/form-data">
-    <div class="sub-cont">
-        <div class="img">
-            <div class="img__text m--up">
-                <h2>New here?</h2>
-                <p>Sign up and discover great amount of new opportunities!</p>
+        <div class="sub-cont">
+            <div class="img">
+                <div class="img__text m--up">
+                    <h2>New here?</h2>
+                    <p>Sign up and discover great amount of new opportunities!</p>
+                </div>
+                <div class="img__text m--in">
+                    <h2>One of us?</h2>
+                    <p>If you already has an account, just sign in. We've missed you!</p>
+                </div>
+                <div class="img__btn">
+                    <span class="m--up">Sign Up</span>
+                    <span class="m--in">Sign In</span>
+                </div>
             </div>
-            <div class="img__text m--in">
-                <h2>One of us?</h2>
-                <p>If you already has an account, just sign in. We've missed you!</p>
-            </div>
-            <div class="img__btn">
-                <span class="m--up">Sign Up</span>
-                <span class="m--in">Sign In</span>
+            <div class="form sign-up">
+                <h3>Register</h3>
+                <label>
+                    <input type="text" name="firstName" placeholder="First Name">
+                </label>
+                <label>
+                    <input type="text" name="lastName" placeholder="Last Name">
+                </label>
+                <label>
+                    <input type="email" name="email" placeholder="Email">
+                </label>
+                <label>
+
+                    <input type="text" name="password" placeholder="Password">
+                </label>
+                <label>
+
+                    <input type="text" name="confirmPassword" placeholder="Confirm Password">
+                </label>
+                <label>
+                    <input type="text" name="bio" placeholder="Bio">
+                </label>
+                <div class="form-group ">
+                    <label for="formFileLg" class="form-label">Upload profile image</label>
+                    <input id="formFileLg" class="form-control form-control-lg" type="file" name="photo"
+                           accept="image/jpeg, image/gif, image/png">
+                </div>
+                <button type="submit" class="submit">Sign Up</button>
             </div>
         </div>
-        <div class="form sign-up">
-            <h3>Register</h3>
-            <label>
-                <input type="text" name="firstName" placeholder="First Name">
-            </label>
-            <label>
-                <input type="text" name="lastName" placeholder="Last Name">
-            </label>
-            <label>
-                <input type="email" name="email" placeholder="Email">
-            </label>
-            <label>
-
-                <input type="text" name="password" placeholder="Password">
-            </label>
-            <label>
-
-                <input type="text" name="confirmPassword" placeholder="Confirm Password">
-            </label>
-            <label>
-                <input type="text" name="bio" placeholder="Bio">
-            </label>
-            <div class="form-group ">
-                <label for="formFileLg" class="form-label">Upload profile image</label>
-                <input id="formFileLg" class="form-control form-control-lg" type="file" name="photo"
-                       accept="image/jpeg, image/gif, image/png">
-            </div>
-            <button type="submit" class="submit">Sign Up</button>
-        </div>
-    </div>
     </form>
 </div>
 <!-- partial -->
 <script>
-    document.querySelector('.img__btn').addEventListener('click', function() {
+    document.querySelector('.img__btn').addEventListener('click', function () {
         document.querySelector('.cont').classList.toggle('s--signup');
     });
 </script>
