@@ -1,0 +1,22 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Module</title>
+</head>
+<body>
+<form action="/modules/save">
+    <input type="hidden" name="id" th:value="${modules.id}">
+    <label>Name:
+        <input type="text" name="name" th:value="${modules.name}">
+    </label><br><br>
+    <label>Price:
+        <input type="text" name="price" th:value="${modules.price}">
+    </label><br><br>
+    <input type="hidden" name="course.id" th:value="${modules.course.id}">
+    <button type="submit">Submit</button>
+</form>
+
+<button><a th:href="@{'/modules/' + ${modules.course.id}}" th:text="BACK"></a></button>
+
+</body>
+</html>
