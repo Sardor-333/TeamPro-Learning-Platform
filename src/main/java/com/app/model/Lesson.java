@@ -1,4 +1,4 @@
-package com.app.model;
+package com.app.springbootteamprolearningplatform.model;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -34,8 +34,8 @@ public class Lesson {
     @OneToMany(mappedBy = "lesson")
     List<Task> tasks;
 
-    @OneToMany(mappedBy = "lesson", cascade = CascadeType.REMOVE)
-    List<LessonReview> reviews;
+    @OneToMany(mappedBy = "lesson")
+    List<LessonComment> reviews;
 
     @OneToMany(mappedBy = "lesson")
     List<Video> videos;

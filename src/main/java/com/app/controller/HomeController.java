@@ -1,4 +1,4 @@
-package com.app.controller;
+package com.app.springbootteamprolearningplatform.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +12,6 @@ public class HomeController {
     @GetMapping
     public String getHome(Model model) {
         model.addAttribute("msg", "Welcome to our learning platform!");
-        return "index";
+        return "login-form";
     }
 }

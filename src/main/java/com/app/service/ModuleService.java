@@ -1,14 +1,14 @@
-package com.app.service;
+package com.app.springbootteamprolearningplatform.service;
 
-import com.app.model.Module;
-import com.app.repository.ModuleRepository;
+import com.app.springbootteamprolearningplatform.model.Module;
+import com.app.springbootteamprolearningplatform.repository.ModuleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
-@Component
+@Service
 public class ModuleService {
     private ModuleRepository moduleRepository;
 
@@ -18,21 +18,15 @@ public class ModuleService {
     }
 
     public List<Module> getModulesByCourseId(UUID id) {
-        return moduleRepository.getByCourseId(id);
+        return moduleRepository.findAllByCourseId(id);
     }
 
     public void getDelete(UUID id) {
         moduleRepository.deleteById(id);
     }
 
-    public String save(Module module){
-        if (module.getId()!=null){
-            moduleRepository.update(module);
-            return "updated";
-        }else {
-            moduleRepository.save(module);
-            return "saved";
-        }
+    public void save(Module module) {
+        moduleRepository.save(module);
     }
 
     public Module getModuleById(UUID id) {

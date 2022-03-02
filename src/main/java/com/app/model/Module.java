@@ -1,13 +1,11 @@
-package com.app.model;
+package com.app.springbootteamprolearningplatform.model;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
-import org.w3c.dom.stylesheets.LinkStyle;
 
 import javax.persistence.*;
 import java.util.List;
@@ -36,7 +34,6 @@ public class Module {
     Course course;
 
     @OneToMany(mappedBy = "module")
-    @Cascade(org.hibernate.annotations.CascadeType.DELETE)
     List<Lesson> lessons;
 
     public Module(String name, Double price) {

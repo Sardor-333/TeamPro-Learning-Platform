@@ -1,7 +1,7 @@
-package com.app.controller;
+package com.app.springbootteamprolearningplatform.controller;
 
-import com.app.dto.UserDto;
-import com.app.service.UserService;
+import com.app.springbootteamprolearningplatform.dto.UserDto;
+import com.app.springbootteamprolearningplatform.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,7 +25,7 @@ public class AuthController {
     public String register(UserDto userDto, Model model) {
         boolean isRegistered = userService.registerUser(userDto);
         if (!isRegistered) {
-            model.addAttribute("userDto", userDto);
+            model.addAttribute("msg", "username or password error!");
             return "login-form";
         }
         return "redirect:/auth/login";
@@ -41,10 +41,8 @@ public class AuthController {
     public String login(String email, String password, HttpServletRequest request, Model model) {
         String login = userService.login(email, password, request, model);
         if (login.equals("login")) {
-
             return "login-form";
         } else if (login.equals("select-role")) {
-
             return "select-role";
         } else {
             return "redirect:/courses";

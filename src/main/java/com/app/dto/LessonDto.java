@@ -1,6 +1,6 @@
-package com.app.dto;
+package com.app.springbootteamprolearningplatform.dto;
 
-import com.app.model.Video;
+import com.app.springbootteamprolearningplatform.model.Video;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,7 +19,6 @@ public class LessonDto {
     Module module;
     List<String> tasks;
     List<Video> videos;
-
 
     public LessonDto(String theme, Module module, List<String> tasks, List<Video> videos) {
         this.theme = theme;

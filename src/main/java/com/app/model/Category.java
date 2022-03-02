@@ -1,11 +1,10 @@
-package com.app.model;
+package com.app.springbootteamprolearningplatform.model;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -29,7 +28,6 @@ public class Category {
     String name;
 
     @OneToMany(mappedBy = "category")
-    @Cascade(org.hibernate.annotations.CascadeType.DELETE)
     List<Course> courses;
 
     public Category(String name) {

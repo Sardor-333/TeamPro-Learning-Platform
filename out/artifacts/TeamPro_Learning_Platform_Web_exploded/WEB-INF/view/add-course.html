@@ -10,7 +10,7 @@
 <body>
 <div class="container">
 
-    <form th:action="@{/courses/add}" method="post" enctype="multipart/form-data" id="nameform">
+    <form th:action="@{/courses/add}" method="post" enctype="multipart/form-data">
 
         <div class="form-group" style="margin-top:30px">
             <label>Name</label>
@@ -33,18 +33,18 @@
             <option th:each="category : *{categories}" th:value="${category.id}" th:text="${category.name}"></option>
         </select>
 
-        <label for="testSelect1">Authors: </label>
-        <select id='testSelect1' multiple name="authorIds">
-            <option th:each="author:${authors}"
-                    th:if="${session.get('userId') != author.id}"
+        <label for="authors">Authors</label>
+        <select id="authors" name="authorIds" multiple>
+            <option th:if="${author.id != #session.getAttribute('userId')}"
+                    th:each="author : *{authors}"
                     th:value="${author.id}"
-                    th:text="${author.firstName}">
-            </option>
+                    th:text="${author.firstName} + ', ' + ${author.lastName}"></option>
         </select>
-    </form>
 
-    <button type="submit" class="btn btn-primary btn-lg" form="nameform">Save</button>
-    <a th:href="@{'/courses'}">Back</a>
+        <button type="submit" class="btn btn-success" style="margin-top:30px">Save</button>
+        <a th:href="@{'/courses'}" class="btn btn-primary" style="margin-top:30px; margin-left:15px">Back</a>
+
+    </form>
 </div>
 </body>
 </html>

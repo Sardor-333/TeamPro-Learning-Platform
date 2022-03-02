@@ -1,4 +1,4 @@
-package com.app.dto;
+package com.app.springbootteamprolearningplatform.dto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,20 +12,12 @@ import java.util.UUID;
 @AllArgsConstructor
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CourseReviewDto {
+public class CourseCommentDto {
     UUID id;
+    UUID userId;
     String base64;
     String body;
-    UUID userId;
     String userFirstName;
     String userLastName;
     String postedTime;
-
-    public CourseReviewDto(String base64, String body, String userFirstName, String userLastName, String postedTime) {
-        this.base64 = base64;
-        this.body = body;
-        this.userFirstName = userFirstName;
-        this.userLastName = userLastName;
-        this.postedTime = postedTime;
-    }
 }

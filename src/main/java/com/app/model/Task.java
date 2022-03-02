@@ -1,4 +1,4 @@
-package com.app.model;
+package com.app.springbootteamprolearningplatform.model;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

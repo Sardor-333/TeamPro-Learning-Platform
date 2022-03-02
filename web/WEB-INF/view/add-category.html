@@ -12,13 +12,12 @@
 
     <form th:action="@{/categories/add}" method="post">
 
-        <!--/*@thymesVar id="categories" type="com.app.model.Category"*/-->
         <div class="form-group" style="margin-top:30px">
             <label>Name</label>
             <input class="form-control" type="text" name="name">
         </div>
         <button type="submit" class="btn btn-success" style="margin-top:30px">Save</button>
-        <a th:href="@{'/categories/'}" class="btn btn-primary" style="margin-top:30px; margin-left:15px">Back</a>
+        <a th:href="@{'/categories'}" class="btn btn-primary" style="margin-top:30px; margin-left:15px">Back</a>
 
     </form>
 </div>

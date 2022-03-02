@@ -1,11 +1,10 @@
-package com.app.model;
+package com.app.springbootteamprolearningplatform.model;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -38,13 +37,12 @@ public class Course {
     Category category;
 
     @OneToMany(mappedBy = "course")
-    @Cascade(org.hibernate.annotations.CascadeType.DELETE)
     List<Module> modules;
 
     @OneToMany(mappedBy = "course")
-    List<CourseReview> reviews;
+    List<CourseComment> comments;
 
-    @OneToMany(mappedBy = "course", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "course")
     List<CourseVote> votes;
 
     @ManyToMany
@@ -55,7 +53,7 @@ public class Course {
     )
     List<User> authors;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL) // todo to test
     @JoinColumn(name = "attachment_id", referencedColumnName = "id")
     Attachment attachment;
 
@@ -70,9 +68,9 @@ public class Course {
                 byte[] encode = Base64.getEncoder().encode(this.attachment.getBytes());
                 return new String(encode, "UTF-8");
             }
-            return null;
         } catch (UnsupportedEncodingException e) {
-            return null;
+            e.printStackTrace();
         }
+        return null;
     }
 }

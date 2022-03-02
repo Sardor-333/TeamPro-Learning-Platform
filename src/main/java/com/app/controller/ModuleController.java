@@ -1,8 +1,8 @@
-package com.app.controller;
+package com.app.springbootteamprolearningplatform.controller;
 
-import com.app.model.Module;
-import com.app.repository.CourseRepository;
-import com.app.service.ModuleService;
+import com.app.springbootteamprolearningplatform.model.Module;
+import com.app.springbootteamprolearningplatform.repository.CourseRepository;
+import com.app.springbootteamprolearningplatform.service.ModuleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,18 +17,16 @@ import java.util.UUID;
 @RequestMapping("/modules")
 public class ModuleController {
     private final ModuleService moduleService;
-    private final CourseRepository courseRepository;
 
     @Autowired
-    public ModuleController(ModuleService moduleService, CourseRepository courseRepository) {
+    public ModuleController(ModuleService moduleService) {
         this.moduleService = moduleService;
-        this.courseRepository = courseRepository;
     }
 
     @RequestMapping("/{courseId}")
     public String getModules(@PathVariable UUID courseId, Model model) {
-        List<Module> modulesByCourseId = moduleService.getModulesByCourseId(courseId);
-        model.addAttribute("modules", modulesByCourseId);
+        List<Module> courseModules = moduleService.getModulesByCourseId(courseId);
+        model.addAttribute("modules", courseModules);
         model.addAttribute("courseId", courseId);
         return "module-form";
     }
@@ -47,9 +45,8 @@ public class ModuleController {
     }
 
     @RequestMapping("/save")
-    public String getEdit(Module module, Model model) {
-        String save = moduleService.save(module);
-        model.addAttribute("msg", save);
+    public String getEdit(Module module) {
+        moduleService.save(module);
         return "redirect:/modules/" + module.getCourse().getId();
     }
 

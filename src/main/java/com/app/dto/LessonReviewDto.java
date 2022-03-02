@@ -1,4 +1,4 @@
-package com.app.dto;
+package com.app.springbootteamprolearningplatform.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +10,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Data
 @Component
-public class LessonReviewDto {
+public class LessonCommentDto {
     UUID id;
     UUID userId;
     String userFullName;

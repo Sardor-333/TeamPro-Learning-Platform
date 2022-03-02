@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Select role</title>
+</head>
+<body>
+<form action="/auth/role">
+    <label for="role">Choose role</label>
+    <select id="role" name="role">
+        <option th:each="role : ${roles}" th:value="${role.name}" th:text="${role.name}"></option>
+    </select>
+    <button type="submit">SEND</button>
+
+</form>
+</body>
+</html>

@@ -1,4 +1,4 @@
-package com.app.model;
+package com.app.springbootteamprolearningplatform.model;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -15,8 +15,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Entity(name = "lesson_reviews")
-public class LessonReview {
+@Entity(name = "lesson_comments")
+public class LessonComment {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -38,7 +38,7 @@ public class LessonReview {
     @Column(name = "posted_at")
     LocalDateTime postedAt;
 
-    public LessonReview(Lesson lesson, User user, String body, LocalDateTime postedAt) {
+    public LessonComment(Lesson lesson, User user, String body, LocalDateTime postedAt) {
         this.lesson = lesson;
         this.user = user;
         this.body = body;

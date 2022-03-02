@@ -1,39 +1,27 @@
-package com.app.controller;
+package com.app.springbootteamprolearningplatform.controller;
 
-import com.app.model.Category;
-import com.app.repository.CategoryRepository;
-import com.app.service.CategoryService;
+import com.app.springbootteamprolearningplatform.model.Category;
+import com.app.springbootteamprolearningplatform.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.UUID;
 
 @Controller
 @RequestMapping({"/categories"})
 public class CategoryController {
     private CategoryRepository categoryRepository;
-    private CategoryService categoryService;
 
     @Autowired
-    public CategoryController(CategoryRepository categoryRepository, CategoryService categoryService) {
+    public CategoryController(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
-        this.categoryService = categoryService;
     }
 
     @GetMapping
-    public String getCategory(Model model, @RequestParam(required = false, defaultValue = "1") int page) {
-//        model.addAttribute("categories", this.categoryRepository.getAll());
-        if(page>1){categoryService.page = page;}
-        model.addAttribute("categories",categoryRepository.getCategoriesL(page, categoryService.limit ) );
-        model.addAttribute("currentPage", page);
-        model.addAttribute("endPage", categoryService.endPage(page));
-        model.addAttribute("beginPage", categoryService.beginPage(page));
-        model.addAttribute("pageCount", categoryService.pageCount());
-        model.addAttribute("listPage", categoryService.getPageList(categoryService.beginPage(page), categoryService.endPage(page)));
+    public String getCategory(Model model) {
+        model.addAttribute("categories", this.categoryRepository.findAll());
         return "view-categories";
     }
 
@@ -61,7 +49,7 @@ public class CategoryController {
 
     @PostMapping({"/update"})
     public String update(Category category) {
-        this.categoryRepository.update(category);
+        categoryRepository.save(category);
         return "redirect:/categories";
     }
 
@@ -75,11 +63,5 @@ public class CategoryController {
     public String deleteCategory(@RequestParam UUID id) {
         this.categoryRepository.deleteById(id);
         return "redirect:/categories";
-    }
-
-    @ModelAttribute(value = "role")
-    public String getRole(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        return (String) session.getAttribute("role");
     }
 }

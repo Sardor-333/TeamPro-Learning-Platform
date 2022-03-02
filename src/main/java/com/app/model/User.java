@@ -1,4 +1,4 @@
-package com.app.model;
+package com.app.springbootteamprolearningplatform.model;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -8,9 +8,7 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,7 +39,7 @@ public class User {
 
     String bio;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "attachment_id", referencedColumnName = "id")
     Attachment attachment;
 
@@ -54,10 +52,10 @@ public class User {
     List<Role> roles = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
-    List<LessonReview> lessonReviews;
+    List<LessonComment> lessonComments;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    List<CourseReview> courseReviews;
+    @OneToMany(mappedBy = "user")
+    List<CourseComment> courseComments;
 
     @OneToMany(mappedBy = "user")
     List<CourseVote> courseVotes;
@@ -65,24 +63,12 @@ public class User {
     @ManyToMany(mappedBy = "authors")
     List<Course> courses;
 
-    public User(String firstName, String lastName, String email, String password, String bio) {
+    public User(String firstName, String lastName, String email, String password, String bio, Attachment attachment) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.bio = bio;
-    }
-
-    public String getEncode64() {
-        try {
-            if (attachment != null) {
-                byte[] encode = Base64.getEncoder().encode(attachment.getBytes());
-                return new String(encode, "UTF-8");
-            }
-            return null;
-        } catch (UnsupportedEncodingException e) {
-            System.out.println("Exception: " + e.getMessage());
-            return null;
-        }
+        this.attachment = attachment;
     }
 }

@@ -1,4 +1,4 @@
-package com.app.dto;
+package com.app.springbootteamprolearningplatform.dto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

@@ -1,13 +1,11 @@
-package com.app.controller;
+package com.app.springbootteamprolearningplatform.controller;
 
-import com.app.model.Lesson;
-import com.app.model.LessonReview;
-import com.app.model.Module;
-import com.app.model.Video;
-import com.app.repository.LessonRepository;
-import com.app.repository.ModuleRepository;
-import com.app.repository.UserRepository;
-import com.app.service.LessonService;
+import com.app.springbootteamprolearningplatform.model.Lesson;
+import com.app.springbootteamprolearningplatform.model.LessonComment;
+import com.app.springbootteamprolearningplatform.model.Video;
+import com.app.springbootteamprolearningplatform.repository.RoleRepository;
+import com.app.springbootteamprolearningplatform.repository.VideoRepository;
+import com.app.springbootteamprolearningplatform.service.LessonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,39 +18,37 @@ import java.util.UUID;
 @Controller
 @RequestMapping("/lessons")
 public class LessonController {
-    private LessonRepository lessonRepository;
-    private ModuleRepository moduleRepository;
-    private UserRepository userRepository;
     private LessonService lessonService;
+    private RoleRepository roleRepository;
+    private VideoRepository videoRepository;
 
     @Autowired
-    LessonController(LessonRepository lessonRepository, ModuleRepository moduleRepository, UserRepository userRepository, LessonService lessonService) {
-        this.lessonRepository = lessonRepository;
-        this.moduleRepository = moduleRepository;
-        this.userRepository = userRepository;
+    LessonController(LessonService lessonService,
+                     RoleRepository roleRepository,
+                     VideoRepository videoRepository) {
         this.lessonService = lessonService;
-
+        this.roleRepository = roleRepository;
+        this.videoRepository = videoRepository;
     }
 
     @GetMapping("/{moduleId}")
     public String getLessonsByModuleId(@PathVariable UUID moduleId, Model model, HttpServletRequest req) {
-        String role = userRepository.getRole(req);
+        String role = roleRepository.getRole(req);
         if (role != null) {
-            model.addAttribute("lessons", lessonRepository.getLessonsByModuleId(moduleId));
+            model.addAttribute("lessons", lessonService.getLessonsByModuleId(moduleId));
             return "view-lessons";
         }
         return "redirect:/auth/login";
     }
 
-    @GetMapping
+    @GetMapping()
     public String getLessonById(@RequestParam(value = "id") UUID id, Model model, HttpServletRequest req) {
-        String role = userRepository.getRole(req);
+        String role = roleRepository.getRole(req);
         if (role != null) {
-            model.addAttribute("lesson", lessonRepository.getById(id));
+            model.addAttribute("lesson", lessonService.findById(id));
             model.addAttribute("comments", lessonService.getComment(id));
             model.addAttribute("photo", getPhoto(req));
-            model.addAttribute("videos", lessonRepository.getVideoByLessonId(id));
-            model.addAttribute("tasks", lessonRepository.getTasksByLId(id));
+            model.addAttribute("videos", videoRepository.findByLessonId(id));
             return "view-lesson";
         }
         return "redirect:/auth/login";
@@ -60,62 +56,55 @@ public class LessonController {
 
     @PostMapping("/{moduleId}")
     public String saveModule(@PathVariable UUID moduleId, Lesson lesson, HttpServletRequest req) {
-        String role = userRepository.getRole(req);
+        String role = roleRepository.getRole(req);
         if (role != null) {
-            lesson.setModule(moduleRepository.getById(moduleId));
-            lessonRepository.save(lesson);
+            lessonService.saveLesson(moduleId, lesson);
             return "redirect:/lessons/" + moduleId;
         }
         return "redirect:/auth/login";
     }
 
-    @GetMapping("/get-edit/{lessonId}")
-    public String getEditLesson(@PathVariable UUID lessonId, Model model, HttpServletRequest req) {
-        String role = userRepository.getRole(req);
+    @GetMapping("/edit")
+    public String editLesson(@RequestParam UUID lessonId, Model model, HttpServletRequest req) {
+        String role = roleRepository.getRole(req);
         if (role != null) {
-            model.addAttribute("lesson", lessonRepository.getById(lessonId));
+            model.addAttribute("lesson", lessonService.findById(lessonId));
             return "update-lesson";
         }
         return "redirect:/auth/login";
     }
 
-    @PostMapping("/edit")
-    public String updateLesson(Lesson lesson, HttpServletRequest request) {
-        String role = userRepository.getRole(request);
+    @PostMapping("/update")
+    public String updateLesson(@RequestParam UUID moduleId, Lesson lesson, HttpServletRequest request) {
+        String role = roleRepository.getRole(request);
         if (role != null) {
-            UUID moduleId = lesson.getModule().getId();
-            lessonRepository.saveOrUpdate(lesson);
+            lessonService.saveLesson(moduleId, lesson);
             return "redirect:/lessons/" + moduleId;
         }
         return "redirect:/auth/login";
     }
 
-    @GetMapping("/get-add/{moduleId}")
-    public String getForm(HttpServletRequest request, Model model, @PathVariable UUID moduleId) {
-        String role = userRepository.getRole(request);
+    @GetMapping("/add")
+    public String getForm(HttpServletRequest request) {
+        String role = roleRepository.getRole(request);
         if (role != null) {
-            model.addAttribute("moduleId", moduleId);
             return "add-lesson";
         }
         return "redirect:/auth/login";
     }
 
-    @PostMapping("/add")
-    public String addLesson(Lesson lesson, HttpServletRequest req, @RequestParam(required = false, name = "moduleId")
-            UUID moduleId) {
-        String role = userRepository.getRole(req);
+    @PostMapping("/add/{moduleId}")
+    public String addLesson(Lesson lesson, @PathVariable UUID moduleId, HttpServletRequest req) {
+        String role = roleRepository.getRole(req);
         if (role != null) {
-            Module module = new Module();
-            module.setId(moduleId);
-            lesson.setModule(module);
-            lessonRepository.saveOrUpdate(lesson);
-            return "redirect:/lessons/" + lesson.getModule().getId();
+            lessonService.saveLesson(moduleId, lesson);
+            return "redirect:/lessons/" + moduleId;
         }
         return "redirect:/auth/login";
     }
 
     @PostMapping("/addComment/{lessonId}")
-    public String addComment(LessonReview comment, HttpServletRequest req, @PathVariable UUID lessonId) {
+    public String addComment(LessonComment comment, HttpServletRequest req, @PathVariable UUID lessonId) {
         lessonService.save(comment, req, lessonId);
         return "redirect:/lessons?id=" + comment.getLesson().getId() + "";
     }
@@ -141,7 +130,7 @@ public class LessonController {
 
     @GetMapping("/del/{lesId}/{com}")
     public String deletePost(@PathVariable UUID lesId, @PathVariable UUID com) {
-        lessonService.deleteComment(com);
+        lessonService.deleteComment(lesId, com);
         return "redirect:/lessons?id=" + lesId;
     }
 
@@ -153,7 +142,7 @@ public class LessonController {
 
     @PostMapping("/add/video")
     public String addVideo(Video video, HttpServletRequest request, @RequestParam(value = "id") UUID lessonId) {
-        lessonService.saveVideo(video, request, lessonId);
+        lessonService.saveVideo(video, lessonId);
         return "redirect:/lessons?id=" + lessonId;
     }
 
@@ -161,13 +150,5 @@ public class LessonController {
     public String deleteVideo(@PathVariable UUID videoId) {
         UUID lessonId = lessonService.deleteVideo(videoId);
         return "redirect:/lessons?id=" + lessonId;
-    }
-
-    @RequestMapping("/delete/{lessonId}")
-    public String deleteLesson(@PathVariable UUID lessonId) {
-        Lesson lessonById = lessonService.getLessonById(lessonId);
-        UUID moduleId = lessonById.getModule().getId();
-        lessonService.deleteLesson(lessonId);
-        return "redirect:/lessons/" + moduleId;
     }
 }
