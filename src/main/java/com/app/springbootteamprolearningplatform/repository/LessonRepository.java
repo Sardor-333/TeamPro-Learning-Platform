@@ -18,5 +18,5 @@ public interface LessonRepository extends JpaRepository<Lesson, UUID> {
                     "where l.id = ?1")
     List<LessonComment> findLessonComments(UUID lessonId);
 
-    List<Lesson> findLessonsByModuleId(UUID moduleId);
+    List<Lesson> findAllByModuleId(UUID moduleId);
 }

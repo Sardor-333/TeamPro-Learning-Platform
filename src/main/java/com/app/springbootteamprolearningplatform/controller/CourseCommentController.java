@@ -30,8 +30,8 @@ public class CourseCommentController {
     }
 
     @GetMapping("/delete")
-    public String deleteComment(@RequestParam(name = "commentId") UUID commentId) {
-        UUID courseId = courseCommentService.deleteComment(commentId);
+    public String deleteComment(@RequestParam(name = "commentId") UUID commentId, HttpServletRequest request) {
+        UUID courseId = courseCommentService.deleteComment(commentId, request);
         if (courseId == null) {
             return "redirect:/courses";
         }

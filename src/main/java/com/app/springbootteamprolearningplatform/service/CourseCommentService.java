@@ -9,6 +9,7 @@ import com.app.springbootteamprolearningplatform.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -26,12 +27,18 @@ public class CourseCommentService {
         this.courseRepository = courseRepository;
     }
 
-    public UUID deleteComment(UUID commentId) {
+    public UUID deleteComment(UUID commentId, HttpServletRequest request) {
         Optional<CourseComment> commentOptional = courseCommentRepository.findById(commentId);
         if (commentOptional.isPresent()) {
             CourseComment courseComment = commentOptional.get();
             UUID courseId = courseComment.getCourse().getId();
-            courseCommentRepository.delete(courseComment);
+
+            UUID userId = UUID.fromString(request.getSession().getAttribute("userId").toString());
+            User user = userRepository.findById(userId).orElse(null);
+
+            if (user.getId().equals(courseComment.getUser().getId())) {
+                courseCommentRepository.delete(courseComment);
+            }
             return courseId;
         }
         return null;

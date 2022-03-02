@@ -45,12 +45,7 @@ public class Course {
     @OneToMany(mappedBy = "course")
     List<CourseVote> votes;
 
-    @ManyToMany
-    @JoinTable(
-            name = "courses_authors",
-            joinColumns = {@JoinColumn(name = "course_id")},
-            inverseJoinColumns = {@JoinColumn(name = "user_id")}
-    )
+    @ManyToMany(mappedBy = "courses")
     List<User> authors;
 
     @OneToOne(cascade = CascadeType.ALL) // todo to test

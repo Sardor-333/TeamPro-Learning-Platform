@@ -114,8 +114,6 @@
 
 </head>
 <body>
-
-
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <!-- Container wrapper -->
@@ -230,16 +228,12 @@
     </div>
     <!-- Container wrapper -->
 </nav>
-<!-- Navbar -->
-
-
-<!-- partial:index.partial.html -->
 
 <div class="d-flex">
 
     <a th:if="${role=='ADMIN' or role =='SUPER ADMIN'}" th:href="'lessons/add/video/'+${lesson.getId()}"
        class="btn btn-success">+ ADD VIDEO</a>
-    <a th:if="${role=='ADMIN' or role =='SUPER ADMIN'}"  th:href="'lessons/add/task/'+${lesson.getId()}"
+    <a th:if="${role=='ADMIN' or role =='SUPER ADMIN'}" th:href="'lessons/add/task/'+${lesson.getId()}"
        class="btn btn-success">+ ADD TASK</a>
 </div>
 <div class="container">

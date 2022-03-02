@@ -27,6 +27,7 @@ public class CourseController {
         this.userService = userService;
     }
 
+
     // GET
     @GetMapping
     public String getCourses(Model model, HttpServletRequest request) {
@@ -46,9 +47,6 @@ public class CourseController {
         Course course = courseService.getCourse(courseId);
         model.addAttribute("course", course);
 
-        if (course.getAttachment() != null)
-            model.addAttribute("img", course.getBase64Encode());
-
         Double courseRate = courseService.getCourseRate(courseId);
         model.addAttribute("courseRate", courseRate);
 
@@ -57,6 +55,7 @@ public class CourseController {
 
         return "course";
     }
+
 
     // ADD
     @GetMapping("/add")
@@ -106,24 +105,37 @@ public class CourseController {
 
     // RATE
     @PostMapping("/rate/{courseId}")
-    public String rateCourse(@PathVariable UUID courseId, @RequestParam(name = "rank") Integer rank, HttpServletRequest request, Model model) {
+    public String rateCourse(@PathVariable UUID courseId, @RequestParam(name = "rank") Integer rank, HttpServletRequest request) {
         HttpSession session = request.getSession();
         if (!sessionHasAttributes(session, "userId", "role")) return "login-form";
 
         UUID userId = UUID.fromString(session.getAttribute("userId").toString());
         courseService.rateCourse(courseId, userId, rank);
-        return "redirect:/course/" + courseId;
+        return "redirect:/courses/" + courseId;
+    }
+
+
+    // ANSWER
+    @PostMapping("/tasks/{taskId}/answer")
+    public String answer(@PathVariable UUID taskId,
+                         @RequestParam(name = "answer") String answer,
+                         HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        if (!sessionHasAttributes(session, "userId", "role")) return "login-form";
+        courseService.answer(taskId, UUID.fromString(session.getAttribute("userId").toString()), answer);
+        return null;
+    }
+
+    // OTHER
+    @ModelAttribute(value = "role")
+    public String getRole(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        return (String) session.getAttribute("role");
     }
 
     private boolean sessionHasAttributes(HttpSession session, String... values) {
         for (String value : values)
             if (session.getAttribute(value) == null) return false;
         return true;
-    }
-
-    @ModelAttribute(value = "role")
-    public String getRole(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        return (String) session.getAttribute("role");
     }
 }

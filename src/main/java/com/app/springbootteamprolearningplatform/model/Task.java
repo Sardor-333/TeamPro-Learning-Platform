@@ -8,6 +8,7 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -23,6 +24,9 @@ public class Task {
     @Column(updatable = false, nullable = false)
     UUID id;
 
+    @Column(nullable = false)
+    String question;
+
     @ManyToOne
     @JoinColumn(name = "lesson_id", nullable = false)
     Lesson lesson;
@@ -30,4 +34,7 @@ public class Task {
     @OneToOne
     @JoinColumn(name = "attachment_id", nullable = false, referencedColumnName = "id")
     Attachment attachment;
+
+    @OneToMany(mappedBy = "task")
+    List<Submission> submissions;
 }

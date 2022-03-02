@@ -31,31 +31,33 @@ public class LessonController {
         this.videoRepository = videoRepository;
     }
 
+    // GET
     @GetMapping("/{moduleId}")
     public String getLessonsByModuleId(@PathVariable UUID moduleId, Model model, HttpServletRequest req) {
         String role = roleRepository.getRole(req);
         if (role != null) {
             model.addAttribute("lessons", lessonService.getLessonsByModuleId(moduleId));
+            model.addAttribute("moduleId", moduleId);
             return "view-lessons";
         }
         return "redirect:/auth/login";
     }
 
-    @GetMapping()
+    @GetMapping
     public String getLessonById(@RequestParam(value = "id") UUID id, Model model, HttpServletRequest req) {
         String role = roleRepository.getRole(req);
         if (role != null) {
             model.addAttribute("lesson", lessonService.findById(id));
             model.addAttribute("comments", lessonService.getComment(id));
             model.addAttribute("photo", getPhoto(req));
-            model.addAttribute("videos", videoRepository.findByLessonId(id));
+            model.addAttribute("videos", videoRepository.findAllByLessonId(id));
             return "view-lesson";
         }
         return "redirect:/auth/login";
     }
 
     @PostMapping("/{moduleId}")
-    public String saveModule(@PathVariable UUID moduleId, Lesson lesson, HttpServletRequest req) {
+    public String saveLesson(@PathVariable UUID moduleId, Lesson lesson, HttpServletRequest req) {
         String role = roleRepository.getRole(req);
         if (role != null) {
             lessonService.saveLesson(moduleId, lesson);
@@ -64,11 +66,13 @@ public class LessonController {
         return "redirect:/auth/login";
     }
 
-    @GetMapping("/edit")
-    public String editLesson(@RequestParam UUID lessonId, Model model, HttpServletRequest req) {
+    @GetMapping("/update/{lessonId}")
+    public String editLesson(@PathVariable UUID lessonId, Model model, HttpServletRequest req) {
         String role = roleRepository.getRole(req);
         if (role != null) {
-            model.addAttribute("lesson", lessonService.findById(lessonId));
+            Lesson lesson = lessonService.findById(lessonId);
+            model.addAttribute("lesson", lesson);
+            model.addAttribute("moduleId", lesson.getModule().getId());
             return "update-lesson";
         }
         return "redirect:/auth/login";
@@ -84,10 +88,11 @@ public class LessonController {
         return "redirect:/auth/login";
     }
 
-    @GetMapping("/add")
-    public String getForm(HttpServletRequest request) {
+    @GetMapping("/add/{moduleId}")
+    public String getForm(@PathVariable UUID moduleId, HttpServletRequest request, Model model) {
         String role = roleRepository.getRole(request);
         if (role != null) {
+            model.addAttribute("moduleId", moduleId);
             return "add-lesson";
         }
         return "redirect:/auth/login";
@@ -98,6 +103,16 @@ public class LessonController {
         String role = roleRepository.getRole(req);
         if (role != null) {
             lessonService.saveLesson(moduleId, lesson);
+            return "redirect:/lessons/" + moduleId;
+        }
+        return "redirect:/auth/login";
+    }
+
+    @GetMapping("/delete")
+    public String deleteLesson(@RequestParam(name = "lessonId") UUID lessonId, HttpServletRequest request) {
+        String role = roleRepository.getRole(request);
+        if (role != null) {
+            UUID moduleId = lessonService.deleteLesson(lessonId);
             return "redirect:/lessons/" + moduleId;
         }
         return "redirect:/auth/login";
@@ -141,7 +156,7 @@ public class LessonController {
     }
 
     @PostMapping("/add/video")
-    public String addVideo(Video video, HttpServletRequest request, @RequestParam(value = "id") UUID lessonId) {
+    public String addVideo(Video video, @RequestParam(value = "id") UUID lessonId) {
         lessonService.saveVideo(video, lessonId);
         return "redirect:/lessons?id=" + lessonId;
     }

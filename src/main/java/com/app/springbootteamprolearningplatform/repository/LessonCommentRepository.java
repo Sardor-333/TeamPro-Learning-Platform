@@ -9,5 +9,5 @@ import java.util.UUID;
 @Repository
 public interface LessonCommentRepository extends JpaRepository<LessonComment, UUID> {
 
-    void deleteCommentByIdAndLessonId(UUID commentId, UUID lessonId);
+    void deleteByIdAndLessonId(UUID id, UUID lessonId);
 }

@@ -20,24 +20,27 @@ public class CourseService {
     private final CourseRepository courseRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
-    private final AttachmentRepository attachmentRepository;
     private final CourseVoteRepository courseVoteRepository;
     private final RoleRepository roleRepository;
+    private final TaskRepository taskRepository;
+    private final SubmissionRepository submissionRepository;
 
     @Autowired
     public CourseService(
             CourseRepository courseRepository,
             CategoryRepository categoryRepository,
             UserRepository userRepository,
-            AttachmentRepository attachmentRepository,
             CourseVoteRepository courseVoteRepository,
-            RoleRepository roleRepository) {
+            RoleRepository roleRepository,
+            TaskRepository taskRepository,
+            SubmissionRepository submissionRepository) {
         this.courseRepository = courseRepository;
         this.categoryRepository = categoryRepository;
         this.userRepository = userRepository;
-        this.attachmentRepository = attachmentRepository;
         this.courseVoteRepository = courseVoteRepository;
         this.roleRepository = roleRepository;
+        this.taskRepository = taskRepository;
+        this.submissionRepository = submissionRepository;
     }
 
     public List<Course> getCourses(HttpSession session) {
@@ -91,11 +94,13 @@ public class CourseService {
         }
         course.setAuthors(authors);
         if (courseDto.getCategoryId() != null) {
-            Category category = categoryRepository.getById(courseDto.getCategoryId());
-            course.setCategory(category);
+            course
+                    .setCategory(categoryRepository
+                            .getById(courseDto
+                                    .getCategoryId()));
         }
         return course;
-    } // todo debug
+    }
 
     private Attachment saveFileToDb(MultipartFile multipartFile) {
         try {
@@ -159,5 +164,21 @@ public class CourseService {
 
     public void deleteCourse(UUID id) {
         courseRepository.deleteById(id);
+    }
+
+    public boolean answer(UUID taskId, UUID userId, String answer) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        Optional<Task> taskOptional = taskRepository.findById(taskId);
+
+        if (userOptional.isPresent() && taskOptional.isPresent()) {
+            User user = userOptional.get();
+            Task task = taskOptional.get();
+            if (!submissionRepository.existsByUserAndTask(user, task)) {
+                Submission submission = new Submission(user, task, LocalDateTime.now());
+                submissionRepository.save(submission);
+                return true;
+            }
+        }
+        return false;
     }
 }

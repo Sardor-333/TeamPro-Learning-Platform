@@ -6,6 +6,7 @@ import com.app.springbootteamprolearningplatform.model.*;
 import com.app.springbootteamprolearningplatform.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
@@ -14,6 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
+@Transactional
 public class LessonService {
 
     private UserRepository userRepository;
@@ -86,7 +88,11 @@ public class LessonService {
     }
 
     public void deleteComment(UUID lessonId, UUID commentId) {
-        lessonCommentRepository.deleteCommentByIdAndLessonId(commentId, lessonId);
+        try {
+            lessonCommentRepository.deleteByIdAndLessonId(commentId, lessonId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void saveVideo(Video video, UUID lessonId) {
@@ -116,7 +122,7 @@ public class LessonService {
     }
 
     public List<Lesson> getLessonsByModuleId(UUID moduleId) {
-        return lessonRepository.findLessonsByModuleId(moduleId);
+        return lessonRepository.findAllByModuleId(moduleId);
     }
 
     public Lesson findById(UUID id) {
@@ -130,5 +136,16 @@ public class LessonService {
             lesson.setModule(module);
             lessonRepository.save(lesson);
         }
+    }
+
+    public UUID deleteLesson(UUID lessonId) {
+        Optional<Lesson> lessonOptional = lessonRepository.findById(lessonId);
+        if (lessonOptional.isPresent()) {
+            Lesson lesson = lessonOptional.get();
+            UUID moduleId = lesson.getModule().getId();
+            lessonRepository.delete(lesson);
+            return moduleId;
+        }
+        return null;
     }
 }

@@ -42,8 +42,6 @@
 
     <style>
 
-        @import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
-
         body {
             background-color: #eee
         }
@@ -88,6 +86,31 @@
             font-size: 13px
         }
 
+        .wish {
+            color: #35b69f
+        }
+
+        .user-feed {
+            font-size: 14px;
+            margin-top: 12px
+        }
+
+        .vidwrapper {
+            width: 100%;
+            max-width: 800px;
+            margin: 3em auto;
+            border: 3px solid green;
+        }
+
+        .vidcontainer {
+            width: 100%;
+            max-width: 100%;
+            height: 0;
+            padding-bottom: 56.25%;
+            border: 3px solid orange;
+            position: relative;
+        }
+
         .vidcontainer iframe, .vidcontainer video {
             width: 100%;
             max-width: 100%;
@@ -96,6 +119,8 @@
             top: 0;
             left: 0;
         }
+
+        @import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
 
         /* Styling h1 and links
         ––––––––––––––––––––––––––––––––– */
@@ -123,7 +148,7 @@
         .starrating > label:before {
             content: "\f005"; /* Star */
             margin: 2px;
-            font-size: 8em;
+            font-size: 4em;
             font-family: FontAwesome, sans-serif;
             display: inline-block;
         }
@@ -151,7 +176,7 @@
 <body>
 
 <div class="card" style="width: 18rem;">
-    <img th:src="@{'data:image/jpeg;data:image/png;base64,'+${img}}" class="card-img-top"/>
+    <img th:src="@{'data:image/jpeg;data:image/png;base64,'+${course.getBase64Encode()}}" class="card-img-top"/>
 
     <div class="card-body">
         <h5 th:text="${course.name}" class="card-title"></h5>
@@ -160,54 +185,58 @@
 </div>
 
 <h1 class="text-center" alt="Simple">Rate our course</h1>
-<div class="container">
-    <div class="starrating risingstar d-flex justify-content-center flex-row-reverse">
-        <input
-                type="radio"
-                id="star5"
-                name="rating"
-                value="5"
-                th:checked="${courseRate == 5}"
-        />
-        <label for="star5" title="5 star"></label>
+<form
+        th:action="@{'/courses/rate/' + ${course.id}}"
+        method="post"
+        id="rate-course-form"
+        class="starrating d-flex justify-content-center flex-row-reverse"
+>
+    <input
+            type="radio"
+            id="star5"
+            name="rank"
+            value="5"
+            th:checked="${courseRate == 5}"
+    />
+    <label for="star5" title="5 star"></label>
 
-        <input
-                type="radio"
-                id="star4"
-                name="rating"
-                value="4"
-                th:checked="${courseRate == 4}"
-        />
-        <label for="star4" title="4 star"></label>
+    <input
+            type="radio"
+            id="star4"
+            name="rank"
+            value="4"
+            th:checked="${courseRate == 4}"
+    />
+    <label for="star4" title="4 star"></label>
 
-        <input
-                type="radio"
-                id="star3"
-                name="rating"
-                value="3"
-                th:checked="${courseRate == 3}"
-        />
-        <label for="star3" title="3 star"></label>
+    <input
+            type="radio"
+            id="star3"
+            name="rank"
+            value="3"
+            th:checked="${courseRate == 3}"
+    />
+    <label for="star3" title="3 star"></label>
 
-        <input
-                type="radio"
-                id="star2"
-                name="rating"
-                value="2"
-                th:checked="${courseRate == 2}"
-        />
-        <label for="star2" title="2 star"></label>
+    <input
+            type="radio"
+            id="star2"
+            name="rank"
+            value="2"
+            th:checked="${courseRate == 2}"
+    />
+    <label for="star2" title="2 star"></label>
 
-        <input
-                type="radio"
-                id="star1"
-                name="rating"
-                value="1"
-                th:checked="${courseRate == 1}"
-        />
-        <label for="star1" title="1 star"></label>
-    </div>
-</div>
+    <input
+            type="radio"
+            id="star1"
+            name="rank"
+            value="1"
+            th:checked="${courseRate == 1}"
+    />
+    <label for="star1" title="1 star"></label>
+    <button type="submit" class="btn btn-primary btn-lg" form="rate-course-form">Send</button>
+</form>
 
 <div class="container mt-5 mb-5">
     <div class="row height d-flex justify-content-center align-items-center">
@@ -238,10 +267,10 @@
                         <div class="w-100">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="d-flex flex-row align-items-center">
-                                    <span
-                                            th:text="${comment.userFirstName + comment.userLastName}"
-                                            class="mr-2">
-                                    </span>
+                                                    <span
+                                                            th:text="${comment.userFirstName + comment.userLastName}"
+                                                            class="mr-2">
+                                                    </span>
                                     <small class="c-badge">Top Comment</small>
                                 </div>
                                 <small th:text="${comment.postedTime}"></small>
@@ -250,11 +279,9 @@
                                th:text="${comment.body}">
                             </p>
                             <a
-                                    th:if="${comment.userId == #session.getAttribute('userId')}"
-                                    class="btn btn-danger btn-sm"
+                                    th:if="${#session.getAttribute('userId')} == ${comment.userId}"
                                     th:href="@{/courses/comments/delete(commentId=${comment.id})}"
-                            >
-                                <span class="glyphicon glyphicon-trash"></span> Delete
+                                    class="btn btn-danger">Delete
                             </a>
                         </div>
                     </div>
@@ -265,7 +292,6 @@
 </div>
 
 <script>
-
     jQuery(document).ready(function ($) {
 
         $(".btnrating").on('click', (function (e) {
@@ -289,18 +315,7 @@
             }
 
         }));
-
-
     });
-
-
-    // function makeDeleteRequest(url) {
-    //     fetch(url,
-    //         {
-    //             method: 'DELETE'
-    //         }
-    //     ).then(response => location.reload())
-    // }
 
 </script>
 </body>
