@@ -12,10 +12,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -123,36 +125,27 @@ public class CourseService {
 
     public Integer getCourseRate(UUID courseId) {
         Double rate = courseRepository.findCourseRate(courseId);
-        return Integer.valueOf(Long.valueOf(Math.round(rate)).toString());
+        return 1;
     }
 
-    public List<CourseCommentDto> getCourseReviewDtos(UUID courseId) {
+    public List<CourseCommentDto> getCourseCommentDtos(UUID courseId) {
         List<CourseComment> courseComments = courseCommentService.findCourseComments(courseId);
-        List<CourseCommentDto> courseCommentDtoList = new ArrayList<>();
 
-        for (CourseComment cr : courseComments) {
+        List<CourseCommentDto> courseCommentDtoList = new ArrayList<>();
+        for (CourseComment courseComment : courseComments) {
             CourseCommentDto courseCommentDto = new CourseCommentDto();
-            if (cr.getUser().getAttachment() != null) {
-                courseCommentDto.setBase64(getBase64Encode(cr.getUser().getAttachment().getBytes()));
-            }
-            courseCommentDto.setId(cr.getId());
-            courseCommentDto.setBody(cr.getBody());
-            courseCommentDto.setPostedTime(getPostedFormat(cr.getPostedAt()));
-            courseCommentDto.setUserId(cr.getUser().getId());
-            courseCommentDto.setUserFirstName(cr.getUser().getFirstName());
-            courseCommentDto.setUserLastName(cr.getUser().getLastName());
+            courseCommentDto.setBase64(courseComment.getBase64());
+            courseCommentDto.setUserId(courseComment.getUser().getId());
+            courseCommentDto.setUserFirstName(courseComment.getUser().getFirstName());
+            courseCommentDto.setUserLastName(courseComment.getUser().getLastName());
+
+            courseCommentDto.setId(courseComment.getId());
+            courseCommentDto.setBody(courseComment.getBody());
+            courseCommentDto.setPostedTime(getPostedFormat(courseComment.getPostedAt()));
+
             courseCommentDtoList.add(courseCommentDto);
         }
         return courseCommentDtoList;
-    }
-
-    private String getBase64Encode(byte[] bytes) {
-        try {
-            byte[] encode = Base64.getEncoder().encode(bytes);
-            return new String(encode, "UTF-8");
-        } catch (UnsupportedEncodingException var3) {
-            return null;
-        }
     }
 
     public String getPostedFormat(LocalDateTime localDateTime) {

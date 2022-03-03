@@ -19,7 +19,7 @@ public class CourseCommentController {
         this.courseCommentService = courseCommentService;
     }
 
-    @PostMapping("/add/{courseId}")
+    @PostMapping("/leaveComment/{courseId}")
     public String leaveComment(@PathVariable UUID courseId, @RequestParam(value = "comment") String comment, HttpServletRequest request) {
         HttpSession session = request.getSession();
         if (!sessionHasAttributes(session, "userId", "role")) return "login-form";

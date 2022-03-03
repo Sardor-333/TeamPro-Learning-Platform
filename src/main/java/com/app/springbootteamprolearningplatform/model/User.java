@@ -8,7 +8,12 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,7 +30,9 @@ public class User {
     @Column(updatable = false, nullable = false)
     UUID id;
 
-    @Column(name = "first_name", nullable = false)
+    @Size(min = 2, message = "First name should contain at least 2 characters!")
+    @NotBlank(message = "First name should contain characters!")
+    @Column(name = "first_name")
     String firstName;
 
     @Column(name = "last_name")
@@ -34,11 +41,13 @@ public class User {
     @Column(nullable = false, unique = true)
     String email;
 
-    @Column(nullable = false)
+    @NotBlank(message = "Password should contain characters!")
+    @Size(min = 6, message = "Password length must be at least 6!")
     String password;
 
     String bio;
 
+    // RELATIONS
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "attachment_id", referencedColumnName = "id")
     Attachment attachment;
@@ -70,6 +79,25 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     List<Submission> submissions;
+
+    // Chat fields
+    @OneToMany(mappedBy = "user1")
+    List<ChatRoom> chatRooms;
+
+    @OneToMany(mappedBy = "user2")
+    List<ChatRoom> chatRooms1;
+
+    // message fields
+    @OneToMany(mappedBy = "from")
+    List<Message> messages;
+
+    public String getBase64() {
+        if (attachment != null) {
+            byte[] bytes = Base64.getEncoder().encode(attachment.getBytes());
+            return new String(bytes, StandardCharsets.UTF_8);
+        }
+        return null;
+    }
 
     public User(String firstName, String lastName, String email, String password, String bio, Attachment attachment) {
         this.firstName = firstName;

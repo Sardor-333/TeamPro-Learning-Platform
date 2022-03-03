@@ -1,22 +1,23 @@
 package com.app.springbootteamprolearningplatform.controller;
 
 import com.app.springbootteamprolearningplatform.dto.UserDto;
-import com.app.springbootteamprolearningplatform.repository.RoleRepository;
 import com.app.springbootteamprolearningplatform.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/auth")
 public class AuthController {
     private UserService userService;
-    private RoleRepository roleRepository;
 
     @Autowired
     public AuthController(UserService userService) {
@@ -24,8 +25,9 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String register(UserDto userDto, Model model) {
-        boolean isRegistered = userService.registerUser(userDto);
+    public String register(@Valid @ModelAttribute(name = "user") UserDto user, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) return "login-form";
+        boolean isRegistered = userService.registerUser(user);
         if (!isRegistered) {
             model.addAttribute("msg", "username or password error!");
             return "login-form";
@@ -33,7 +35,7 @@ public class AuthController {
         return "redirect:/auth/login";
     }
 
-    // login
+    // LOGIN
     @GetMapping("/login")
     public String getLogin() {
         return "login-form";
@@ -51,12 +53,15 @@ public class AuthController {
         }
     }
 
+    // LOGOUT
     @GetMapping("/logOut")
     public String logOut(HttpServletRequest request) {
         userService.logOut(request);
         return "redirect:/auth/login";
     }
 
+
+    // SELECT ROLE
     @GetMapping("/role")
     public String setRole(HttpServletRequest req, String role) {
         return userService.setRole(role, req);

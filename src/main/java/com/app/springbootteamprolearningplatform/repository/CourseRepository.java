@@ -19,9 +19,8 @@ public interface CourseRepository extends JpaRepository<Course, UUID> {
                     "where a.id = ?1 and r.name = 'MENTOR'")
     List<Course> findAuthorCourses(UUID authorId);
 
-    @Query(value =
-            "select avg(vote.rank) as rate from courses course " +
-                    "join course.votes vote " +
-                    "where course.id = ?1")
+    @Query(value = "select avg(vote.rank) from courses course " +
+            "join course.votes vote " +
+            "where course.id = ?1")
     Double findCourseRate(UUID courseId);
 }

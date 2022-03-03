@@ -12,6 +12,6 @@ public class HomeController {
     @GetMapping
     public String getHome(Model model) {
         model.addAttribute("msg", "Welcome to our learning platform!");
-        return "login-form";
+        return "redirect:/auth/login";
     }
 }

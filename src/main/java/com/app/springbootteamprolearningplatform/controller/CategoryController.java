@@ -25,7 +25,7 @@ public class CategoryController {
     }
 
     @GetMapping
-    public String getCategory(Model model, @RequestParam(required = false, defaultValue = "1") int page) {
+    public String getCategory(Model model, @RequestParam(required = false, defaultValue = "0") int page) {
 //        model.addAttribute("categories", this.categoryRepository.getAll());
         if (page > 1) {
             categoryService.page = page;
@@ -52,7 +52,7 @@ public class CategoryController {
 
     @PostMapping({"/add"})
     public String addCategory(Category category) {
-        this.categoryRepository.save(category);
+        categoryRepository.save(category);
         return "redirect:/categories";
     }
 

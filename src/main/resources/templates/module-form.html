@@ -131,8 +131,8 @@
         <tr>
             <th>Name</th>
             <th>Price</th>
-            <th th:if="${role == 'ADMIN' and role == 'SUPER ADMIN'}">Edit</th>
-            <th th:if="${role == 'ADMIN' and role == 'SUPER ADMIN'}">Delete</th>
+            <th th:if="${role == 'ADMIN' or role == 'SUPER ADMIN' or role == 'MENTOR'}">Edit</th>
+            <th th:if="${role == 'ADMIN' or role == 'SUPER ADMIN' or role == 'MENTOR'}">Delete</th>
         </tr>
         </thead>
         <tbody>
@@ -147,14 +147,14 @@
 
             <td>
                 <a th:href="@{'/modules/get-save-form?id=' + ${module.id}}"
-                   th:if="${role == 'ADMIN' and role == 'SUPER ADMIN'}"
+                   th:if="${role == 'ADMIN' or role == 'SUPER ADMIN' or role == 'MENTOR'}"
                    class="btn btn-primary btn-sm">
                     Edit
                 </a>
             </td>
 
             <td><a th:href="@{'/modules/delete/' + ${module.id}}"
-                   th:if="${role == 'ADMIN' and role == 'SUPER ADMIN'}"
+                   th:if="${role == 'ADMIN' or role == 'SUPER ADMIN' or role == 'MENTOR'}"
                    class="btn btn-danger btn-sm">
                 <span class="glyphicon glyphicon-trash"></span> Delete </a></td>
         </tr>
@@ -162,7 +162,7 @@
     </table>
 </div>
 
-<button class="btn btn-success"><a style="text-decoration: none" href="/courses">COURSES</a></button>
+<button class="btn btn-success"><a style="text-decoration: none" th:href="@{/courses}">COURSES</a></button>
 
 </body>
 </html>

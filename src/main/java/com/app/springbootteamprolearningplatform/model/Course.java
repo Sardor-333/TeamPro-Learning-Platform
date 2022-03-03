@@ -30,7 +30,7 @@ public class Course {
     @Column(nullable = false)
     String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "text")
     String description;
 
     @ManyToOne

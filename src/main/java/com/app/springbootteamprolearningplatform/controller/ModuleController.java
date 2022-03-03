@@ -1,7 +1,6 @@
 package com.app.springbootteamprolearningplatform.controller;
 
 import com.app.springbootteamprolearningplatform.model.Module;
-import com.app.springbootteamprolearningplatform.repository.CourseRepository;
 import com.app.springbootteamprolearningplatform.service.ModuleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -38,10 +37,10 @@ public class ModuleController {
             Module module = moduleService.getModuleById(id);
             model.addAttribute("modules", module);
             return "edit-module-form";
-        } else {
+        } else if (courseId != null) {
             model.addAttribute("courseId", courseId);
-            return "save-module-form";
         }
+        return "save-module-form";
     }
 
     @RequestMapping("/save")

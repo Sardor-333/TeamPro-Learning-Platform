@@ -60,7 +60,7 @@ public class CourseController {
             }
 
             model.addAttribute("courseRate", courseService.getCourseRate(courseId));
-            model.addAttribute("courseComments", courseService.getCourseReviewDtos(courseId));
+            model.addAttribute("courseComments", courseService.getCourseCommentDtos(courseId));
             return "course";
         }
     }

@@ -259,10 +259,10 @@
                 <div class="mt-2" th:each="comment : ${courseComments}">
                     <div class="d-flex flex-row p-3">
                         <img
-                                th:src="'data:image/jpg;base64, '+${comment.base64}"
+                                th:src="'data:image/png;data:image/jpeg;base64, '+${comment.base64}"
                                 width="40"
                                 height="40"
-                                class="rounded-circle mr-3" alt="any sing"
+                                class="rounded-circle mr-3" alt="img"
                         >
                         <div class="w-100">
                             <div class="d-flex justify-content-between align-items-center">

@@ -4,11 +4,12 @@ import com.app.springbootteamprolearningplatform.dto.UserDto;
 import com.app.springbootteamprolearningplatform.model.Attachment;
 import com.app.springbootteamprolearningplatform.model.Role;
 import com.app.springbootteamprolearningplatform.model.User;
-import com.app.springbootteamprolearningplatform.repository.AttachmentRepository;
 import com.app.springbootteamprolearningplatform.repository.RoleRepository;
 import com.app.springbootteamprolearningplatform.repository.UserRepository;
+import com.app.springbootteamprolearningplatform.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,46 +18,43 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
+@Transactional
 public class UserService {
     private UserRepository userRepository;
-    private AttachmentRepository attachmentRepository;
     private RoleRepository roleRepository;
 
     @Autowired
     public UserService(UserRepository userRepository,
-                       AttachmentRepository attachmentRepository,
                        RoleRepository roleRepository) {
         this.userRepository = userRepository;
-        this.attachmentRepository = attachmentRepository;
         this.roleRepository = roleRepository;
     }
 
     public boolean registerUser(UserDto userDto) {
-        if (!userRepository.existsByEmail(userDto.getEmail())) {
-            if (isValidEmail(userDto.getEmail())
-                    && isValidPassword(userDto.getPassword())
-                    && userDto.getPassword().equals(userDto.getConfirmPassword())) {
-                User user = new User(
-                        userDto.getFirstName(),
-                        userDto.getLastName(),
-                        userDto.getEmail(),
-                        userDto.getPassword(),
-                        userDto.getBio(),
-                        getAttachment(userDto.getPhoto())
-                );
-                Role role = roleRepository.findByName("USER").orElse(null);
-                if (role == null) {
-                    role = new Role("USER");
-                    roleRepository.save(role);
-                }
-                user.setRoles(List.of(role));
-                userRepository.save(user);
-                return true;
+        if (
+                !userRepository.existsByEmail(userDto.getEmail())
+                        && Util.isValidEmail(userDto.getEmail())
+                        && userDto.getPassword().equals(userDto.getConfirmPassword())) {
+
+            User user = new User(
+                    userDto.getFirstName(),
+                    userDto.getLastName(),
+                    userDto.getEmail(),
+                    userDto.getPassword(),
+                    userDto.getBio(),
+                    getAttachment(userDto.getPhoto())
+            );
+
+            Role role = roleRepository.findByName("USER").orElse(null);
+            if (role == null) {
+                role = new Role("USER");
+                roleRepository.save(role);
             }
+            user.setRoles(List.of(role));
+            userRepository.save(user);
+            return true;
         }
         return false;
     }
@@ -101,17 +99,6 @@ public class UserService {
     public void logOut(HttpServletRequest request) {
         HttpSession session = request.getSession();
         session.invalidate();
-    }
-
-    private boolean isValidEmail(String email) {
-        String regex = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,50}$";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
-    }
-
-    private boolean isValidPassword(String password) {
-        return password != null && password.length() >= 6;
     }
 
     public List<User> getAuthors() {

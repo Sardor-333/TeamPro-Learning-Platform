@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -16,28 +18,25 @@ import java.util.UUID;
 public class UserDto {
 
     UUID id;
+
+    @NotBlank(message = "First name must contain characters!")
     String firstName;
+
     String lastName;
+
     String bio;
+
+    @NotBlank(message = "Email must contain required characters!")
+//    @Email(regexp = "\\b[A-Z0-9._%-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b", message = "Email format is invalid!")
     String email;
+
+    @NotBlank(message = "Password must contain characters!")
+    @Size(min = 6, message = "Password length must be at least 6!")
     String password;
+
+    @NotBlank(message = "Password confirmation must be the same!")
+    @Size(min = 6, message = "Password confirmation must be the same!")
     String confirmPassword;
+
     MultipartFile photo;
-
-    public UserDto(String firstName, String lastName, String bio, String email, String password, String confirmPassword, MultipartFile photo) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.bio = bio;
-        this.email = email;
-        this.password = password;
-        this.confirmPassword = confirmPassword;
-        this.photo = photo;
-    }
-
-    public UserDto(String firstName, String lastName, String email, String password) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-    }
 }

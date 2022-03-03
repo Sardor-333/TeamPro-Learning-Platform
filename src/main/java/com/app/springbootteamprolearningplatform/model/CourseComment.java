@@ -8,7 +8,9 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -45,10 +47,11 @@ public class CourseComment {
         this.postedAt = postedAt;
     }
 
-    public CourseComment(Course course, User user, String body) {
-        this.course = course;
-        this.user = user;
-        this.body = body;
-        this.postedAt = LocalDateTime.now();
+    public String getBase64() {
+        if (this.user.getAttachment() != null) {
+            byte[] bytes = Base64.getEncoder().encode(user.getAttachment().getBytes());
+            return new String(bytes, StandardCharsets.UTF_8);
+        }
+        return null;
     }
 }

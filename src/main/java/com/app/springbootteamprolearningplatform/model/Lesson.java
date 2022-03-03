@@ -24,7 +24,7 @@ public class Lesson {
     @Column(updatable = false, nullable = false)
     UUID id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "text")
     String theme;
 
     @ManyToOne
