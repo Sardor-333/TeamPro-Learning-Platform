@@ -99,10 +99,12 @@ public class LessonController {
     }
 
     @PostMapping("/add/{moduleId}")
-    public String addLesson(Lesson lesson, @PathVariable UUID moduleId, HttpServletRequest req) {
+    public String addLesson(String theme, HttpServletRequest req, @PathVariable UUID moduleId) {
         String role = roleRepository.getRole(req);
         if (role != null) {
-            lessonService.saveLesson(moduleId, lesson);
+            Lesson lesson = new Lesson();
+            lesson.setTheme(theme);
+            lessonService.saveLesson(moduleId,lesson);
             return "redirect:/lessons/" + moduleId;
         }
         return "redirect:/auth/login";
