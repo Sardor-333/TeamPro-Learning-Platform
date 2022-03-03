@@ -1,6 +1,7 @@
 package com.app.springbootteamprolearningplatform.controller;
 
 import com.app.springbootteamprolearningplatform.dto.UserDto;
+import com.app.springbootteamprolearningplatform.repository.RoleRepository;
 import com.app.springbootteamprolearningplatform.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/auth")
 public class AuthController {
     private UserService userService;
+    private RoleRepository roleRepository;
 
     @Autowired
     public AuthController(UserService userService) {

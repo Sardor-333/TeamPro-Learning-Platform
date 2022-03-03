@@ -8,15 +8,14 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Entity(name = "modules")
-public class Module {
+@Entity(name = "course_votes")
+public class CourseRate {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -24,20 +23,20 @@ public class Module {
     @Column(updatable = false, nullable = false)
     UUID id;
 
-    @Column(nullable = false)
-    String name;
-
-    Double price;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    User user;
 
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
     Course course;
 
-    @OneToMany(mappedBy = "module")
-    List<Lesson> lessons;
+    @Column(nullable = false)
+    Integer rank;
 
-    public Module(String name, Double price) {
-        this.name = name;
-        this.price = price;
+    public CourseRate(Course course, User user, Integer rank){
+        this.course = course;
+        this.user = user;
+        this.rank = rank;
     }
 }

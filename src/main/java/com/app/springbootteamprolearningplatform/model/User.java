@@ -58,7 +58,7 @@ public class User {
     List<CourseComment> courseComments;
 
     @OneToMany(mappedBy = "user")
-    List<CourseVote> courseVotes;
+    List<CourseRate> courseVotes;
 
     @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(

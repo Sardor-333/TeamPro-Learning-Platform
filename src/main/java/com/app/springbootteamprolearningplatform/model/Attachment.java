@@ -40,15 +40,4 @@ public class Attachment {
 
     @Column(nullable = false)
     byte[] bytes;
-
-    public Attachment(String fileLocation, String fileName, byte[] bytes) {
-        this.fileLocation = fileLocation;
-        this.fileName = fileName;
-        this.bytes = bytes;
-    }
-
-    public Attachment(String fileLocation, byte[] bytes) {
-        this.fileLocation = fileLocation;
-        this.bytes = bytes;
-    }
 }

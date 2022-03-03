@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -43,13 +44,14 @@ public class Course {
     List<CourseComment> comments;
 
     @OneToMany(mappedBy = "course")
-    List<CourseVote> votes;
+    List<CourseRate> votes;
 
     @ManyToMany(mappedBy = "courses")
     List<User> authors;
 
     @OneToOne(cascade = CascadeType.ALL) // todo to test
     @JoinColumn(name = "attachment_id", referencedColumnName = "id")
+    @Cascade(org.hibernate.annotations.CascadeType.DELETE)
     Attachment attachment;
 
     public Course(String name, String description) {

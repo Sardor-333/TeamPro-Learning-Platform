@@ -11,7 +11,6 @@ import java.util.UUID;
 @Repository
 public interface CourseRepository extends JpaRepository<Course, UUID> {
 
-    // find specific user courses if it has the role of mentor
     @Query(value =
             "" +
                     "from courses c " +
@@ -20,7 +19,6 @@ public interface CourseRepository extends JpaRepository<Course, UUID> {
                     "where a.id = ?1 and r.name = 'MENTOR'")
     List<Course> findAuthorCourses(UUID authorId);
 
-    // find specific course rate
     @Query(value =
             "select avg(vote.rank) as rate from courses course " +
                     "join course.votes vote " +

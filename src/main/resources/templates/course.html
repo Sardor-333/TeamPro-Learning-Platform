@@ -176,7 +176,7 @@
 <body>
 
 <div class="card" style="width: 18rem;">
-    <img th:src="@{'data:image/jpeg;data:image/png;base64,'+${course.getBase64Encode()}}" class="card-img-top"/>
+    <img th:src="@{'data:image/jpeg;data:image/png;base64,'+${img}}" class="card-img-top"/>
 
     <div class="card-body">
         <h5 th:text="${course.name}" class="card-title"></h5>
@@ -245,7 +245,7 @@
                 <div class="p-3">
                     <h6>Comments</h6>
                 </div>
-                <form th:action="'/courses/comments/add/'+${course.id}" method="post">
+                <form th:action="'/courses/comments/leaveComment/'+${course.id}" method="post">
                     <div class="mt-3 d-flex flex-row align-items-center p-3 form-color">
                         <img src="https://i.imgur.com/zQZSWrt.jpg"
                              width="50"

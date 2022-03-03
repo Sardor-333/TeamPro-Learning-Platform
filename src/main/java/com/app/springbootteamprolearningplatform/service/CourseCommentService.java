@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -49,5 +50,9 @@ public class CourseCommentService {
         User user = userRepository.findById(userId).orElse(null);
         CourseComment comment = new CourseComment(course, user, commentBody, LocalDateTime.now());
         courseCommentRepository.save(comment);
+    }
+
+    public List<CourseComment> findCourseComments(UUID courseId) {
+        return courseCommentRepository.findAllByCourseId(courseId);
     }
 }
