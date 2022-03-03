@@ -10,8 +10,30 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HomeController {
 
     @GetMapping
-    public String getHome(Model model) {
-        model.addAttribute("msg", "Welcome to our learning platform!");
-        return "login-form";
+    public String getHome() {
+        return "index";
+    }
+    @GetMapping("/about")
+    public String getAbout() {
+        return "about";
+    }
+
+    @GetMapping("/team")
+    public String getTeam() {
+        return "team";
+    }
+
+    @GetMapping("/contact")
+    public String getContact() {
+        return "contact";
+    }
+    @GetMapping("/blog")
+    public String getBlog() {
+        return "blog";
+    }
+
+    @GetMapping("/chat")
+    public String getchat() {
+        return "chat";
     }
 }
