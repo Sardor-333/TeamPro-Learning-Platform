@@ -85,6 +85,9 @@
     <section id="blog" class="blog">
         <div class="container" data-aos="fade-up">
 
+            <a th:if="${role=='ADMIN' or role=='SUPER_ADMIN' or role == 'MENTOR'}" th:href="@{/courses/add}"
+               class="btn btn-primary"> + Add Course</a>
+
             <div class="row">
 
                 <div class="col-lg-8 entries">
@@ -124,17 +127,24 @@
                                         <a th:href="@{'/courses/' + ${course.id}}">Read More</a>
                                     </div>
 
+                                    <!--   BUY COURSE   -->
                                     <div class="read-more">
-                                        <a th:if="${course.status==true and role=='USER'}" style="margin-top: 2px"
-                                           th:href="@{'/modules/' + ${course.id}}"
-                                           class="btn btn-primary">START
+                                        <a th:if="${course.status==true and role=='USER'}"
+                                           th:href="@{'/modules/' + ${course.id}}">START
                                         </a>
-                                        <a th:if="${course.status==false and role=='USER'}" style="margin-top: 2px"
-                                           th:href="@{'/courses/buy?courseId='+${course.id} + '&userId='+ ${userId}}"
-                                           class="btn btn-primary">Buy
+                                        <a th:if="${course.status==false and role=='USER'}"
+                                           th:href="@{'/courses/buy?courseId='+${course.id} + '&userId='+ ${userId}}">Buy
                                         </a>
                                     </div>
-
+                                    <!--   EDIT AND DELETE   -->
+                                    <div class="read-more d-flex">
+                                        <a th:if="${role=='ADMIN' or role=='SUPER_ADMIN' or role=='MENTOR'}"
+                                           th:href="@{'/courses/update/' + ${course.id}}"
+                                           class="card-link" th:text="EDIT"></a>
+                                        <a th:if="${role=='ADMIN' or role=='SUPER_ADMIN' or role=='MENTOR'}"
+                                           th:href="@{/courses/delete(id=${course.id})}"
+                                           class="card-link" th:text="DELETE"></a>
+                                    </div>
                                 </div>
                             </article>
                         </div>
