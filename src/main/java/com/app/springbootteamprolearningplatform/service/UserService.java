@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -102,7 +103,7 @@ public class UserService {
     }
 
     public List<User> getAuthors() {
-        return userRepository.findAllByRoles(roleRepository.findByName("MENTOR").orElse(null));
+        return userRepository.findAllByRoles(List.of(Objects.requireNonNull(roleRepository.findByName("MENTOR").orElse(null))));
     }
 
     private Attachment getAttachment(MultipartFile multipartFile) {
