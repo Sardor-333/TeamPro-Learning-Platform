@@ -37,13 +37,15 @@ public class CourseController {
         } else {
             if (page == null || page < 0) page = 0;
 
+            List<Course> courses = courseService.getCoursesL(page);
+
             model.addAttribute("currentPage", page);
-            model.addAttribute("courses", courseService.getCoursesL(page));
+            model.addAttribute("courses", courses);
             model.addAttribute("endPage", courseService.endPage(page));
             model.addAttribute("beginPage", courseService.beginPage(page));
             model.addAttribute("pageCount", courseService.pageCount());
             model.addAttribute("listPage", courseService.getPageList(courseService.beginPage(page), courseService.endPage(page)));
-            return "courses";
+            return "blog";
         }
     }
 

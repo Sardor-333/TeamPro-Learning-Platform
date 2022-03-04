@@ -36,4 +36,9 @@ public class HomeController {
     public String getchat() {
         return "chat";
     }
+
+    @GetMapping("/77")
+    public String get77() {
+        return "77";
+    }
 }
