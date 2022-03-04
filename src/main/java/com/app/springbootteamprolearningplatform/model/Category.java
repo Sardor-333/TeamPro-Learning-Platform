@@ -30,6 +30,9 @@ public class Category {
     @OneToMany(mappedBy = "category")
     List<Course> courses;
 
+    @Transient
+    Long coursesCount;
+
     public Category(String name) {
         this.name = name;
     }

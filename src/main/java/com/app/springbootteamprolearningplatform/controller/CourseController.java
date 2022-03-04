@@ -50,9 +50,8 @@ public class CourseController {
             model.addAttribute("beginPage", courseService.beginPage(page));
             model.addAttribute("pageCount", courseService.pageCount());
             model.addAttribute("listPage", courseService.getPageList(courseService.beginPage(page), courseService.endPage(page)));
-
-            model.addAttribute("categories", categoryRepository.findAll());
-            return "courses";
+            model.addAttribute("categories", courseService.getCategoriesWithInfo());
+            return "blog";
         }
     }
 
@@ -93,8 +92,8 @@ public class CourseController {
             model.addAttribute("pageCount", courseService.pageCount());
             model.addAttribute("listPage", courseService.getPageList(courseService.beginPage(page), courseService.endPage(page)));
 
-            model.addAttribute("categories", categoryRepository.findAll());
-            return "courses";
+            model.addAttribute("categories", courseService.getCategoriesWithInfo());
+            return "blog";
         }
     }
 

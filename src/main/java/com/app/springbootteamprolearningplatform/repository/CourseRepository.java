@@ -25,4 +25,6 @@ public interface CourseRepository extends JpaRepository<Course, UUID> {
     Double findCourseRate(UUID courseId);
 
     List<Course> findAllByCategoryId(UUID categoryId);
+
+    Long countAllByCategoryId(UUID id);
 }

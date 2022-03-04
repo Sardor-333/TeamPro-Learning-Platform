@@ -193,8 +193,17 @@ public class CourseService {
             }
 
             userCourseDtoList.add(new CourseDto(course.getId(), course.getName(), course.getDescription(),
-                    course.getPrice(), status));
+                    course.getPrice(), status, course.getBase64Encode()));
         }
         return userCourseDtoList;
+    }
+
+    public List<Category> getCategoriesWithInfo() {
+        List<Category> categories = categoryRepository.findAll();
+
+        for (Category category : categories) {
+            category.setCoursesCount(courseRepository.countAllByCategoryId(category.getId()));
+        }
+        return categories;
     }
 }
