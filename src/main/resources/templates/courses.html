@@ -148,7 +148,7 @@
     <!-- Container wrapper -->
 </nav>
 <!--<div class="container">-->
-<!--    <a th:if="${role=='ADMIN' or role=='SUPER ADMIN' or role == 'MENTOR'}" th:href="@{/courses/add}"-->
+<!--    <a th:if="${role=='ADMIN' or role=='SUPER_ADMIN' or role == 'MENTOR'}" th:href="@{/courses/add}"-->
 <!--       class="btn btn-success"> + Add-->
 <!--        Course</a>-->
 <!--    <br>-->
@@ -165,10 +165,10 @@
 <!--                <div class="card-body">-->
 <!--                    <h5 class="card-title" th:text="${course.name}"></h5>-->
 <!--                    <p class="card-text"></p>-->
-<!--                    <a th:if="${role=='ADMIN' or role=='SUPER ADMIN' or role=='MENTOR'}"-->
+<!--                    <a th:if="${role=='ADMIN' or role=='SUPER_ADMIN' or role=='MENTOR'}"-->
 <!--                       th:href="@{'/courses/update/' + ${course.id}}"-->
 <!--                       class="card-link" th:text="EDIT"></a>-->
-<!--                    <a th:if="${role=='ADMIN' or role=='SUPER ADMIN' or role=='MENTOR'}"-->
+<!--                    <a th:if="${role=='ADMIN' or role=='SUPER_ADMIN' or role=='MENTOR'}"-->
 <!--                       th:href="@{/courses/delete(id=${course.id})}"-->
 <!--                       class="card-link" th:text="DELETE"></a>-->
 <!--                </div>-->
@@ -189,10 +189,9 @@
 <!--        </div>-->
 <!--    </div>-->
 <!--</div>-->
-
 <div class="container">
     <br>
-    <a th:if="${role=='ADMIN' or role=='SUPER ADMIN'}" th:href="@{/courses/add}" class="btn btn-success"> + Add
+    <a th:if="${role=='ADMIN' or role=='SUPER_ADMIN'}" th:href="@{/courses/add}" class="btn btn-success"> + Add
         Course</a>
     <br>
     <br>
@@ -201,8 +200,10 @@
         <tr>
             <th>Name</th>
             <th>Description</th>
-            <th th:if="${role=='ADMIN' or role=='SUPER ADMIN'}">Edit</th>
-            <th th:if="${role=='ADMIN' or role=='SUPER ADMIN'}">Delete</th>
+            <th th:if="${role=='ADMIN' or role=='SUPER_ADMIN'}">Edit</th>
+            <th th:if="${role=='ADMIN' or role=='SUPER_ADMIN'}">Delete</th>
+            <th>View</th>
+            <th th:if="${role=='USER'}">Buy</th>
         </tr>
         </thead>
         <tbody>
@@ -214,13 +215,13 @@
 
             <td th:text="${course.description}"></td>
 
-            <td th:if="${role=='ADMIN' or role=='SUPER ADMIN'}">
+            <td th:if="${role=='ADMIN' or role=='SUPER_ADMIN'}">
                 <a th:href="@{'/courses/update/' + ${course.id}}" class="btn btn-primary btn-sm">
                     Edit
                 </a>
             </td>
 
-            <td th:if="${role=='ADMIN' or role=='SUPER ADMIN'}"><a th:href="@{/courses/delete(id=${course.id})}"
+            <td th:if="${role=='ADMIN' or role=='SUPER_ADMIN'}"><a th:href="@{/courses/delete(id=${course.id})}"
                                                                    class="btn btn-danger btn-sm">
                 <span class="glyphicon glyphicon-trash"></span> Delete </a></td>
             <td>
@@ -228,7 +229,16 @@
                     View
                 </a>
             </td>
-
+            <td>
+                <a th:if="${course.status==true and role=='USER'}" style="margin-top: 2px"
+                   th:href="@{'/modules/' + ${course.id}}"
+                   class="btn btn-primary">START
+                </a>
+                <a th:if="${course.status==false and role=='USER'}" style="margin-top: 2px"
+                   th:href="@{'/courses/buy?courseId='+${course.id} + '&userId='+ ${userId}}"
+                   class="btn btn-primary">Buy
+                </a>
+            </td>
         </tr>
         </tbody>
     </table>

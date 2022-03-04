@@ -4,7 +4,9 @@ import com.app.springbootteamprolearningplatform.dto.CourseDto;
 import com.app.springbootteamprolearningplatform.model.Category;
 import com.app.springbootteamprolearningplatform.model.Course;
 import com.app.springbootteamprolearningplatform.model.User;
+import com.app.springbootteamprolearningplatform.repository.CategoryRepository;
 import com.app.springbootteamprolearningplatform.service.CourseService;
+import com.app.springbootteamprolearningplatform.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,10 +23,14 @@ import java.util.UUID;
 @RequestMapping({"/courses"})
 public class CourseController {
     private final CourseService courseService;
+    private final UserService userService;
+    private final CategoryRepository categoryRepository;
 
     @Autowired
-    public CourseController(CourseService courseService) {
+    public CourseController(CourseService courseService, UserService userService, CategoryRepository categoryRepository) {
         this.courseService = courseService;
+        this.userService = userService;
+        this.categoryRepository = categoryRepository;
     }
 
     @GetMapping
@@ -36,13 +42,16 @@ public class CourseController {
             return "login-form";
         } else {
             if (page == null || page < 0) page = 0;
-
+            User user = userService.getUserById((UUID) session.getAttribute("userId"));
+            model.addAttribute("userId", user.getId());
             model.addAttribute("currentPage", page);
-            model.addAttribute("courses", courseService.getCoursesL(page));
+            model.addAttribute("courses", courseService.getCoursesPageable(user, page));
             model.addAttribute("endPage", courseService.endPage(page));
             model.addAttribute("beginPage", courseService.beginPage(page));
             model.addAttribute("pageCount", courseService.pageCount());
             model.addAttribute("listPage", courseService.getPageList(courseService.beginPage(page), courseService.endPage(page)));
+
+            model.addAttribute("categories", categoryRepository.findAll());
             return "courses";
         }
     }
@@ -65,6 +74,30 @@ public class CourseController {
         }
     }
 
+    @GetMapping("/byCategory/{categoryId}")
+    public String getCourseByCategory(@PathVariable UUID categoryId,
+                                      Model model,
+                                      @RequestParam(required = false, defaultValue = "0") Integer page,
+                                      HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        if (!sessionHasAttributes(session, "userId", "role")) {
+            return "login-form";
+        } else {
+            if (page == null || page < 0) page = 0;
+            User user = userService.getUserById((UUID) session.getAttribute("userId"));
+            model.addAttribute("userId", user.getId());
+            model.addAttribute("currentPage", page);
+            model.addAttribute("courses", courseService.getCoursesByCategory(categoryId, user));
+            model.addAttribute("endPage", courseService.endPage(page));
+            model.addAttribute("beginPage", courseService.beginPage(page));
+            model.addAttribute("pageCount", courseService.pageCount());
+            model.addAttribute("listPage", courseService.getPageList(courseService.beginPage(page), courseService.endPage(page)));
+
+            model.addAttribute("categories", categoryRepository.findAll());
+            return "courses";
+        }
+    }
+
     @GetMapping({"/add"})
     public String getAddForm(Model model, HttpServletRequest request) {
         HttpSession session = request.getSession();
@@ -77,6 +110,15 @@ public class CourseController {
             model.addAttribute("authors", authors);
             return "add-course";
         }
+    }
+
+    @GetMapping("/buy")
+    public String buyCourse(@RequestParam(name = "userId") UUID userId,
+                            @RequestParam(name = "courseId") UUID courseId,
+                            Model model) {
+        String s = userService.buyCourse(userId, courseId);
+        model.addAttribute("msg", s);
+        return "redirect:/courses";
     }
 
     @PostMapping({"/add"})

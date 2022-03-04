@@ -62,10 +62,12 @@ public class ChatController {
         //      SPECIFIC CHAT MESSAGES
         List<Message> chatMessages = chatService.findChatMessages(chatId);
         model.addAttribute("chatMessages", chatMessages);
+        chatService.makeChatMessagesRead(chatId);
 
         //      SESSION USER CHATS
         UUID userId = UUID.fromString(request.getSession().getAttribute("userId").toString());
         List<ChatRoom> userChats = chatService.getUserChats(userId);
+
         model.addAttribute("userChats", userChats);
         model.addAttribute("v-userId", userId);
 
@@ -87,8 +89,10 @@ public class ChatController {
     @GetMapping("/search")
     public String searchUser(@RequestParam(name = "email") String email, HttpServletRequest request, Model model) {
         UUID hostId = UUID.fromString(request.getSession().getAttribute("userId").toString());
-        User wanted = chatService.searchUserForHost(hostId, email);
-        model.addAttribute("wanted", wanted);
-        return "view-wanted-user"; // TODO
+
+        List<User> wantedUsers = chatService.searchUsersForHost(hostId, email);
+        model.addAttribute("wanted", wantedUsers);
+
+        return "view-wanted-users"; // TODO
     }
 }

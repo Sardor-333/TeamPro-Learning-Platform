@@ -22,15 +22,13 @@ import java.util.UUID;
 @Service
 @Transactional
 public class CourseService {
+    public final int limit = 3;
     private CourseRepository courseRepository;
     private CourseRateRepository courseRateRepository;
     private CategoryRepository categoryRepository;
     private UserRepository userRepository;
     private CourseCommentService courseCommentService;
     private RoleRepository roleRepository;
-    private CourseCommentRepository courseCommentRepository;
-
-    public final int limit = 3;
 
     @Autowired
     public CourseService(CourseRepository courseRepository,
@@ -38,15 +36,13 @@ public class CourseService {
                          UserRepository userRepository,
                          CourseCommentService courseCommentService,
                          RoleRepository roleRepository,
-                         CourseRateRepository courseRateRepository,
-                         CourseCommentRepository courseCommentRepository) {
+                         CourseRateRepository courseRateRepository) {
         this.courseRepository = courseRepository;
         this.categoryRepository = categoryRepository;
         this.userRepository = userRepository;
         this.courseCommentService = courseCommentService;
         this.roleRepository = roleRepository;
         this.courseRateRepository = courseRateRepository;
-        this.courseCommentRepository = courseCommentRepository;
     }
 
     public Course getCourse(UUID courseId) {
@@ -174,7 +170,31 @@ public class CourseService {
         return pageList;
     }
 
-    public List<Course> getCoursesL(int page) {
-        return courseRepository.findAll(PageRequest.of(page, limit)).get().toList();
+    public List<CourseDto> getCoursesPageable(User user, int page) {
+        List<Course> courses = courseRepository.findAll(PageRequest.of(page, limit)).get().toList();
+        return courseDtoFactory(user, courses);
+    }
+
+    public List<CourseDto> getCoursesByCategory(UUID categoryId, User user) {
+        List<Course> courses = courseRepository.findAllByCategoryId(categoryId);
+        return courseDtoFactory(user, courses);
+    }
+
+    private List<CourseDto> courseDtoFactory(User user, List<Course> courses) {
+        List<CourseDto> userCourseDtoList = new ArrayList<>();
+
+        for (Course course : courses) {
+            boolean status = false;
+            for (Course userCourse : user.getUserCourses()) {
+                if (course.getId().equals(userCourse.getId())) {
+                    status = true;
+                    break;
+                }
+            }
+
+            userCourseDtoList.add(new CourseDto(course.getId(), course.getName(), course.getDescription(),
+                    course.getPrice(), status));
+        }
+        return userCourseDtoList;
     }
 }

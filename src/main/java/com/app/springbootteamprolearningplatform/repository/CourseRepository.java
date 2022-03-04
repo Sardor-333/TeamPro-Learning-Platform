@@ -23,4 +23,6 @@ public interface CourseRepository extends JpaRepository<Course, UUID> {
             "join course.votes vote " +
             "where course.id = ?1")
     Double findCourseRate(UUID courseId);
+
+    List<Course> findAllByCategoryId(UUID categoryId);
 }

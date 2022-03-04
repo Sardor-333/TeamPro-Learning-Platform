@@ -6,7 +6,6 @@ import com.app.springbootteamprolearningplatform.model.User;
 import com.app.springbootteamprolearningplatform.repository.ChatRepository;
 import com.app.springbootteamprolearningplatform.repository.MessageRepository;
 import com.app.springbootteamprolearningplatform.repository.UserRepository;
-import com.app.springbootteamprolearningplatform.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,16 +33,14 @@ public class ChatService {
     }
 
     public boolean createChat(UUID hostId, UUID guestId) {
-        if (chatRepository.existsByUser1IdOrUser2Id(hostId, guestId) || chatRepository.existsByUser1IdOrUser2Id(guestId, hostId)) {
+        if (chatRepository.existsByUser1IdOrUser2Id(hostId, guestId) || chatRepository.existsByUser1IdOrUser2Id(guestId, hostId))
             return false;
-        }
 
         User host = userRepository.findById(hostId).orElse(null);
         User guest = userRepository.findById(guestId).orElse(null);
 
-        if (host == null || guest == null || host.equals(guest)) {
+        if (host == null || guest == null || host.equals(guest))
             return false;
-        }
 
         ChatRoom chatRoom = new ChatRoom(host, guest);
         chatRepository.save(chatRoom);
@@ -57,11 +54,13 @@ public class ChatService {
             User user1 = chat.getUser1();
             if (user1.equals(sender)) {
                 chat.setGuestUserImg(chat.getUser2().getBase64());
-                chat.setMyImage(user1.getBase64());
-                continue;
+                chat.setMyImage(sender.getBase64());
+                chat.setNewMessagesCount(messageRepository.countAllByChatRoomIdAndFromAndIsRead(chat.getId(), chat.getUser2(), false));
+            } else {
+                chat.setGuestUserImg(user1.getBase64());
+                chat.setMyImage(Objects.requireNonNull(sender).getBase64());
+                chat.setNewMessagesCount(messageRepository.countAllByChatRoomIdAndFromAndIsRead(chat.getId(), sender, false));
             }
-            chat.setGuestUserImg(user1.getBase64());
-            chat.setMyImage(sender.getBase64());
         }
         return userChats;
     }
@@ -86,13 +85,21 @@ public class ChatService {
         return true;
     }
 
-    public User searchUserForHost(UUID hostId, String email) {
-        if (hostId == null || !userRepository.existsById(hostId) || !Util.isValidEmail(email)) return null;
+    public List<User> searchUsersForHost(UUID hostId, String email) {
+        if (hostId == null || !userRepository.existsById(hostId)) return null;
 
         User host = userRepository.findById(hostId).orElse(null);
-        User wanted = userRepository.findByEmail(email).orElse(null);
+        List<User> wantedUsers = userRepository.findAllByEmailContaining(email);
+        wantedUsers.removeIf(user -> user.equals(host));
+        return wantedUsers;
+    }
 
-        if (Objects.requireNonNull(host).equals(wanted)) return null;
-        return wanted;
+    public void makeChatMessagesRead(UUID chatId) {
+        if (chatRepository.existsById(chatId)) {
+            List<Message> messages = messageRepository.findAllByChatRoomId(chatId);
+            for (Message message : messages) {
+                message.setIsRead(true);
+            }
+        }
     }
 }
