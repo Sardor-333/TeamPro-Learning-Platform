@@ -53,7 +53,7 @@ public class CourseService {
     }
 
     public List<User> getAuthors() {
-        return userRepository.findAllByRoles(List.of(roleRepository.findByName("MENTOR").orElse(null)));
+        return userRepository.findAllByRoles(roleRepository.findByName("MENTOR").orElse(null));
     }
 
     public List<Category> getCategories() {

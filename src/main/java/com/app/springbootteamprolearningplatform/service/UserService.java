@@ -43,8 +43,8 @@ public class UserService {
     public boolean registerUser(UserDto userDto) {
         if (
                 !userRepository.existsByEmail(userDto.getEmail())
-                && Util.isValidEmail(userDto.getEmail())
-                && userDto.getPassword().equals(userDto.getConfirmPassword())) {
+                        && Util.isValidEmail(userDto.getEmail())
+                        && userDto.getPassword().equals(userDto.getConfirmPassword())) {
 
             User user = new User(
                     userDto.getFirstName(),
@@ -110,7 +110,7 @@ public class UserService {
     }
 
     public List<User> getAuthors() {
-        return userRepository.findAllByRoles(List.of(Objects.requireNonNull(roleRepository.findByName("MENTOR").orElse(null))));
+        return userRepository.findAllByRoles(Objects.requireNonNull(roleRepository.findByName("MENTOR").orElse(null)));
     }
 
     public User getUserById(UUID id) {
