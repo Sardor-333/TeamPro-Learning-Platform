@@ -52,7 +52,8 @@ public class UserService {
                     userDto.getEmail(),
                     userDto.getPassword(),
                     userDto.getBio(),
-                    getAttachment(userDto.getPhoto())
+                    getAttachment(userDto.getPhoto()),
+                    0.0
             );
 
             Role role = roleRepository.findByName("USER").orElse(null);

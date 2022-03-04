@@ -46,7 +46,7 @@ public class SpringBootTeamProLearningPlatformApplication implements CommandLine
         roleRepository.save(superAdmin);
 
         // INITIALIZE SUPER_ADMIN
-        User SUPER_ADMIN = new User("Sardor", "Shermatov", "sardor.faang.dev@gmail.com", "123456", "Software Engineer Sardor Shermatov", null);
+        User SUPER_ADMIN = new User("Sardor", "Shermatov", "sardor.faang.dev@gmail.com", "123456", "Software Engineer Sardor Shermatov", null, 0.0);
         SUPER_ADMIN.getRoles().add(superAdmin);
 
         userRepository.save(SUPER_ADMIN);
@@ -63,15 +63,15 @@ public class SpringBootTeamProLearningPlatformApplication implements CommandLine
         categoryRepository.save(c4);
         categoryRepository.save(c5);
 
-        User mentor1 = new User("Alice", "Smith", "alice@gmail.com", "123456", "some bio", null);
+        User mentor1 = new User("Alice", "Smith", "alice@gmail.com", "123456", "some bio", null, 100000.0);
         mentor1.getRoles().add(mentor);
         mentor1.getRoles().add(user);
 
-        User mentor2 = new User("Mark", "Smith", "mark@gmail.com", "123456", "some bio", null);
+        User mentor2 = new User("Mark", "Smith", "mark@gmail.com", "123456", "some bio", null, 150000.0);
         mentor2.getRoles().add(mentor);
         mentor2.getRoles().add(user);
 
-        User mentor3 = new User("Tom", "Smith", "tom@gmail.com", "123456", "some bio", null);
+        User mentor3 = new User("Tom", "Smith", "tom@gmail.com", "123456", "some bio", null, 150000.0);
         mentor3.getRoles().add(mentor);
         mentor3.getRoles().add(user);
 
