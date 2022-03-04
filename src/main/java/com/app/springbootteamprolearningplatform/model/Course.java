@@ -10,6 +10,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
@@ -79,5 +80,13 @@ public class Course {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public Course(String name, String description, Category category, Double price) {
+        this.name = name;
+        this.description = description;
+        this.category = category;
+        this.price = price;
+        this.authors = new ArrayList<>();
     }
 }
