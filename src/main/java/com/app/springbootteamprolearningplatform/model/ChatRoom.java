@@ -31,14 +31,19 @@ public class ChatRoom {
     @OneToMany(mappedBy = "chatRoom")
     List<Message> messages;
 
+    public ChatRoom(User user1, User user2) {
+        this.user1 = user1;
+        this.user2 = user2;
+    }
+
+
+    // TO DO TO BE DTO
     @Transient
     String guestUserImg;
 
     @Transient
     String myImage;
 
-    public ChatRoom(User user1, User user2) {
-        this.user1 = user1;
-        this.user2 = user2;
-    }
+    @Transient
+    Long newMessagesCount;
 }

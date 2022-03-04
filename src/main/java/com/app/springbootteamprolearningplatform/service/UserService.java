@@ -2,8 +2,10 @@ package com.app.springbootteamprolearningplatform.service;
 
 import com.app.springbootteamprolearningplatform.dto.UserDto;
 import com.app.springbootteamprolearningplatform.model.Attachment;
+import com.app.springbootteamprolearningplatform.model.Course;
 import com.app.springbootteamprolearningplatform.model.Role;
 import com.app.springbootteamprolearningplatform.model.User;
+import com.app.springbootteamprolearningplatform.repository.CourseRepository;
 import com.app.springbootteamprolearningplatform.repository.RoleRepository;
 import com.app.springbootteamprolearningplatform.repository.UserRepository;
 import com.app.springbootteamprolearningplatform.utils.Util;
@@ -17,19 +19,25 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Transactional
 public class UserService {
     private UserRepository userRepository;
     private RoleRepository roleRepository;
+    private CourseRepository courseRepository;
 
     @Autowired
     public UserService(UserRepository userRepository,
-                       RoleRepository roleRepository) {
+                       RoleRepository roleRepository,
+                       CourseRepository courseRepository
+    ) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.courseRepository = courseRepository;
     }
 
     public boolean registerUser(UserDto userDto) {
@@ -102,7 +110,11 @@ public class UserService {
     }
 
     public List<User> getAuthors() {
-        return userRepository.findAllByRoles(roleRepository.findByName("MENTOR").orElse(null));
+        return userRepository.findAllByRoles(Objects.requireNonNull(roleRepository.findByName("MENTOR").orElse(null)));
+    }
+
+    public User getUserById(UUID id) {
+        return userRepository.findById(id).orElse(null);
     }
 
     private Attachment getAttachment(MultipartFile multipartFile) {
@@ -116,5 +128,28 @@ public class UserService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public String buyCourse(UUID userId, UUID courseId) {
+        User user = userRepository.getById(userId);
+        Course course = courseRepository.getById(courseId);
+        if (course.getPrice() < user.getBalance()) {
+            user.setBalance(user.getBalance() - course.getPrice());
+
+            List<User> authors = course.getAuthors();
+            double v = course.getPrice() / authors.size();
+            for (User author : authors) {
+                author.setBalance(author.getBalance() + v);
+                userRepository.save(author);
+            }
+
+            List<Course> userCourses = user.getUserCourses();
+            userCourses.add(course);
+            user.setUserCourses(userCourses);
+            userRepository.save(user);
+            return "You successfully bought this course!";
+        } else {
+            return "You don`t have much money, Fill your balance!";
+        }
     }
 }

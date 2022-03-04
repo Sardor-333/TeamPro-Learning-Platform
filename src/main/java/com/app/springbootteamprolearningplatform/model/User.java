@@ -8,7 +8,6 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.nio.charset.StandardCharsets;
@@ -47,6 +46,17 @@ public class User {
 
     String bio;
 
+    @ManyToMany(cascade = {CascadeType.ALL})
+    @JoinTable(name = "users_courses", joinColumns = {
+            @JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "course_id")})
+    List<Course> userCourses;
+
+    @ManyToMany(mappedBy = "authors", cascade = CascadeType.ALL)
+    List<Course> courses;
+
+    Double balance;
+
     // RELATIONS
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "attachment_id", referencedColumnName = "id")
@@ -69,14 +79,6 @@ public class User {
     @OneToMany(mappedBy = "user")
     List<CourseRate> courseVotes;
 
-    @ManyToMany(cascade = {CascadeType.ALL})
-    @JoinTable(
-            name = "users_courses",
-            joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "course_id")}
-    )
-    List<Course> courses;
-
     @OneToMany(mappedBy = "user")
     List<Submission> submissions;
 
@@ -91,14 +93,6 @@ public class User {
     @OneToMany(mappedBy = "from")
     List<Message> messages;
 
-    public String getBase64() {
-        if (attachment != null) {
-            byte[] bytes = Base64.getEncoder().encode(attachment.getBytes());
-            return new String(bytes, StandardCharsets.UTF_8);
-        }
-        return null;
-    }
-
     public User(String firstName, String lastName, String email, String password, String bio, Attachment attachment) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -106,5 +100,13 @@ public class User {
         this.password = password;
         this.bio = bio;
         this.attachment = attachment;
+    }
+
+    public String getBase64() {
+        if (attachment != null) {
+            byte[] bytes = Base64.getEncoder().encode(attachment.getBytes());
+            return new String(bytes, StandardCharsets.UTF_8);
+        }
+        return null;
     }
 }

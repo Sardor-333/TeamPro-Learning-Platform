@@ -20,6 +20,8 @@ public class CourseDto {
     UUID[] authorIds;
     UUID categoryId;
     MultipartFile img;
+    Double price;
+    Boolean status;
 
     public CourseDto(String name, String description) {
         this.name = name;
@@ -31,5 +33,13 @@ public class CourseDto {
         this.description = description;
         this.authorIds = authorIds;
         this.categoryId = categoryId;
+    }
+
+    public CourseDto(UUID id, String name, String description, Double price, Boolean status) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.status = status;
     }
 }

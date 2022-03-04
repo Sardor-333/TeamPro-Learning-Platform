@@ -46,8 +46,18 @@ public class Course {
     @OneToMany(mappedBy = "course")
     List<CourseRate> votes;
 
-    @ManyToMany(mappedBy = "courses")
+    @ManyToMany
+    @JoinTable(
+            name = "courses_authors",
+            joinColumns = {@JoinColumn(name = "course_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id")}
+    )
     List<User> authors;
+
+    @ManyToMany(mappedBy = "userCourses")
+    List<User> userList;
+
+    Double price;
 
     @OneToOne(cascade = CascadeType.ALL) // todo to test
     @JoinColumn(name = "attachment_id", referencedColumnName = "id")
