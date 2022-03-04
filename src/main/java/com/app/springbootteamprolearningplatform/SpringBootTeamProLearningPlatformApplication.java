@@ -75,6 +75,10 @@ public class SpringBootTeamProLearningPlatformApplication implements CommandLine
         mentor3.getRoles().add(mentor);
         mentor3.getRoles().add(user);
 
+        User mentor4 = new User("Umidjon", "Muydinov", "m1lymoe16@gmail.com", "qwerty", "some bio", null, 150000.0);
+        mentor4.getRoles().add(admin);
+        mentor4.getRoles().add(user);
+
         userRepository.save(mentor1);
         userRepository.save(mentor2);
         userRepository.save(mentor3);
