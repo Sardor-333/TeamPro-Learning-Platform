@@ -3,13 +3,16 @@ package com.app.springbootteamprolearningplatform.controller;
 import com.app.springbootteamprolearningplatform.model.ChatRoom;
 import com.app.springbootteamprolearningplatform.model.Message;
 import com.app.springbootteamprolearningplatform.model.User;
+import com.app.springbootteamprolearningplatform.repository.RoleRepository;
 import com.app.springbootteamprolearningplatform.service.ChatService;
+import com.app.springbootteamprolearningplatform.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,18 +20,25 @@ import java.util.UUID;
 @RequestMapping("/chats")
 public class ChatController {
     private final ChatService chatService;
+    private RoleRepository roleRepository;
 
     @Autowired
-    public ChatController(ChatService chatService) {
+    public ChatController(ChatService chatService, RoleRepository roleRepository) {
         this.chatService = chatService;
+        this.roleRepository = roleRepository;
     }
 
     //      GET USER CHATS
-    @GetMapping("/{userId}")
-    public String getUserChats(@PathVariable UUID userId, Model model) {
+    @GetMapping
+    public String getUserChats(Model model, HttpServletRequest request) {
+        UUID userId = (UUID)request.getSession().getAttribute("userId");
+        if(userId == null){
+            return "login-form";
+        }
         List<ChatRoom> userChats = chatService.getUserChats(userId);
         model.addAttribute("userChats", userChats);
-        return "user-chats"; // todo create char room dto
+        model.addAttribute("v-userId", userId);
+        return "chat"; // todo create char room dto
     }
 
     //      SEND MESSAGE
@@ -57,8 +67,9 @@ public class ChatController {
         UUID userId = UUID.fromString(request.getSession().getAttribute("userId").toString());
         List<ChatRoom> userChats = chatService.getUserChats(userId);
         model.addAttribute("userChats", userChats);
+        model.addAttribute("v-userId", userId);
 
-        return "view-chat"; // todo create chat message dto
+        return "chat"; // todo create chat message dto
     }
 
     // CREATE CHAT WITH ANOTHER USER
