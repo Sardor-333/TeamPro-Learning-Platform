@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -14,15 +15,20 @@ import java.util.UUID;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CourseDto {
-    UUID id;
-    String name;
-    String description;
+
+    // FROM UI
     UUID[] authorIds;
     UUID categoryId;
     MultipartFile img;
+
+    // FOR DTO
+    UUID id;
+    String description;
+    String name;
     Double price;
     Boolean status;
     String base64;
+    List<String> authors;
 
     public CourseDto(String name, String description) {
         this.name = name;

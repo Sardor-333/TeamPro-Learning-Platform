@@ -87,13 +87,13 @@ public class CourseController {
             return "login-form";
         } else {
             Course course = courseService.getCourse(courseId);
-            model.addAttribute("course", course);
-            if (course.getAttachment() != null) {
-                model.addAttribute("img", getBase64Encode(course.getAttachment().getBytes()));
-            }
 
+            model.addAttribute("course", course);
+            model.addAttribute("img", course.getBase64Encode());
             model.addAttribute("courseRate", courseService.getCourseRate(courseId));
             model.addAttribute("courseComments", courseService.getCourseCommentDtos(courseId));
+            model.addAttribute("authors", course.getAuthors().stream().map(user -> user.getLastName() + " " + user.getFirstName()).toList());
+
             return "course";
         }
     }

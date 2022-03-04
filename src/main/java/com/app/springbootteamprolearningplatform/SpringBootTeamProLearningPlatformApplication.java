@@ -1,9 +1,7 @@
 package com.app.springbootteamprolearningplatform;
 
-import com.app.springbootteamprolearningplatform.model.Category;
-import com.app.springbootteamprolearningplatform.model.Course;
-import com.app.springbootteamprolearningplatform.model.Role;
-import com.app.springbootteamprolearningplatform.model.User;
+import com.app.springbootteamprolearningplatform.model.Module;
+import com.app.springbootteamprolearningplatform.model.*;
 import com.app.springbootteamprolearningplatform.repository.CategoryRepository;
 import com.app.springbootteamprolearningplatform.repository.CourseRepository;
 import com.app.springbootteamprolearningplatform.repository.RoleRepository;
@@ -80,6 +78,12 @@ public class SpringBootTeamProLearningPlatformApplication implements CommandLine
         userRepository.save(mentor3);
 
         Course course = new Course("Java", "Some description", c1, 10000.0);
+
+        Module javaCore = new Module("Java core", 10000.0);
+        Module javaAdvanced = new Module("Java core", 10000.0);
+        javaCore.setCourse(course);
+        javaAdvanced.setCourse(course);
+
         Course course1 = new Course("JS", "Some description", c2, 20000.0);
         Course course2 = new Course("Python", "Some description", c3, 236500.0);
         Course course3 = new Course("C#", "Some description", c4, 45000.0);
@@ -87,7 +91,6 @@ public class SpringBootTeamProLearningPlatformApplication implements CommandLine
         Course course5 = new Course("Flutter", "Some description", c1, 41000.0);
 
         course.getAuthors().add(mentor1);
-        course.getAuthors().add(mentor2);
 
         course1.getAuthors().add(mentor1);
         course1.getAuthors().add(mentor2);

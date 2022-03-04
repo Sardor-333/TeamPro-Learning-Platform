@@ -88,5 +88,6 @@ public class Course {
         this.category = category;
         this.price = price;
         this.authors = new ArrayList<>();
+        this.modules = new ArrayList<>();
     }
 }
