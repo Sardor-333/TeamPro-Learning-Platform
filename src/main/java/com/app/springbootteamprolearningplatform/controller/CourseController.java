@@ -56,29 +56,11 @@ public class CourseController {
         }
     }
 
-    @GetMapping({"/{courseId}"})
-    public String getCourse(@PathVariable UUID courseId, Model model, HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        if (!sessionHasAttributes(session, "userId", "role")) {
-            return "login-form";
-        } else {
-            Course course = courseService.getCourse(courseId);
-            model.addAttribute("course", course);
-            if (course.getAttachment() != null) {
-                model.addAttribute("img", getBase64Encode(course.getAttachment().getBytes()));
-            }
-
-            model.addAttribute("courseRate", courseService.getCourseRate(courseId));
-            model.addAttribute("courseComments", courseService.getCourseCommentDtos(courseId));
-            return "course";
-        }
-    }
-
     @GetMapping("/byCategory/{categoryId}")
-    public String getCourseByCategory(@PathVariable UUID categoryId,
-                                      Model model,
-                                      @RequestParam(required = false, defaultValue = "0") Integer page,
-                                      HttpServletRequest request) {
+    public String getCoursesByCategory(@PathVariable UUID categoryId,
+                                       @RequestParam(required = false, defaultValue = "0") Integer page,
+                                       Model model,
+                                       HttpServletRequest request) {
         HttpSession session = request.getSession();
         if (!sessionHasAttributes(session, "userId", "role")) {
             return "login-form";
@@ -95,6 +77,24 @@ public class CourseController {
 
             model.addAttribute("categories", categoryRepository.findAll());
             return "courses";
+        }
+    }
+
+    @GetMapping({"/{courseId}"})
+    public String getCourse(@PathVariable UUID courseId, Model model, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        if (!sessionHasAttributes(session, "userId", "role")) {
+            return "login-form";
+        } else {
+            Course course = courseService.getCourse(courseId);
+            model.addAttribute("course", course);
+            if (course.getAttachment() != null) {
+                model.addAttribute("img", getBase64Encode(course.getAttachment().getBytes()));
+            }
+
+            model.addAttribute("courseRate", courseService.getCourseRate(courseId));
+            model.addAttribute("courseComments", courseService.getCourseCommentDtos(courseId));
+            return "course";
         }
     }
 
