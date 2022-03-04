@@ -22,6 +22,7 @@ import java.util.UUID;
 @Service
 @Transactional
 public class CourseService {
+    public final int limit = 3;
     private CourseRepository courseRepository;
     private CourseRateRepository courseRateRepository;
     private CategoryRepository categoryRepository;
@@ -29,8 +30,6 @@ public class CourseService {
     private CourseCommentService courseCommentService;
     private RoleRepository roleRepository;
     private CourseCommentRepository courseCommentRepository;
-
-    public final int limit = 3;
 
     @Autowired
     public CourseService(CourseRepository courseRepository,
@@ -174,7 +173,22 @@ public class CourseService {
         return pageList;
     }
 
-    public List<Course> getCoursesL(int page) {
-        return courseRepository.findAll(PageRequest.of(page, limit)).get().toList();
+    public List<CourseDto> getCoursesL(User user, int page) {
+        List<Course> courses = courseRepository.findAll(PageRequest.of(page, limit)).get().toList();
+        List<CourseDto> userCourseDtoList = new ArrayList<>();
+
+        for (Course course : courses) {
+            boolean status = false;
+            for (Course userCourse : user.getUserCourses()) {
+                if (course.getId().equals(userCourse.getId())) {
+                    status = true;
+                    break;
+                }
+            }
+
+            userCourseDtoList.add(new CourseDto(course.getId(), course.getName(), course.getDescription(),
+                    course.getPrice(), status));
+        }
+        return userCourseDtoList;
     }
 }
