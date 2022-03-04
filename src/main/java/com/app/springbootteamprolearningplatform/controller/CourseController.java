@@ -4,6 +4,7 @@ import com.app.springbootteamprolearningplatform.dto.CourseDto;
 import com.app.springbootteamprolearningplatform.model.Category;
 import com.app.springbootteamprolearningplatform.model.Course;
 import com.app.springbootteamprolearningplatform.model.User;
+import com.app.springbootteamprolearningplatform.repository.CategoryRepository;
 import com.app.springbootteamprolearningplatform.service.CourseService;
 import com.app.springbootteamprolearningplatform.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +24,13 @@ import java.util.UUID;
 public class CourseController {
     private final CourseService courseService;
     private final UserService userService;
+    private final CategoryRepository categoryRepository;
 
     @Autowired
-    public CourseController(CourseService courseService, UserService userService) {
+    public CourseController(CourseService courseService, UserService userService, CategoryRepository categoryRepository) {
         this.courseService = courseService;
         this.userService = userService;
+        this.categoryRepository = categoryRepository;
     }
 
     @GetMapping
@@ -42,11 +45,13 @@ public class CourseController {
             User user = userService.getUserById((UUID) session.getAttribute("userId"));
             model.addAttribute("userId", user.getId());
             model.addAttribute("currentPage", page);
-            model.addAttribute("courses", courseService.getCoursesL(user, page));
+            model.addAttribute("courses", courseService.getCoursesPageable(user, page));
             model.addAttribute("endPage", courseService.endPage(page));
             model.addAttribute("beginPage", courseService.beginPage(page));
             model.addAttribute("pageCount", courseService.pageCount());
             model.addAttribute("listPage", courseService.getPageList(courseService.beginPage(page), courseService.endPage(page)));
+
+            model.addAttribute("categories", categoryRepository.findAll());
             return "courses";
         }
     }
@@ -66,6 +71,30 @@ public class CourseController {
             model.addAttribute("courseRate", courseService.getCourseRate(courseId));
             model.addAttribute("courseComments", courseService.getCourseCommentDtos(courseId));
             return "course";
+        }
+    }
+
+    @GetMapping("/byCategory/{categoryId}")
+    public String getCourseByCategory(@PathVariable UUID categoryId,
+                                      Model model,
+                                      @RequestParam(required = false, defaultValue = "0") Integer page,
+                                      HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        if (!sessionHasAttributes(session, "userId", "role")) {
+            return "login-form";
+        } else {
+            if (page == null || page < 0) page = 0;
+            User user = userService.getUserById((UUID) session.getAttribute("userId"));
+            model.addAttribute("userId", user.getId());
+            model.addAttribute("currentPage", page);
+            model.addAttribute("courses", courseService.getCoursesByCategory(categoryId, user));
+            model.addAttribute("endPage", courseService.endPage(page));
+            model.addAttribute("beginPage", courseService.beginPage(page));
+            model.addAttribute("pageCount", courseService.pageCount());
+            model.addAttribute("listPage", courseService.getPageList(courseService.beginPage(page), courseService.endPage(page)));
+
+            model.addAttribute("categories", categoryRepository.findAll());
+            return "courses";
         }
     }
 

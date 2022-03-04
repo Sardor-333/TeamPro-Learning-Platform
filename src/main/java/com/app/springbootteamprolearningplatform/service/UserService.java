@@ -114,7 +114,7 @@ public class UserService {
     }
 
     public User getUserById(UUID id) {
-        return userRepository.getById(id);
+        return userRepository.findById(id).orElse(null);
     }
 
     private Attachment getAttachment(MultipartFile multipartFile) {

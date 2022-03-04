@@ -29,7 +29,6 @@ public class CourseService {
     private UserRepository userRepository;
     private CourseCommentService courseCommentService;
     private RoleRepository roleRepository;
-    private CourseCommentRepository courseCommentRepository;
 
     @Autowired
     public CourseService(CourseRepository courseRepository,
@@ -37,15 +36,13 @@ public class CourseService {
                          UserRepository userRepository,
                          CourseCommentService courseCommentService,
                          RoleRepository roleRepository,
-                         CourseRateRepository courseRateRepository,
-                         CourseCommentRepository courseCommentRepository) {
+                         CourseRateRepository courseRateRepository) {
         this.courseRepository = courseRepository;
         this.categoryRepository = categoryRepository;
         this.userRepository = userRepository;
         this.courseCommentService = courseCommentService;
         this.roleRepository = roleRepository;
         this.courseRateRepository = courseRateRepository;
-        this.courseCommentRepository = courseCommentRepository;
     }
 
     public Course getCourse(UUID courseId) {
@@ -173,8 +170,17 @@ public class CourseService {
         return pageList;
     }
 
-    public List<CourseDto> getCoursesL(User user, int page) {
+    public List<CourseDto> getCoursesPageable(User user, int page) {
         List<Course> courses = courseRepository.findAll(PageRequest.of(page, limit)).get().toList();
+        return courseDtoFactory(user, courses);
+    }
+
+    public List<CourseDto> getCoursesByCategory(UUID categoryId, User user) {
+        List<Course> courses = courseRepository.findAllByCategoryId(categoryId);
+        return courseDtoFactory(user, courses);
+    }
+
+    private List<CourseDto> courseDtoFactory(User user, List<Course> courses) {
         List<CourseDto> userCourseDtoList = new ArrayList<>();
 
         for (Course course : courses) {

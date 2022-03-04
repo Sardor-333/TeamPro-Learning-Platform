@@ -6,7 +6,6 @@ import com.app.springbootteamprolearningplatform.model.User;
 import com.app.springbootteamprolearningplatform.repository.ChatRepository;
 import com.app.springbootteamprolearningplatform.repository.MessageRepository;
 import com.app.springbootteamprolearningplatform.repository.UserRepository;
-import com.app.springbootteamprolearningplatform.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -87,7 +86,7 @@ public class ChatService {
     }
 
     public List<User> searchUsersForHost(UUID hostId, String email) {
-        if (hostId == null || !userRepository.existsById(hostId) || !Util.isValidEmail(email)) return null;
+        if (hostId == null || !userRepository.existsById(hostId)) return null;
 
         User host = userRepository.findById(hostId).orElse(null);
         List<User> wantedUsers = userRepository.findAllByEmailContaining(email);
@@ -96,9 +95,11 @@ public class ChatService {
     }
 
     public void makeChatMessagesRead(UUID chatId) {
-        List<Message> messages = messageRepository.findAllByChatRoomId(chatId);
-        for (Message message : messages) {
-            message.setIsRead(true);
+        if (chatRepository.existsById(chatId)) {
+            List<Message> messages = messageRepository.findAllByChatRoomId(chatId);
+            for (Message message : messages) {
+                message.setIsRead(true);
+            }
         }
     }
 }
