@@ -15,8 +15,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,13 +23,11 @@ import java.util.UUID;
 public class CourseController {
     private final CourseService courseService;
     private final UserService userService;
-    private final CategoryRepository categoryRepository;
 
     @Autowired
     public CourseController(CourseService courseService, UserService userService, CategoryRepository categoryRepository) {
         this.courseService = courseService;
         this.userService = userService;
-        this.categoryRepository = categoryRepository;
     }
 
     @GetMapping
@@ -163,11 +159,6 @@ public class CourseController {
     public String getRole(HttpServletRequest request) {
         HttpSession session = request.getSession();
         return (String) session.getAttribute("role");
-    }
-
-    private String getBase64Encode(byte[] bytes) {
-        byte[] encode = Base64.getEncoder().encode(bytes);
-        return new String(encode, StandardCharsets.UTF_8);
     }
 
     private boolean sessionHasAttributes(HttpSession session, String... values) {
