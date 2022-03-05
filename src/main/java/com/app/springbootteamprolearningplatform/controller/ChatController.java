@@ -1,15 +1,20 @@
 package com.app.springbootteamprolearningplatform.controller;
 
+import com.app.springbootteamprolearningplatform.dto.MessageDto;
 import com.app.springbootteamprolearningplatform.model.ChatRoom;
 import com.app.springbootteamprolearningplatform.model.Message;
 import com.app.springbootteamprolearningplatform.model.User;
+import com.app.springbootteamprolearningplatform.repository.RoleRepository;
 import com.app.springbootteamprolearningplatform.service.ChatService;
+import com.app.springbootteamprolearningplatform.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,11 +29,18 @@ public class ChatController {
     }
 
     //      GET USER CHATS
-    @GetMapping("/{userId}")
-    public String getUserChats(@PathVariable UUID userId, Model model) {
+    @GetMapping
+    public String getUserChats(Model model, HttpServletRequest request) {
+        UUID userId = (UUID)request.getSession().getAttribute("userId");
+        if(userId == null){
+            return "login-form";
+        }
         List<ChatRoom> userChats = chatService.getUserChats(userId);
         model.addAttribute("userChats", userChats);
-        return "user-chats"; // todo create char room dto
+        model.addAttribute("userId_id", userId);
+
+
+        return "chat"; // todo create char room dto
     }
 
     //      SEND MESSAGE
@@ -50,7 +62,7 @@ public class ChatController {
     public String getChatMessages(@PathVariable UUID chatId, HttpServletRequest request, Model model) {
 
         //      SPECIFIC CHAT MESSAGES
-        List<Message> chatMessages = chatService.findChatMessages(chatId);
+        List<MessageDto> chatMessages = chatService.findChatMessages(chatId);
         model.addAttribute("chatMessages", chatMessages);
         chatService.makeChatMessagesRead(chatId);
 
@@ -59,8 +71,11 @@ public class ChatController {
         List<ChatRoom> userChats = chatService.getUserChats(userId);
 
         model.addAttribute("userChats", userChats);
+        model.addAttribute("userId_id", userId);
+        model.addAttribute("guestInfo", chatService.getGuestUser(chatId,request,true));
+        model.addAttribute("myInfo", chatService.getGuestUser(chatId,request,false));
 
-        return "view-chat"; // todo create chat message dto
+        return "chat"; // todo create chat message dto
     }
 
     // CREATE CHAT WITH ANOTHER USER
@@ -83,5 +98,12 @@ public class ChatController {
         model.addAttribute("wanted", wantedUsers);
 
         return "view-wanted-users"; // TODO
+    }
+
+
+    @PostMapping("/save/message/{guestId}")
+    public String saveMessage(String message, @PathVariable UUID guestId, HttpServletRequest req){
+        UUID chatId = chatService.saveMessage(guestId, req, message);
+        return "redirect:/chats/messages/"+chatId;
     }
 }

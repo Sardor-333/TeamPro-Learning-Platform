@@ -19,7 +19,7 @@ import java.util.UUID;
 @Entity(name = "messages")
 public class Message {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     UUID id;
 
     @NotBlank

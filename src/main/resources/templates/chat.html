@@ -1,1376 +1,477 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+
+<!DOCTYPE html >
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
     <title>Chat</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
-  <style>
-      * {
-          margin: 0px;
-          padding: 0px;
-      }
-
-      body {
-          overflow: hidden;
-          background: #419fd9;
-          background-image: url(https://s-media-cache-ak0.pinimg.com/originals/51/ed/c0/51edc046eb80046ee4755ee71d0f19ca.jpg);
-          font-family: 'Open Sans', 'Roboto', 'Ubuntu', sans-serif;
-          font-size: 16px;
-      }
-
-      a {
-          text-decoration: none;
-      }
-
-      button {
-          cursor: pointer;
-      }
-
-      button, input[type="search"], input[type="text"] {
-          border: none;
-          outline: none;
-      }
-
-      input[type="checkbox"] {
-          margin: 7px;
-          margin-right: 15px;
-      }
-
-      /* FIRST, THE OVERLAY ELEMENTS */
-
-      .alerts {
-          position: absolute;
-          bottom: 10px;
-          left: 10px;
-          z-index: 9999;
-          padding: 10px;
-          color: #666;
-          border-radius: 4px;
-          background: #FFF;
-          box-shadow: 0 0 7px 0 rgba(0,0,0,0.4);
-          display: none;
-      }
-
-      /* small conversation menu */
-      .moreMenu {
-          position: absolute;
-          top: 70px;
-          right: 0px;
-          z-index: 10;
-          padding: 10px;
-          color: #666;
-          border-radius: 0 0 0 4px;
-          background: #FFF;
-          display: none;
-          border-top: 1px solid #DDD;
-      }
-
-      .moreMenu .option {
-          width: 150px;
-          height: 50px;
-          display: block;
-          background: #FFF;
-          font-size: 14px;
-          text-align: left;
-          border-radius: 4px;
-          padding-left: 10px;
-      }
-
-      .moreMenu .option:hover {
-          background: #DDD;
-      }
-
-      .moreMenu .option:nth-last-child(1) {
-          margin-top: 3px;
-      }
-
-      /* switch to mobile version screen */
-      .switchMobile {
-          position: absolute;
-          width: 65%;
-          height: auto;
-          padding: 10px;
-          background: #FFF;
-          top: 75px;
-          left: 0px;
-          right: 0px;
-          margin: auto;
-          border-radius: 4px;
-          box-shadow: 0 0 7px 0 rgba(0,0,0,0.1);
-          display: none;
-      }
-
-      .switchMobile .title {
-          font-size: 18px;
-          font-weight: 600;
-          margin-bottom: 20px;
-      }
-
-      .switchMobile .desc {
-          font-size: 14px;
-          font-weight: 300;
-          margin-bottom: 25px;
-      }
-
-      .switchMobile .okay {
-          float: right;
-          width: 80px;
-          font-size: 16px;
-          font-weight: 600;
-          background: #419fd9;
-          color: #fff;
-          border-radius: 4px;
-          padding: 10px;
-      }
-
-      /* side menu */
-      .menuWrap {
-          position: absolute;
-          width: 30%;
-          min-width: 240px;
-          max-width: 320px;
-          height: 100%;
-          z-index: 3;
-          display: none;
-      }
-
-      .menu {
-          position: relative;
-          left: -320px;
-          width: 100%;
-          height: 100vh;
-          float: left;
-          background: #FFF;
-          box-shadow: 0 0 7px 0 rgba(0,0,0,0.4);
-          opacity: 0;
-      }
-
-      .me {
-          position: relative;
-          width: calc(100% - 50px);
-          height: 140px;
-          background: #419fd9;
-          padding: 15px 25px;
-          margin-bottom: 15px;
-      }
-
-      .me .image {
-          width: 70px;
-          height: 70px;
-          background: #FFF url(https://thispersondoesnotexist.com/image) no-repeat center;
-          background-size: cover;
-          border-radius: 100%;
-          cursor: pointer;
-      }
-
-      .me .settings {
-          position: absolute;
-          right: 20px;
-          bottom: 65px;
-          width: 40px;
-          height: 40px;
-          padding-top: 2px;
-          color: #FFF;
-          border-radius: 100%;
-          background: rgba(0, 0, 0, 0.15);
-      }
-
-      .me .settings:hover {
-          background: rgba(0, 0, 0, 0.35);
-      }
-
-      .me .cloud {
-          position: absolute;
-          right: 20px;
-          bottom: 15px;
-          width: 40px;
-          height: 40px;
-          color: #FFF;
-          border-radius: 100%;
-          background: rgba(0, 0, 0, 0.09);
-      }
-
-      .me .cloud:hover {
-          background: rgba(0, 0, 0, 0.35);
-      }
-
-      .me .myinfo {
-          position: absolute;
-          bottom: 15px;
-          font-size: 14px;
-          color: #FFF;
-      }
-
-      .myinfo .name {
-          font-weight: 600;
-          margin-bottom: 5px;
-      }
-
-      .myinfo .phone {
-          font-weight: 300;
-      }
-
-      nav button {
-          width: 100%;
-          height: 45px;
-          background: #FFF;
-          text-align: left;
-          padding-left: 20px;
-          color: #666;
-      }
-
-      nav {
-          float: left;
-          width: 100%;
-          height: auto;
-          max-height: 350px;
-          overflow-x: hidden;
-          overflow-y: auto;
-      }
-
-      nav button:hover {
-          background: #EEE;
-      }
-
-      nav button > i {
-          color: #999;
-          float: left;
-      }
-
-      nav button > span {
-          display: inline-block;
-          margin-top: 5px;
-          margin-left: 20px;
-          font-weight: 600;
-          font-size: 14px;
-      }
-
-      .info {
-          position: absolute;
-          left: 20px;
-          bottom: 15px;
-          font-size: 12px;
-          color: #666;
-      }
-
-      /* configuration screen */
-      .config {
-          position: absolute;
-          width: 50%;
-          height: 100vh;
-          left: 0px;
-          right: -200vw;
-          top: 0px;
-          margin: auto;
-          background: #DDD;
-          overflow-x: hidden;
-          overflow-y: auto;
-          display: block;
-          z-index: 520;
-          opacity: 0;
-      }
-
-      .confTitle {
-          font-size: 24px;
-          font-weight: 600;
-          color: #444;
-          margin: 10px 0px 15px 0px;
-      }
-
-      .configSect {
-          float: left;
-          width: calc(100% - 60px);
-          padding: 15px 30px;
-          margin-bottom: 10px;
-          background: #FFF;
-      }
-
-      .profile .image {
-          width: 140px;
-          height: 140px;
-          background: #FFF url(https://thispersondoesnotexist.com/image) no-repeat center;
-          background-size: cover;
-          border-radius: 100%;
-          float: left;
-          margin-right: 30px;
-      }
-
-      .side {
-          width: auto;
-          height: 110px;
-          float: none;
-          position: relative;
-      }
-
-      .side .name {
-          font-size: 18px;
-          font-weight: 600;
-      }
-
-      .side .pStatus {
-          margin-top: 5px;
-          font-size: 14px;
-          font-weight: 300;
-      }
-
-      .profile .changePic, .profile .edit {
-          width: auto;
-          font-size: 16px;
-          font-weight: 600;
-          background: #419fd9;
-          color: #fff;
-          border-radius: 4px;
-          padding: 10px;
-      }
-
-      .profile .edit {
-          margin-left: 10px;
-          background: #FFF;
-          color: #999;
-      }
-
-      .profile .edit:hover {
-          color: #419fd9;
-      }
-
-      .second ul {
-          float: none;
-          margin-left: -7px;
-          list-style-type: none;
-      }
-
-      .second ul li {
-          margin: 7px;
-      }
-
-      .second .blue {
-          color: #419fd9
-      }
-
-      .second label {
-          display: block;
-          clear: both;
-      }
-
-      .second .information {
-          margin-bottom: 30px;
-      }
-
-      .check {
-          position: relative;
-          float: left;
-          display: block;
-          width: 38px;
-          height: 14px;
-          background: #BBB;
-          cursor: pointer;
-          border-radius: 15px;
-          transition: all 0.2s ease-in-out;
-      }
-
-      .check > .tracer {
-          width: 16px;
-          height: 16px;
-          background: #FFF;
-          border: 2px solid #BBB;
-          border-radius: 100%;
-          float: left;
-          margin-top: -3px;
-          transition: all 0.2s ease-in-out;
-      }
-
-      #checkNight, #deskNotif, #showSName, #showPreview, #playSounds {
-          display: none;
-      }
-
-      .toggleTracer:checked ~ .check {
-          background: #419fd9;
-      }
-
-      .toggleTracer:checked ~ .check > .tracer {
-          border-color: #419fd9;
-          margin-left: 18px;
-      }
-
-      .optionWrapper {
-          display: block;
-          width: 100%;
-          height: 32px;
-      }
-
-      .optionWrapper p {
-          float: left;
-          margin-top: 3px;
-          margin-left: 15px;
-          font-size: 14px;
-          color: #444;
-      }
-
-      /* dark overlay element */
-      .overlay {
-          position: absolute;
-          width: 100%;
-          height: 100%;
-          background: rgba(0, 0, 0, 0.8);
-          z-index: 2;
-          display: none;
-      }
-
-      /* ----------------- */
-      /* MAIN APP ELEMENTS */
-      /* ----------------- */
-
-      .leftPanel {
-          position: relative;
-          display: inline-block;
-          left: 0px;
-          width: 320px;
-          height: 100vh;
-          float: left;
-          background: #FFF;
-          border-right: 1px solid #DDD;
-      }
-
-      header {
-          width: 100%;
-          height: 70px;
-          background: #FFF;
-      }
-
-      .trigger {
-          float: left;
-          width: 32px;
-          height: 32px;
-          margin: 20px 15px;
-          margin-bottom: 0px;
-          color: #BBB;
-          cursor: pointer;
-          opacity: 0.6;
-          background: none;
-      }
-
-      .trigger:hover {
-          opacity: 1;
-      }
-
-      .trigger > svg {
-          width: 24px;
-          height: 24px;
-          fill: #888;
-      }
-
-      .searchChats {
-          width: calc(100% - 85px);
-          height: 40px;
-          background: #EEE;
-          float: left;
-          padding: 8px;
-          margin-top: 14px;
-          border: none;
-          border-radius: 4px;
-          font-size: 14px;
-          font-weight: 600;
-      }
-
-      .searchChats:focus {
-          color: #444;
-          border: 2px solid #419fd9;
-          background: rgb(243, 243, 243);
-      }
-
-      .chats {
-          width: 100%;
-          height: calc(100vh - 70px);
-          float: left;
-          overflow-x: hidden;
-          overflow-y: auto;
-      }
-
-      .chatButton {
-          float: left;
-          width: 100%;
-          height: 80px;
-          background: #FFF;
-          color: #555;
-          cursor: pointer;
-          overflow: hidden;
-      }
-
-      .chatButton:hover {
-          color: #555;
-          background: #EEE;
-      }
-
-      .active, .active:hover {
-          color: #FFF;
-          background: #419fd9;
-      }
-
-      .chatInfo {
-          float: left;
-      }
-
-      .chatInfo p {
-          float: left;
-      }
-
-      .chatInfo .image {
-          position: absolute;
-          width: 55px;
-          height: 55px;
-          background: #DDD url(https://pbs.twimg.com/profile_images/378800000822867536/3f5a00acf72df93528b6bb7cd0a4fd0c.jpeg) no-repeat center;
-          background-size: cover;
-          border-radius: 100%;
-          margin: 13px 13px;
-      }
-
-      .chatInfo .my-image {
-          background-image: url(https://avatars1.githubusercontent.com/u/21313332?s=460&v=4);
-      }
-
-      .chatInfo .name {
-          float: left;
-          font-weight: 600;
-          margin-left: 80px;
-          margin-top: 18px;
-      }
-
-      .chatInfo .message {
-          float: left;
-          clear: left;
-          margin-left: 80px;
-          margin-top: 7px;
-      }
-
-      .status {
-          width: 60px;
-          height: 100%;
-          position: relative;
-          float: right;
-      }
-
-      .status .fixed {
-          position: absolute;
-          right: 10px;
-          bottom: 10px;
-          display: none;
-      }
-
-      div[class~="normal"] > .fixed {
-          display: none;
-      }
-
-      div[class~="normal"] > .count {
-          right: 10px;
-          bottom: 7px;
-      }
-
-      div[class~="onTop"] > .fixed {
-          display: block;
-          width: 24px;
-          height: 24px;
-          fill: #FFF;
-      }
-
-      div[class~="onTop"] > .count {
-          right: 49px;
-          bottom: 7px;
-          background: #FFF;
-          color: #419fd9;
-      }
-
-      .status .count {
-          position: absolute;
-          right: 49px;
-          bottom: 7px;
-          width: auto;
-          height: auto;
-          padding: 7px;
-          border-radius: 20px;
-          color: #222;
-          background: rgba(0, 0, 0, 0.12);
-      }
-
-      .status .date {
-          position: absolute;
-          right: 12px;
-          top: 12px;
-          font-size: 12px;
-      }
-
-      .status .read {
-          position: absolute;
-          right: 53px;
-          top: 6px;
-      }
-
-      .rightPanel {
-          float: left;
-          width: calc(100% - 321px);
-          height: 100vh;
-          background: #999;
-      }
-
-      .rightPanel .topBar {
-          position: relative;
-          width: 100%;
-          height: 70px;
-          background: #FFF;
-      }
-
-      .leftSide {
-          display: inline-block;
-          clear: none;
-          float: left;
-      }
-
-      .leftSide .chatName {
-          float: left;
-          margin-left: 30px;
-          margin-top: 13px;
-          color: #444;
-          font-weight: 600;
-          cursor: default;
-      }
-
-      .chatName > span {
-          font-size: 12px;
-          font-weight: 500;
-          color: #BBB;
-          margin-left: 10px;
-      }
-
-      .leftSide .chatStatus {
-          float: left;
-          clear: left;
-          margin-left: 30px;
-          margin-top: 5px;
-          color: #419fd9;
-          font-weight: 300;
-          cursor: default;
-      }
-
-      .rightSide {
-          display: inline-block;
-          clear: none;
-          float: right;
-          margin-right: 20px;
-      }
-
-      .tbButton, .otherTools .toolButtons {
-          width: 50px;
-          height: 50px;
-          margin-top: 10px;
-          background: #FFF;
-          color: #888;
-          border-radius: 100%;
-      }
-
-      .tbButton:hover, .otherTools .toolButtons:hover {
-          color: #555;
-          background: #DDD;
-      }
-
-
-      /* THE CONVERSATION HISTORY CSS */
-
-      .convHistory {
-          float: left;
-          position: relative;
-          width: 100%;
-          height: calc(100vh - 140px);
-          background: #333;
-          overflow-x: hidden;
-          overflow-y: auto;
-      }
-
-      .userBg {
-          background: url("https://images.unsplash.com/photo-1463058837219-41e13a132b7d?dpr=1&auto=format&fit=crop&w=1500&h=1000&q=80&cs=tinysrgb&crop=&bg=") 100% center;
-      }
-
-      .msg {
-          position: relative;
-          width: auto;
-          min-width: 100px;
-          max-width: 45%;
-          height: auto;
-          padding: 25px;
-          padding-bottom: 35px;
-          margin: 20px 15px;
-          margin-bottom: 0px;
-          background: #FFF;
-          border-radius: 7px;
-          clear: both;
-      }
-
-      .msg:nth-last-child(1) {
-          margin-bottom: 20px;
-      }
-
-      .msg .timestamp {
-          display: block;
-          position: absolute;
-          right: 10px;
-          bottom: 6px;
-          color: #AAA;
-          user-select: none;
-      }
-
-      .messageReceived {
-          float: left;
-          background: #FFF;
-      }
-
-      .messageSent {
-          float: right;
-          background: #effdde;
-      }
-
-      .messageSent > .timestamp, .messageSent > .readStatus {
-          bottom: 10px;
-          right: 40px;
-          color: darkgreen;
-          user-select: none;
-      }
-
-      .messageSent > .readStatus {
-          position: absolute;
-          bottom: 10px;
-          right: 12px;
-      }
-
-
-      /* THE REPLY BAR CSS */
-
-      .replyBar {
-          width: 100%;
-          height: 70px;
-          float: left;
-          background: #fff;
-      }
-
-      .replyBar .attach {
-          width: 70px;
-          height: 70px;
-          color: #777;
-          background: #FFF;
-          float: left;
-      }
-
-      .replyBar .attach:hover {
-          color: #555;
-          background: #DDD;
-      }
-
-      .replyBar .d45 {
-          transform: rotate(45deg);
-          font-size: 32px;
-      }
-
-      .replyBar .replyMessage {
-          width: calc(100% - 220px);
-          float: left;
-          height: 70px;
-          padding: 0px 8px;
-          font-size: 16px;
-      }
-
-      .replyBar .otherTools {
-          float: right;
-          width: 120px;
-          height: 70px;
-      }
-
-      .emojiBar {
-          display: none;
-          position: absolute;
-          width: 325px;
-          height: 200px;
-          padding: 10px;
-          right: 30px;
-          bottom: 80px;
-          border: 2px solid #DDD;
-          border-radius: 3px;
-          background: #FFF;
-      }
-
-      .emoticonType {
-          width: 100%;
-          height: 50px;
-      }
-
-      .emoticonType button {
-          width: 105px;
-          height: 36px;
-          font-weight: 600;
-          color: #555;
-          background: none;
-      }
-
-      .emoticonType button:hover {
-          color: #FFF;
-          background: #419fd9;
-      }
-
-      .emojiList, .stickerList {
-          width: 100%;
-          height: 150px;
-          overflow-x: hidden;
-          overflow-y: auto;
-      }
-
-      .emojiList .pick {
-          width: 50px;
-          height: 50px;
-          background: transparent;
-          background-repeat: no-repeat;
-          background-position: center;
-          background-size: 70%;
-          transition: all 0.15s ease-in-out;
-      }
-
-      .emojiList .pick:hover {
-          background: #DDD;
-          background-repeat: no-repeat;
-          background-position: center;
-          background-size: 70%;
-      }
-
-      .stickerList .pick {
-          width: 80px;
-          height: 80px;
-          background: transparent;
-          background-repeat: no-repeat;
-          background-position: center;
-          background-size: 65%;
-          transition: all 0.15s ease-in-out;
-      }
-
-      .stickerList .pick:hover {
-          background: #DDD;
-          background-repeat: no-repeat;
-          background-position: center;
-          background-size: 65%;
-      }
-
-
-      /* hidden, while not complete */
-      .stickerList {
-          display: none;
-      }
-
-      /* CSS FOR THE EMOJI IMAGES, JUST SOME */
-
-      #smileface {
-          background-image: url(https://emojipedia-us.s3.amazonaws.com/thumbs/120/apple/96/grinning-face_1f600.png);
-      }
-
-      #grinningface {
-          background-image: url(https://emojipedia-us.s3.amazonaws.com/thumbs/120/apple/96/grinning-face-with-smiling-eyes_1f601.png);
-      }
-
-      #tearjoyface {
-          background-image: url(https://emojipedia-us.s3.amazonaws.com/thumbs/120/apple/96/face-with-tears-of-joy_1f602.png);
-      }
-
-      #rofl {
-          background-image: url(https://emojipedia-us.s3.amazonaws.com/thumbs/120/apple/96/rolling-on-the-floor-laughing_1f923.png);
-      }
-
-      #somface {
-          background-image: url(https://emojipedia-us.s3.amazonaws.com/thumbs/120/apple/96/smiling-face-with-open-mouth_1f603.png);
-      }
-
-      #swfface {
-          background-image: url(https://emojipedia-us.s3.amazonaws.com/thumbs/120/apple/96/smiling-face-with-open-mouth-and-smiling-eyes_1f604.png);
-      }
-
-      /* NIGHT MODE THEMING */
-      .DarkTheme,
-      .DarkTheme .mainApp {
-          background: #222;
-      }
-
-      /* SOLVING RESPONSIVE DESIGN ISSUES */
-      @media screen and (max-width: 1180px) {
-          .config {
-              width: 60%;
-          }
-      }
-
-      @media screen and (max-width: 980px) {
-          .config {
-              width: 90%;
-          }
-      }
-
-      @media screen and (max-width: 940px) {
-          body {
-              font-size: 14px;
-          }
-
-          .msg {
-              width: 90%;
-          }
-      }
-
-      @media screen and (max-width: 720px) {
-          .leftPanel {
-              width: 80px;
-          }
-
-          .rightPanel {
-              width: calc(100% - 81px);
-          }
-
-          .msg {
-              width: auto;
-              max-width: 60%;
-          }
-
-          .profile .changePic, .profile .edit {
-              font-size: 14px;
-              font-weight: 500;
-          }
-
-          .profile .edit {
-              margin-left: 5px;
-          }
-
-          .searchChats,
-          .chatButton > .name,
-          .chatButton > .message,
-          .chatButton > .status {
-              display: none;
-          }
-      }
-
-      @media screen and (max-width: 480px) {
-          .switchMobile {
-              display: block;
-          }
-
-          .leftPanel, .rightPanel, .menuWrap, .config, .overlay {
-              display: none;
-          }
-      }
-
-      @media screen and (max-width: 300px) {
-          .switchMobile {
-              width: calc(220px - 20px);
-          }
-      }
-  </style>
-
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+          integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+    <!--mdb-->
+    <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.10.2/mdb.min.css"
+            rel="stylesheet"
+    />
+    <!-- MDB -->
+    <script
+            type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.10.2/mdb.min.js"
+    ></script>
+    <!--mdb-->
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.js"></script>
 </head>
+<!--Coded With Love By Mutiullah Samim-->
 <body>
+<div class="container-fluid h-100">
+    <div class="row justify-content-center h-100">
+        <div class="col-md-4 col-xl-3 chat">
+            <div class="card mb-sm-3 mb-md-0 contacts_card">
+                <div class="card-header">
+                    <div class="input-group">
+                        <input type="text" placeholder="Search..." name="" class="form-control search">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text search_btn"><i class="fas fa-search"></i></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body contacts_body">
+                    <ui class="contacts">
+                        <div th:each="chat: ${userChats}">
+                            <!--                        <li class="active">-->
+                            <!--                            <div class="d-flex bd-highlight">-->
+                            <!--                                <div class="img_cont">-->
+                            <!--                                    <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg" class="rounded-circle user_img">-->
+                            <!--                                    <span class="online_icon"></span>-->
+                            <!--                                </div>-->
+                            <!--                                <div class="user_info">-->
+                            <!--                                    <span>Khalid</span>-->
+                            <!--                                    <p>Kalid is online</p>-->
+                            <!--                                </div>-->
+                            <!--                            </div>-->
+                            <!--                        </li>-->
+                            <li class="btn btn-primary btn-rounded" style="background-color: #0b5ed7">
+                                <a class="d-flex bd-highlight" th:href="'/chats/messages/'+${chat.getId()}">
+                                    <div class="img_cont">
+                                        <img th:if="${chat.getGuestUserImg() != null}"
+                                             th:src="'data:image/jpg base64, '+${chat.getGuestUserImg()}"
+                                             class="rounded-circle user_img">
+                                        <img th:if="${chat.getGuestUserImg() == null}"
+                                             src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Flag_of_Libya_%281977%E2%80%932011%2C_3-2%29.svg/1200px-Flag_of_Libya_%281977%E2%80%932011%2C_3-2%29.svg.png"
+                                             class="rounded-circle user_img">
+                                        <span class="online_icon offline"></span>
+                                    </div>
+                                    <div class="user_info">
+                                        <span th:text="${chat.getUser2().getFirstName()+' '+chat.getUser2().getLastName()}"></span>
+                                        <p>Taherah left 7 mins ago</p>
+                                    </div>
+                                </a>
+                            </li>
 
-<section class="mainApp">
-    <div class="leftPanel">
-        <header>
-            <button class="trigger">
-                <svg viewBox="0 0 24 24">
-                    <path d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z" />
-                </svg>
-            </button>
+                            <!--                        <li>-->
+                            <!--                            <div class="d-flex bd-highlight">-->
+                            <!--                                <div class="img_cont">-->
+                            <!--                                    <img src="https://i.pinimg.com/originals/ac/b9/90/acb990190ca1ddbb9b20db303375bb58.jpg" class="rounded-circle user_img">-->
+                            <!--                                    <span class="online_icon"></span>-->
+                            <!--                                </div>-->
+                            <!--                                <div class="user_info">-->
+                            <!--                                    <span>Sami Rafi</span>-->
+                            <!--                                    <p>Sami is online</p>-->
+                            <!--                                </div>-->
+                            <!--                            </div>-->
+                            <!--                        </li>-->
+                            <!--                        <li>-->
+                            <!--                            <div class="d-flex bd-highlight">-->
+                            <!--                                <div class="img_cont">-->
+                            <!--                                    <img src="http://profilepicturesdp.com/wp-content/uploads/2018/07/sweet-girl-profile-pictures-9.jpg" class="rounded-circle user_img">-->
+                            <!--                                    <span class="online_icon offline"></span>-->
+                            <!--                                </div>-->
+                            <!--                                <div class="user_info">-->
+                            <!--                                    <span>Nargis Hawa</span>-->
+                            <!--                                    <p>Nargis left 30 mins ago</p>-->
+                            <!--                                </div>-->
+                            <!--                            </div>-->
+                            <!--                        </li>-->
+                            <!--                        <li>-->
+                            <!--                            <div class="d-flex bd-highlight">-->
+                            <!--                                <div class="img_cont">-->
+                            <!--                                    <img src="https://static.turbosquid.com/Preview/001214/650/2V/boy-cartoon-3D-model_D.jpg" class="rounded-circle user_img">-->
+                            <!--                                    <span class="online_icon offline"></span>-->
+                            <!--                                </div>-->
+                            <!--                                <div class="user_info">-->
+                            <!--                                    <span>Rashid Samim</span>-->
+                            <!--                                    <p>Rashid left 50 mins ago</p>-->
+                            <!--                                </div>-->
+                            <!--                            </div>-->
+                            <!--                        </li>-->
+                        </div>
 
-            <input class="searchChats" type="search" placeholder="Search..."/>
-        </header>
-        <div class="chats">
-            <div class="chatButton active">
-                <div class="chatInfo">
-                    <div class="image my-image">
-
+                    </ui>
+                </div>
+                <div class="card-footer"></div>
+            </div>
+        </div>
+        <div class="col-md-8 col-xl-6 chat">
+            <div class="card">
+                <div class="card-header msg_head">
+                    <div class="d-flex bd-highlight" th:if="${guestInfo!=null}">
+                        <div class="img_cont">
+                            <img th:if="${guestInfo.getBase64()!=null}"
+                                 th:src="'data:image/jpg base64, '+${guestInfo.getBase64()}"
+                                 class="rounded-circle user_img">
+                            <img th:if="${guestInfo.getBase64()==null}"
+                                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Flag_of_Libya_%281977%E2%80%932011%2C_3-2%29.svg/1200px-Flag_of_Libya_%281977%E2%80%932011%2C_3-2%29.svg.png"
+                                 class="rounded-circle user_img">
+                            <span class="offline_icon"></span>
+                        </div>
+                        <div class="user_info">
+                            <span th:text="${guestInfo.getFirstName()+' '+guestInfo.getLastName()}"></span>
+                            <p th:text="${chatMessages.size()}+' Messages'"></p>
+                        </div>
+                        <div class="video_cam">
+                            <span><i class="fas fa-video"></i></span>
+                            <span><i class="fas fa-phone"></i></span>
+                        </div>
+                    </div>
+                    <span id="action_menu_btn"><i class="fas fa-ellipsis-v"></i></span>
+                    <div class="action_menu">
+                        <ul>
+                            <li><i class="fas fa-user-circle"></i> View profile</li>
+                            <li><i class="fas fa-users"></i> Add to close friends</li>
+                            <li><i class="fas fa-plus"></i> Add to group</li>
+                            <li><i class="fas fa-ban"></i> Block</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card-body msg_card_body">
+                    <div th:each="message: ${chatMessages}">
+                        <div class="d-flex justify-content-start mb-4"
+                             th:if="${message.getFrom().getId()}!= ${userId_id}">
+                            <div class="msg_cotainer">
+                                <div class="d-flex">
+                                    <p th:text="${message.getMessage()}"></p>
+                                </div>
+                                <span class="msg_time" th:text="${message.getSentAt()}"></span>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end mb-4" th:if="${message.getFrom().getId()}==${userId_id}">
+                            <div class="msg_cotainer">
+                                <div class="d-flex" th:if="${!message.isRead}">
+                                    <p th:text="${message.getMessage()}"></p>
+                                    <p><i class="fas fa-check"></i></p>
+                                </div>
+                                <div class="d-flex" th:if="${message.isRead}">
+                                    <p th:text="${message.getMessage()}"></p>
+                                    <p><i class="fas fa-check-double"></i></p>
+                                </div>
+                                <span class="msg_time" th:text="${message.getSentAt()}"></span>
+                            </div>
+                        </div>
                     </div>
 
-                    <p class="name">
-                        Renan Mayrinck
-                    </p>
-
-                    <p class="message">Actually, more ...</p>
                 </div>
-
-                <div class="status onTop">
-                    <p class="date">00:02</p>
-                    <p class="count">10</p>
-                    <i class="material-icons read">done_all</i>
-                    <svg class="fixed" viewBox="0 0 24 24">
-                        <path d="M16,12V4H17V2H7V4H8V12L6,14V16H11.2V22H12.8V16H18V14L16,12Z" />
-                    </svg>
-                </div>
-            </div>
-
-            <div class="chatButton">
-                <div class="chatInfo">
-                    <div class="image">
-
-                    </div>
-
-                    <p class="name">
-                        Doge
-                    </p>
-
-                    <p class="message">Wow!</p>
-                </div>
-
-                <div class="status normal">
-                    <p class="date">Now</p>
-                    <p class="count">42</p>
-                    <i class="material-icons read">done_all</i>
-                    <i class="material-icons fixed">loyalty</i>
+                <div class="card-footer">
+                    <form th:if="${guestInfo!=null}" th:action="'/chats/save/message/'+${guestInfo.id}" method="post">
+                        <div class="input-group">
+                            <div class="input-group-append">
+                                <span class="input-group-text attach_btn"><i class="fas fa-paperclip"></i></span>
+                            </div>
+                            <textarea name="message" class="form-control type_msg"
+                                      placeholder="Type your message..."></textarea>
+                            <div class="input-group-append">
+                                <button type="submit" class="input-group-text send_btn"><i class="fas fa-location-arrow"></i></button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-
-    <div class="rightPanel">
-        <div class="topBar">
-            <div class="rightSide">
-                <button class="tbButton search">
-                    <i class="material-icons">&#xE8B6;</i>
-                </button>
-                <button class="tbButton otherOptions">
-                    <i class="material-icons">more_vert</i>
-                </button>
-            </div>
-
-            <div class="leftSide">
-                <p class="chatName">Renan Mayrinck <span>@Renan.Designs</span></p>
-                <p class="chatStatus">Online</p>
-            </div>
-        </div>
-
-        <div class="convHistory userBg">
-            <!-- CONVERSATION GOES HERE! -->
-
-            <div class="msg messageReceived">
-                Dude, why no one did this before?
-                <span class="timestamp">00:00</span>
-            </div>
-
-            <div class="msg messageSent">
-                Dunno...
-                <i class="material-icons readStatus">done_all</i>
-                <span class="timestamp">00:01</span>
-            </div>
-
-            <div class="msg messageReceived">
-                This don't matter now, I did it!
-                <span class="timestamp">00:02</span>
-            </div>
-
-            <div class="msg messageReceived">
-                Hope someone see this... Someday...
-                <span class="timestamp">00:02</span>
-            </div>
-
-            <div class="msg messageSent">
-                Actually, more than 6000 people did this.
-                <i class="material-icons readStatus">done</i>
-                <span class="timestamp">00:04</span>
-            </div>
-        </div>
-
-        <div class="replyBar">
-            <button class="attach">
-                <i class="material-icons d45">attach_file</i>
-            </button>
-
-            <input type="text" class="replyMessage" placeholder="Type your message..."/>
-
-            <div class="emojiBar">
-                <div class="emoticonType">
-                    <button id="panelEmoji">Emoji</button>
-                    <button id="panelStickers">Stickers</button>
-                    <button id="panelGIFs">GIFs</button>
-                </div>
-
-
-                <!-- Emoji panel -->
-                <div class="emojiList">
-                    <button id="smileface" class="pick">
-                    </button>
-                    <button id="grinningface" class="pick"></button>
-                    <button id="tearjoyface" class="pick"></button>
-                    <button id="rofl" class="pick"></button>
-                    <button id="somface" class="pick"></button>
-                    <button id="swfface" class="pick"></button>
-                </div>
-
-                <!-- the best part of telegram ever: STICKERS!! -->
-                <div class="stickerList">
-                    <button id="smileface" class="pick">
-                    </button>
-                    <button id="grinningface" class="pick"></button>
-                    <button id="tearjoyface" class="pick"></button>
-                </div>
-            </div>
-
-            <div class="otherTools">
-                <button class="toolButtons emoji">
-                    <i class="material-icons">face</i>
-                </button>
-
-                <button class="toolButtons audio">
-                    <i class="material-icons">mic</i>
-                </button>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ---------------------- -->
-<!-- MENU AND OVERLAY STUFF -->
-<!-- ---------------------- -->
-
-<!-- MENU -->
-<section class="menuWrap">
-    <div class="menu">
-        <div class="me userBg">
-            <div class="image"></div>
-
-            <div class="myinfo">
-                <p class="name">Random Name</p>
-                <p class="phone">+1 12 1234 5678</p>
-            </div>
-
-            <button class="cloud">
-                <i class="material-icons">bookmark</i>
-            </button>
-
-            <button class="settings">
-                <i class="material-icons">settings</i>
-            </button>
-        </div>
-        <nav>
-            <button class="ng">
-                <i class="material-icons">&#xE8D3;</i>
-
-                <span>New Group</span>
-            </button>
-
-            <button class="nc">
-                <i class="material-icons">&#xE0B6;</i>
-
-                <span>New Channel</span>
-            </button>
-
-            <button class="cn">
-                <i class="material-icons">&#xE851;</i>
-
-                <span>Contacts</span>
-            </button>
-
-            <button class="cl">
-                <i class="material-icons">&#xE0B0;</i>
-
-                <span>Calls History</span>
-            </button>
-
-            <a href="https://telegram.org/faq" target="_blank">
-                <button class="faq">
-                    <i class="material-icons">&#xE000;</i>
-
-                    <span>FAQ and Support</span>
-                </button>
-            </a>
-
-            <button class="lo">
-                <i class="material-icons">&#xE879;</i>
-
-                <span>Logout</span>
-            </button>
-        </nav>
-
-        <div class="info">
-            <p>Telegram Web</p>
-            <p>Ver 0.0.2 - <a href="https://en.wikipedia.org/wiki/Telegram_(messaging_service)">About</a></p>
-            <p>Layout coded by: <a href="https://www.github.com/mayrinck">Mayrinck</a></p>
-        </div>
-    </div>
-</section>
-
-<!-- CONVERSATION OPTIONS MENU -->
-<div class="moreMenu">
-    <button class="option about">See Info</button>
-    <button class="option notify">Disable Notifications</button>
-    <button class="option block">Block User</button>
 </div>
+</body>
 
-<!-- MOBILE OVERLAY -->
-<section class="switchMobile">
-    <p class="title">Mobile Device Detected</p>
+<style>
+    body, html {
+        height: 100%;
+        margin: 0;
+        background: #7F7FD5;
+        background: -webkit-linear-gradient(to right, #91EAE4, #86A8E7, #7F7FD5);
+        background: linear-gradient(to right, #91EAE4, #86A8E7, #7F7FD5);
+    }
 
-    <p class="desc">Switch to the mobile app for a better performance.</p>
+    .chat {
+        margin-top: auto;
+        margin-bottom: auto;
+    }
 
-    <a href="https://play.google.com/store/apps/details?id=org.telegram.messenger&hl=pt_BR&gl=US">
-        <button class="okay">OK</button>
-    </a>
-</section>
+    .card {
+        height: 90%;
+        border-radius: 15px !important;
+        background-color: rgba(0, 0, 0, 0.4) !important;
+    }
 
-<!-- PROFILE OPTIONS OVERLAY -->
-<section class="config">
-    <section class="configSect">
-        <div class="profile">
-            <p class="confTitle">Settings</p>
+    .contacts_body {
+        padding: 0.75rem 0 !important;
+        overflow-y: auto;
+        white-space: nowrap;
+    }
 
-            <div class="image"></div>
+    .msg_card_body {
+        overflow-y: auto;
+    }
 
-            <div class="side">
-                <p class="name">Random Name</p>
-                <p class="pStatus">Online</p>
-            </div>
+    .card-header {
+        border-radius: 15px 15px 0 0 !important;
+        border-bottom: 0 !important;
+    }
 
-            <button class="changePic">Change Profile Picture</button>
-            <button class="edit">Edit Profile Info</button>
-        </div>
-    </section>
+    .card-footer {
+        border-radius: 0 0 15px 15px !important;
+        border-top: 0 !important;
+    }
 
-    <section class="configSect second">
+    .container {
+        align-content: center;
+    }
 
-        <!-- PROFILE INFO SECTION -->
-        <p class="confTitle">Your Info</p>
+    .search {
+        border-radius: 15px 0 0 15px !important;
+        background-color: rgba(0, 0, 0, 0.3) !important;
+        border: 0 !important;
+        color: white !important;
+    }
 
-        <div class="information">
-            <ul>
-                <li>Phone Number: <span class="blue phone">+1 12 1234 5678</span></li>
-                <li>Username: <span class="blue username">@USERNAME</span></li>
-                <li>Profile: <span class="blue">https://t.me/USERNAME</span></li>
-            </ul>
-        </div>
+    .search:focus {
+        box-shadow: none !important;
+        outline: 0px !important;
+    }
 
-        <!-- NOTIFICATIONS SECTION -->
-        <p class="confTitle">Notifications</p>
+    .type_msg {
+        background-color: rgba(0, 0, 0, 0.3) !important;
+        border: 0 !important;
+        color: white !important;
+        height: 60px !important;
+        overflow-y: auto;
+    }
 
-        <div class="optionWrapper deskNotif">
-            <input type="checkbox" id="deskNotif" class="toggleTracer" checked>
+    .type_msg:focus {
+        box-shadow: none !important;
+        outline: 0px !important;
+    }
 
-            <label class="check deskNotif" for="deskNotif">
-                <div class="tracer"></div>
-            </label>
-            <p>Enable Desktop Notifications</p>
-        </div>
+    .attach_btn {
+        border-radius: 15px 0 0 15px !important;
+        background-color: rgba(0, 0, 0, 0.3) !important;
+        border: 0 !important;
+        color: white !important;
+        cursor: pointer;
+    }
 
-        <div class="optionWrapper showSName">
-            <input type="checkbox" id="showSName" class="toggleTracer">
+    .send_btn {
+        border-radius: 0 15px 15px 0 !important;
+        background-color: rgba(0, 0, 0, 0.3) !important;
+        border: 0 !important;
+        color: white !important;
+        cursor: pointer;
+    }
 
-            <label class="check" for="showSName">
-                <div class="tracer"></div>
-            </label>
-            <p>Show Sender Name</p>
-        </div>
+    .search_btn {
+        border-radius: 0 15px 15px 0 !important;
+        background-color: rgba(0, 0, 0, 0.3) !important;
+        border: 0 !important;
+        color: white !important;
+        cursor: pointer;
+    }
 
-        <div class="optionWrapper showPreview">
-            <input type="checkbox" id="showPreview" class="toggleTracer">
+    .contacts {
+        list-style: none;
+        padding: 0;
+    }
 
-            <label class="check" for="showPreview">
-                <div class="tracer"></div>
-            </label>
-            <p>Show Message Preview</p>
-        </div>
+    .contacts li {
+        width: 100% !important;
+        padding: 5px 10px;
+        margin-bottom: 15px !important;
+    }
 
-        <div class="optionWrapper playSounds">
-            <input type="checkbox" id="playSounds" class="toggleTracer">
+    .active {
+        background-color: rgba(0, 0, 0, 0.3);
+    }
 
-            <label class="check" for="playSounds">
-                <div class="tracer"></div>
-            </label>
-            <p>Play Sounds</p>
-        </div>
+    .user_img {
+        height: 70px;
+        width: 70px;
+        border: 1.5px solid #f5f6fa;
 
+    }
 
-        <p class="confTitle">Other Settings</p>
+    .user_img_msg {
+        height: 40px;
+        width: 40px;
+        border: 1.5px solid #f5f6fa;
 
-        <div class="optionWrapper">
-            <input type="checkbox" id="checkNight" class="toggleTracer">
+    }
 
-            <label class="check DarkThemeTrigger" for="checkNight">
-                <div class="tracer"></div>
-            </label>
-            <p>Dark Theme</p>
-        </div>
+    .img_cont {
+        position: relative;
+        height: 70px;
+        width: 70px;
+    }
 
-    </section>
-</section>
+    .img_cont_msg {
+        height: 40px;
+        width: 40px;
+    }
 
-<!-- DARK FRAME OVERLAY -->
-<section class="overlay"></section>
+    .online_icon {
+        position: absolute;
+        height: 15px;
+        width: 15px;
+        background-color: #4cd137;
+        border-radius: 50%;
+        bottom: 0.2em;
+        right: 0.4em;
+        border: 1.5px solid white;
+    }
 
-<!-- -------------------------------- -->
-<!-- SPECIFIC FOR CONNECTION WARNINGS -->
-<!-- -------------------------------- -->
-<div class="alerts">
-    Trying to reconnect...
-</div>
-<!-- partial -->
-<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+    .offline {
+        background-color: #c23616 !important;
+    }
+
+    .user_info {
+        margin-top: auto;
+        margin-bottom: auto;
+        margin-left: 15px;
+    }
+
+    .user_info span {
+        font-size: 20px;
+        color: white;
+    }
+
+    .user_info p {
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    .video_cam {
+        margin-left: 50px;
+        margin-top: 5px;
+    }
+
+    .video_cam span {
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+        margin-right: 20px;
+    }
+
+    .msg_cotainer {
+        margin-top: auto;
+        margin-bottom: auto;
+        margin-left: 10px;
+        border-radius: 25px;
+        background-color: #82ccdd;
+        padding: 10px;
+        height: 45px;
+        position: relative;
+    }
+
+    .msg_cotainer_send {
+        margin-top: auto;
+        margin-bottom: auto;
+        margin-right: 10px;
+        border-radius: 25px;
+        height: 40px;
+        background-color: #78e08f;
+        padding: 10px;
+        position: relative;
+    }
+
+    .msg_time {
+        position: absolute;
+        width: 100px;
+        left: 0;
+        bottom: -15px;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 10px;
+    }
+
+    .msg_time_send {
+        position: absolute;
+        right: 0;
+        width: 100px;
+        bottom: -15px;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 10px;
+    }
+
+    .msg_head {
+        position: relative;
+    }
+
+    #action_menu_btn {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        color: white;
+        cursor: pointer;
+        font-size: 20px;
+    }
+
+    .action_menu {
+        z-index: 1;
+        position: absolute;
+        padding: 15px 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        border-radius: 15px;
+        top: 30px;
+        right: 15px;
+        display: none;
+    }
+
+    .action_menu ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .action_menu ul li {
+        width: 100%;
+        padding: 10px 15px;
+        margin-bottom: 5px;
+    }
+
+    .action_menu ul li i {
+        padding-right: 10px;
+
+    }
+
+    .action_menu ul li:hover {
+        cursor: pointer;
+        background-color: rgba(0, 0, 0, 0.2);
+    }
+
+    @media (max-width: 576px) {
+        .contacts_card {
+            margin-bottom: 15px !important;
+        }
+    }
+</style>
+
 <script>
-    $(document).ready(function(){
-        /* make side menu show up */
-        $(".trigger").click(function(){
-            $(".overlay, .menuWrap").fadeIn(180);
-            $(".menu").animate({opacity: '1', left: '0px'}, 180);
-        });
-
-        /* make config menu show up */
-        $(".settings").click(function(){
-            $(".config").animate({opacity: '1', right: '0px'}, 180);
-            /* hide others */
-            $(".menuWrap").fadeOut(180);
-            $(".menu").animate({opacity: '0', left: '-320px'}, 180);
-        });
-
-        // Show/Hide the other notification options
-        $(".deskNotif").click(function(){
-            $(".showSName, .showPreview, .playSounds").toggle();
-        });
-
-        /* close all overlay elements */
-        $(".overlay").click(function () {
-            $(".overlay, .menuWrap").fadeOut(180);
-            $(".menu").animate({opacity: '0', left: '-320px'}, 180);
-            $(".config").animate({opacity: '0', right: '-200vw'}, 180);
-        });
-
-        //This also hide everything, but when people press ESC
-        $(document).keydown(function(e) {
-            if (e.keyCode == 27) {
-                $(".overlay, .menuWrap").fadeOut(180);
-                $(".menu").animate({opacity: '0', left: '-320px'}, 180);
-                $(".config").animate({opacity: '0', right: '-200vw'}, 180);
-            }
-        });
-
-        //Enable/Disable night mode
-        $(".DarkThemeTrigger").click(function(){
-            $("body").toggleClass("DarkTheme")
-        });
-
-        /* small conversation menu */
-        $(".otherOptions").click(function(){
-            $(".moreMenu").slideToggle("fast");
-        });
-
-        /* clicking the search button from the conversation focus the search bar outside it, as on desktop */
-        $( ".search" ).click(function() {
-            $( ".searchChats" ).focus();
-        });
-
-        /* Show or Hide Emoji Panel */
-        $(".emoji").click(function(){
-            $(".emojiBar").fadeToggle(120);
-        });
-
-        /* if the user click the conversation or the type panel will also hide the emoji panel */
-        $(".convHistory, .replyMessage").click(function(){
-            $(".emojiBar").fadeOut(120);
+    $(document).ready(function () {
+        $('#action_menu_btn').click(function () {
+            $('.action_menu').toggle();
         });
     });
 </script>
-
-</body>
 </html>
