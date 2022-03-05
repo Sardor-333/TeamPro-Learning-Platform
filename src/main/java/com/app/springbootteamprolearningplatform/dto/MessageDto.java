@@ -20,5 +20,4 @@ public class MessageDto {
     Boolean isRead;
     User from;
     ChatRoom chatRoom;
-
 }

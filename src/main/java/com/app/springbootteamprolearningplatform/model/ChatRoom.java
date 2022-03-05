@@ -36,7 +36,6 @@ public class ChatRoom {
         this.user2 = user2;
     }
 
-
     // TO DO TO BE DTO
     @Transient
     String guestUserImg;

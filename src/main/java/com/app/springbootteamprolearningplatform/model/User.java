@@ -103,6 +103,17 @@ public class User {
         this.balance = balance;
     }
 
+    public User(UUID id, String firstName, String lastName, String email, String password, String bio, Double balance, Attachment attachment) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.bio = bio;
+        this.balance = balance;
+        this.attachment = attachment;
+    }
+
     public String getBase64() {
         if (attachment != null) {
             byte[] bytes = Base64.getEncoder().encode(attachment.getBytes());

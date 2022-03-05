@@ -86,9 +86,11 @@ public class ChatService {
             messageDto.setChatRoom(message.getChatRoom());
             messageDto.setIsRead(message.getIsRead());
             messageDto.setFrom(message.getFrom());
+
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             String formatDateTime = message.getSentAt().format(formatter);
             messageDto.setSentAt(formatDateTime);
+
             messageDto.setId(message.getId());
             messageDtoList.add(messageDto);
         }
