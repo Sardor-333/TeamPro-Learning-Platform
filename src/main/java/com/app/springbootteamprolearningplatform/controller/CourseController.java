@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -50,35 +51,16 @@ public class CourseController {
             model.addAttribute("beginPage", courseService.beginPage(page));
             model.addAttribute("pageCount", courseService.pageCount());
             model.addAttribute("listPage", courseService.getPageList(courseService.beginPage(page), courseService.endPage(page)));
-
-            model.addAttribute("categories", categoryRepository.findAll());
-            return "courses";
-        }
-    }
-
-    @GetMapping({"/{courseId}"})
-    public String getCourse(@PathVariable UUID courseId, Model model, HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        if (!sessionHasAttributes(session, "userId", "role")) {
-            return "login-form";
-        } else {
-            Course course = courseService.getCourse(courseId);
-            model.addAttribute("course", course);
-            if (course.getAttachment() != null) {
-                model.addAttribute("img", getBase64Encode(course.getAttachment().getBytes()));
-            }
-
-            model.addAttribute("courseRate", courseService.getCourseRate(courseId));
-            model.addAttribute("courseComments", courseService.getCourseCommentDtos(courseId));
-            return "course";
+            model.addAttribute("categories", courseService.getCategoriesWithInfo());
+            return "blog";
         }
     }
 
     @GetMapping("/byCategory/{categoryId}")
-    public String getCourseByCategory(@PathVariable UUID categoryId,
-                                      Model model,
-                                      @RequestParam(required = false, defaultValue = "0") Integer page,
-                                      HttpServletRequest request) {
+    public String getCoursesByCategory(@PathVariable UUID categoryId,
+                                       @RequestParam(required = false, defaultValue = "0") Integer page,
+                                       Model model,
+                                       HttpServletRequest request) {
         HttpSession session = request.getSession();
         if (!sessionHasAttributes(session, "userId", "role")) {
             return "login-form";
@@ -93,8 +75,26 @@ public class CourseController {
             model.addAttribute("pageCount", courseService.pageCount());
             model.addAttribute("listPage", courseService.getPageList(courseService.beginPage(page), courseService.endPage(page)));
 
-            model.addAttribute("categories", categoryRepository.findAll());
-            return "courses";
+            model.addAttribute("categories", courseService.getCategoriesWithInfo());
+            return "blog";
+        }
+    }
+
+    @GetMapping({"/{courseId}"})
+    public String getCourse(@PathVariable UUID courseId, Model model, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        if (!sessionHasAttributes(session, "userId", "role")) {
+            return "login-form";
+        } else {
+            Course course = courseService.getCourse(courseId);
+
+            model.addAttribute("course", course);
+            model.addAttribute("img", course.getBase64Encode());
+            model.addAttribute("courseRate", courseService.getCourseRate(courseId));
+            model.addAttribute("courseComments", courseService.getCourseCommentDtos(courseId));
+            model.addAttribute("authors", course.getAuthors().stream().map(user -> user.getLastName() + " " + user.getFirstName()).toList());
+
+            return "course";
         }
     }
 
@@ -115,9 +115,9 @@ public class CourseController {
     @GetMapping("/buy")
     public String buyCourse(@RequestParam(name = "userId") UUID userId,
                             @RequestParam(name = "courseId") UUID courseId,
-                            Model model) {
+                            Model model, RedirectAttributes redirectAttributes) {
         String s = userService.buyCourse(userId, courseId);
-        model.addAttribute("msg", s);
+        redirectAttributes.addFlashAttribute("msg", s);
         return "redirect:/courses";
     }
 

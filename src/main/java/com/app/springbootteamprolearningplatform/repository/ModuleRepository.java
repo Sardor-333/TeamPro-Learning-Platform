@@ -11,4 +11,5 @@ import java.util.UUID;
 public interface ModuleRepository extends JpaRepository<Module, UUID> {
 
     List<Module> findAllByCourseId(UUID course_id);
+
 }

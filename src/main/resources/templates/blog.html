@@ -85,6 +85,9 @@
     <section id="blog" class="blog">
         <div class="container" data-aos="fade-up">
 
+            <a th:if="${role=='ADMIN' or role=='SUPER_ADMIN' or role == 'MENTOR'}" th:href="@{/courses/add}"
+               class="btn btn-primary"> + Add Course</a>
+
             <div class="row">
 
                 <div class="col-lg-8 entries">
@@ -93,44 +96,46 @@
 
                         <div class="col-md-6  d-flex w-100">
 
+                            <h1 th:text="${msg}"></h1>
+
                             <article class="entry mx-3" th:each="course : ${courses}">
 
                                 <div class="entry-img">
-                                    <img th:src="'data:image/jpg;base64, '+${course.getBase64Encode()}" alt="card img" class="img-fluid">
+                                    <img th:src="'data:image/jpg;base64, ' + ${course.getBase64()}" alt="card img"
+                                         class="img-fluid">
                                 </div>
 
                                 <h2 class="entry-title">
                                     <a href="blog-single.html" th:text="${course.name}"/>
                                 </h2>
-
-                                <div class="entry-meta">
-                                    <ul>
-                                        <li class="d-flex align-items-center"><i class="bi bi-person"></i>
-                                            <a href="blog-single.html"/></li>
-                                        <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <a
-                                                href="blog-single.html">
-                                            <time datetime="2020-01-01">Jan 1, 2020</time>
-                                        </a></li>
-                                        <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a
-                                                href="blog-single.html">12 Comments</a></li>
-                                    </ul>
-                                </div>
-
                                 <div class="entry-content">
-                                    <p>
-                                        Similique neque nam consequuntur ad non maxime aliquam quas. Quibusdam animi
-                                        praesentium.
+                                    <p th:text="${course.description}">
                                     </p>
                                     <div class="read-more">
-                                        <a href="blog-single.html">Read More</a>
+                                        <a th:href="@{'/courses/' + ${course.id}}">Read More</a>
+                                    </div>
+
+                                    <!--   BUY COURSE   -->
+                                    <div class="read-more">
+                                        <a th:if="${course.status==true and role=='USER'}"
+                                           th:href="@{'/modules/' + ${course.id}}">START
+                                        </a>
+                                        <a th:if="${course.status==false and role=='USER'}"
+                                           th:href="@{'/courses/buy?courseId='+${course.id} + '&userId='+ ${userId}}">Buy
+                                        </a>
+                                    </div>
+                                    <!--   EDIT AND DELETE   -->
+                                    <div class="read-more d-flex">
+                                        <a th:if="${role=='ADMIN' or role=='SUPER_ADMIN' or role=='MENTOR'}"
+                                           th:href="@{'/courses/update/' + ${course.id}}"
+                                           class="card-link" th:text="EDIT"></a>
+                                        <a th:if="${role=='ADMIN' or role=='SUPER_ADMIN' or role=='MENTOR'}"
+                                           th:href="@{/courses/delete(id=${course.id})}"
+                                           class="card-link" th:text="DELETE"></a>
                                     </div>
                                 </div>
-
-                            </article><!-- End blog entry -->
-
+                            </article>
                         </div>
-
-
                     </div>
                     <div class="blog-pagination">
                         <ul class="justify-content-center">
@@ -157,12 +162,11 @@
                         <h3 class="sidebar-title">Categories</h3>
                         <div class="sidebar-item categories">
                             <ul>
-                                <li><a href="#">General <span>(25)</span></a></li>
-                                <li><a href="#">Lifestyle <span>(12)</span></a></li>
-                                <li><a href="#">Travel <span>(5)</span></a></li>
-                                <li><a href="#">Design <span>(22)</span></a></li>
-                                <li><a href="#">Creative <span>(8)</span></a></li>
-                                <li><a href="#">Educaion <span>(14)</span></a></li>
+                                <li th:each="category: ${categories}">
+                                    <a th:href="@{'/courses/byCategory/' + ${category.id}}"
+                                       th:text="${category.name} + ' (' + ${category.coursesCount} + ')'">
+                                    </a>
+                                </li>
                             </ul>
                         </div><!-- End sidebar categories-->
 

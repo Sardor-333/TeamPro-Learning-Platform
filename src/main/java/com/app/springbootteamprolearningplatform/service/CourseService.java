@@ -46,7 +46,7 @@ public class CourseService {
     }
 
     public Course getCourse(UUID courseId) {
-        return this.courseRepository.getById(courseId);
+        return courseRepository.findById(courseId).orElse(null);
     }
 
     public List<User> getAuthors() {
@@ -58,7 +58,7 @@ public class CourseService {
     }
 
     public void saveCourse(CourseDto courseDto, HttpSession session) {
-        Course course = this.initializeCourse(courseDto, session);
+        Course course = initializeCourse(courseDto, session);
         Attachment attachment = saveFileToDb(courseDto.getImg());
         course.setAttachment(attachment);
         courseRepository.save(course);
@@ -77,7 +77,7 @@ public class CourseService {
         course.setId(courseDto.getId());
 
         UUID mainAuthorId = UUID.fromString(session.getAttribute("userId").toString());
-        User mainAuthor = this.userRepository.getById(mainAuthorId);
+        User mainAuthor = userRepository.getById(mainAuthorId);
         UUID[] authorIds = courseDto.getAuthorIds();
 
         List<User> authors = new ArrayList(Arrays.asList(mainAuthor));
@@ -154,7 +154,7 @@ public class CourseService {
 
     public int pageCount() {
         int categoryCount = Integer.parseInt(Long.valueOf(courseRepository.count()).toString());
-        return categoryCount % this.limit == 0 ? categoryCount / this.limit : categoryCount / this.limit + 1;
+        return categoryCount % limit == 0 ? categoryCount / limit : categoryCount / limit + 1;
     }
 
     public int endPage(int page) {
@@ -182,7 +182,6 @@ public class CourseService {
 
     private List<CourseDto> courseDtoFactory(User user, List<Course> courses) {
         List<CourseDto> userCourseDtoList = new ArrayList<>();
-
         for (Course course : courses) {
             boolean status = false;
             for (Course userCourse : user.getUserCourses()) {
@@ -191,10 +190,19 @@ public class CourseService {
                     break;
                 }
             }
-
-            userCourseDtoList.add(new CourseDto(course.getId(), course.getName(), course.getDescription(),
-                    course.getPrice(), status));
+            CourseDto courseDto = new CourseDto(course.getId(), course.getName(), course.getDescription(),
+                    course.getPrice(), status, course.getBase64Encode());
+            userCourseDtoList.add(courseDto);
         }
         return userCourseDtoList;
+    }
+
+    public List<Category> getCategoriesWithInfo() {
+        List<Category> categories = categoryRepository.findAll();
+
+        for (Category category : categories) {
+            category.setCoursesCount(courseRepository.countAllByCategoryId(category.getId()));
+        }
+        return categories;
     }
 }

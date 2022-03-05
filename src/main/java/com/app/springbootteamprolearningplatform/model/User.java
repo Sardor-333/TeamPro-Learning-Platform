@@ -93,13 +93,14 @@ public class User {
     @OneToMany(mappedBy = "from")
     List<Message> messages;
 
-    public User(String firstName, String lastName, String email, String password, String bio, Attachment attachment) {
+    public User(String firstName, String lastName, String email, String password, String bio, Attachment attachment, Double balance) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.bio = bio;
         this.attachment = attachment;
+        this.balance = balance;
     }
 
     public String getBase64() {

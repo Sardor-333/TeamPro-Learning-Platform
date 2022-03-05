@@ -1,6 +1,7 @@
 package com.app.springbootteamprolearningplatform.repository;
 
 import com.app.springbootteamprolearningplatform.model.Course;
+import com.app.springbootteamprolearningplatform.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -25,4 +26,8 @@ public interface CourseRepository extends JpaRepository<Course, UUID> {
     Double findCourseRate(UUID courseId);
 
     List<Course> findAllByCategoryId(UUID categoryId);
+
+    Long countAllByCategoryId(UUID id);
+
+    List<Course> findAllByAuthors(User author);
 }
