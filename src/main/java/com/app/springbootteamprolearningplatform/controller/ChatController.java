@@ -2,19 +2,16 @@ package com.app.springbootteamprolearningplatform.controller;
 
 import com.app.springbootteamprolearningplatform.dto.MessageDto;
 import com.app.springbootteamprolearningplatform.model.ChatRoom;
-import com.app.springbootteamprolearningplatform.model.Message;
 import com.app.springbootteamprolearningplatform.model.User;
-import com.app.springbootteamprolearningplatform.repository.RoleRepository;
 import com.app.springbootteamprolearningplatform.service.ChatService;
-import com.app.springbootteamprolearningplatform.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,8 +35,6 @@ public class ChatController {
         List<ChatRoom> userChats = chatService.getUserChats(userId);
         model.addAttribute("userChats", userChats);
         model.addAttribute("userId_id", userId);
-
-
         return "chat"; // todo create char room dto
     }
 
@@ -79,25 +74,25 @@ public class ChatController {
     }
 
     // CREATE CHAT WITH ANOTHER USER
-    @PostMapping("/createChat/{guestId}")
+    @GetMapping("/createChat/{guestId}")
     public String createChatWith(@PathVariable UUID guestId, HttpServletRequest request) {
         UUID hostId = UUID.fromString(request.getSession().getAttribute("userId").toString());
 
         //      HOST CREATES CHAT WITH GUEST
-        boolean isChatCreated = chatService.createChat(hostId, guestId);
+        ChatRoom chat = chatService.createChat(hostId, guestId);
 
-        return "redirect:/chats/" + hostId;
+        return "redirect:/chats/messages/" + chat.getId();
     }
 
     //      SEARCH USER BY EMAIL
-    @GetMapping("/search")
-    public String searchUser(@RequestParam(name = "email") String email, HttpServletRequest request, Model model) {
+    @PostMapping("/search")
+    public String searchUser(@RequestParam(name = "email") String email, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         UUID hostId = UUID.fromString(request.getSession().getAttribute("userId").toString());
-
         List<User> wantedUsers = chatService.searchUsersForHost(hostId, email);
-        model.addAttribute("wanted", wantedUsers);
+        redirectAttributes.addFlashAttribute("wanted", wantedUsers);
+        redirectAttributes.addFlashAttribute("search", email);
 
-        return "view-wanted-users"; // TODO
+        return "redirect:/chats"; // TODO
     }
 
 

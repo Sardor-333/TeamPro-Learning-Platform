@@ -35,19 +35,24 @@ public class ChatService {
         this.messageRepository = messageRepository;
     }
 
-    public boolean createChat(UUID hostId, UUID guestId) {
-        if (chatRepository.existsByUser1IdOrUser2Id(hostId, guestId) || chatRepository.existsByUser1IdOrUser2Id(guestId, hostId))
-            return false;
+    public ChatRoom createChat(UUID hostId, UUID guestId) {
+        if (chatRepository.existsByUser1IdAndUser2Id(hostId, guestId) || chatRepository.existsByUser1IdAndUser2Id(guestId, hostId)) {
+            ChatRoom chatRoom = chatRepository.findByUser1IdAndUser2Id(hostId, guestId);
+            if (chatRoom==null) {
+                chatRoom = chatRepository.findByUser1IdAndUser2Id(guestId,hostId);
+            }
+            return chatRoom;
+        }
 
         User host = userRepository.findById(hostId).orElse(null);
         User guest = userRepository.findById(guestId).orElse(null);
 
         if (host == null || guest == null || host.equals(guest))
-            return false;
+            return null;
 
         ChatRoom chatRoom = new ChatRoom(host, guest);
-        chatRepository.save(chatRoom);
-        return true;
+        ChatRoom save = chatRepository.save(chatRoom);
+        return save;
     }
 
     public List<ChatRoom> getUserChats(UUID userId) {
@@ -153,7 +158,7 @@ public class ChatService {
             if (userId != null) {
                 User guestUser = userRepository.getById(guestId);
                 User user = userRepository.getById(userId);
-                if (!chatRepository.existsByUser1IdOrUser2Id(guestId, userId) && !chatRepository.existsByUser1IdOrUser2Id(userId, guestId)) {
+                if (!chatRepository.existsByUser1IdAndUser2Id(guestId, userId) && !chatRepository.existsByUser1IdAndUser2Id(userId, guestId)) {
                     createChat(userId, guestId);
                 }
                 ChatRoom chatRoom1 = chatRepository.findByUser1AndUser2(guestUser, user);

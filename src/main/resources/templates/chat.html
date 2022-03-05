@@ -36,15 +36,42 @@
             <div class="card mb-sm-3 mb-md-0 contacts_card">
                 <div class="card-header">
                     <div class="input-group">
-                        <input type="text" placeholder="Search..." name="" class="form-control search">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text search_btn"><i class="fas fa-search"></i></span>
-                        </div>
+                        <form class="d-flex" action="/chats/search" method="post">
+                            <input type="text" placeholder="Search..." name="email" th:value="${search}" class="form-control search">
+                            <div class="input-group-prepend">
+                                <button type="submit" class="input-group-text search_btn"><i class="fas fa-search"></i></button>
+                            </div>
+                        </form>
+
                     </div>
                 </div>
                 <div class="card-body contacts_body">
                     <ui class="contacts">
-                        <div th:each="chat: ${userChats}">
+                        <div th:if="${wanted != null and wanted.size()>0}" >
+                            <li class="btn btn-primary btn-rounded" th:each="want: ${wanted}"  style="background-color: #0b5ed7">
+                                <a class="d-flex bd-highlight" th:href="'/chats/createChat/'+${want.getId()}">
+                                    <div class="img_cont">
+                                        <img th:if="${want.getBase64() != null}"
+                                             th:src="'data:image/jpg;base64, '+${want.getBase64()}"
+                                             class="rounded-circle user_img">
+                                        <img th:if="${want.getBase64() == null}"
+                                             src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Flag_of_Libya_%281977%E2%80%932011%2C_3-2%29.svg/1200px-Flag_of_Libya_%281977%E2%80%932011%2C_3-2%29.svg.png"
+                                             class="rounded-circle user_img">
+                                        <span class="online_icon offline"></span>
+                                    </div>
+                                    <div class="user_info">
+                                        <span th:text="${want.getFirstName()+' '+want.getLastName()}"></span>
+                                        <p>Taherah left 7 mins ago</p>
+                                    </div>
+                                </a>
+                            </li>
+                        </div>
+
+                        <li th:if="${wanted != null and wanted.size()>0}" class="btn-primary" disabled>
+                            <div class="d-flex bd-highlight">
+                                <p style="color: black" th:text="'MY CONTACTS'"></p>
+                            </div>
+                        </li>
                             <!--                        <li class="active">-->
                             <!--                            <div class="d-flex bd-highlight">-->
                             <!--                                <div class="img_cont">-->
@@ -57,11 +84,13 @@
                             <!--                                </div>-->
                             <!--                            </div>-->
                             <!--                        </li>-->
+
+                            <div th:each="chat: ${userChats}">
                             <li class="btn btn-primary btn-rounded" style="background-color: #0b5ed7">
                                 <a class="d-flex bd-highlight" th:href="'/chats/messages/'+${chat.getId()}">
                                     <div class="img_cont">
                                         <img th:if="${chat.getGuestUserImg() != null}"
-                                             th:src="'data:image/jpg base64, '+${chat.getGuestUserImg()}"
+                                             th:src="'data:image/jpg;base64, '+${chat.getGuestUserImg()}"
                                              class="rounded-circle user_img">
                                         <img th:if="${chat.getGuestUserImg() == null}"
                                              src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Flag_of_Libya_%281977%E2%80%932011%2C_3-2%29.svg/1200px-Flag_of_Libya_%281977%E2%80%932011%2C_3-2%29.svg.png"
@@ -76,16 +105,16 @@
                             </li>
 
                             <!--                        <li>-->
-                            <!--                            <div class="d-flex bd-highlight">-->
-                            <!--                                <div class="img_cont">-->
-                            <!--                                    <img src="https://i.pinimg.com/originals/ac/b9/90/acb990190ca1ddbb9b20db303375bb58.jpg" class="rounded-circle user_img">-->
-                            <!--                                    <span class="online_icon"></span>-->
-                            <!--                                </div>-->
-                            <!--                                <div class="user_info">-->
-                            <!--                                    <span>Sami Rafi</span>-->
-                            <!--                                    <p>Sami is online</p>-->
-                            <!--                                </div>-->
-                            <!--                            </div>-->
+<!--                                                        <div class="d-flex bd-highlight">-->
+<!--                                                            <div class="img_cont">-->
+<!--                                                                <img src="https://i.pinimg.com/originals/ac/b9/90/acb990190ca1ddbb9b20db303375bb58.jpg" class="rounded-circle user_img">-->
+<!--                                                                <span class="online_icon"></span>-->
+<!--                                                            </div>-->
+<!--                                                            <div class="user_info">-->
+<!--                                                                <span>Sami Rafi</span>-->
+<!--                                                                <p>Sami is online</p>-->
+<!--                                                            </div>-->
+<!--                                                        </div>-->
                             <!--                        </li>-->
                             <!--                        <li>-->
                             <!--                            <div class="d-flex bd-highlight">-->
@@ -124,7 +153,7 @@
                     <div class="d-flex bd-highlight" th:if="${guestInfo!=null}">
                         <div class="img_cont">
                             <img th:if="${guestInfo.getBase64()!=null}"
-                                 th:src="'data:image/jpg base64, '+${guestInfo.getBase64()}"
+                                 th:src="'data:image/jpg;base64, '+${guestInfo.getBase64()}"
                                  class="rounded-circle user_img">
                             <img th:if="${guestInfo.getBase64()==null}"
                                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Flag_of_Libya_%281977%E2%80%932011%2C_3-2%29.svg/1200px-Flag_of_Libya_%281977%E2%80%932011%2C_3-2%29.svg.png"
@@ -186,7 +215,8 @@
                             <textarea name="message" class="form-control type_msg"
                                       placeholder="Type your message..."></textarea>
                             <div class="input-group-append">
-                                <button type="submit" class="input-group-text send_btn"><i class="fas fa-location-arrow"></i></button>
+                                <button type="submit" class="input-group-text send_btn"><i
+                                        class="fas fa-location-arrow"></i></button>
                             </div>
                         </div>
                     </form>
