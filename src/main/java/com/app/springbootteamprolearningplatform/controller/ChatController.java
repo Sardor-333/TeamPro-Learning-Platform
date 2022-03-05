@@ -99,4 +99,11 @@ public class ChatController {
 
         return "view-wanted-users"; // TODO
     }
+
+
+    @PostMapping("/save/message/{guestId}")
+    public String saveMessage(String message, @PathVariable UUID guestId, HttpServletRequest req){
+        UUID chatId = chatService.saveMessage(guestId, req, message);
+        return "redirect:/chats/messages/"+chatId;
+    }
 }

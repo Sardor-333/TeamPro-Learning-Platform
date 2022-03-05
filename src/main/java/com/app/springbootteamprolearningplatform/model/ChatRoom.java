@@ -17,7 +17,7 @@ import java.util.UUID;
 @Entity(name = "chat_rooms")
 public class ChatRoom {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     UUID id;
 
     @ManyToOne

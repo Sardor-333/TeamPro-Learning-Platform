@@ -178,12 +178,12 @@
 
                 </div>
                 <div class="card-footer">
-                    <form th:if="${guestInfo!=null}" th:action="'/chats/createChat/'+${guestInfo.id}" method="post">
+                    <form th:if="${guestInfo!=null}" th:action="'/chats/save/message/'+${guestInfo.id}" method="post">
                         <div class="input-group">
                             <div class="input-group-append">
                                 <span class="input-group-text attach_btn"><i class="fas fa-paperclip"></i></span>
                             </div>
-                            <textarea name="" class="form-control type_msg"
+                            <textarea name="message" class="form-control type_msg"
                                       placeholder="Type your message..."></textarea>
                             <div class="input-group-append">
                                 <button type="submit" class="input-group-text send_btn"><i class="fas fa-location-arrow"></i></button>

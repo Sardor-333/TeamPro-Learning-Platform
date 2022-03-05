@@ -14,4 +14,6 @@ public interface ChatRepository extends JpaRepository<ChatRoom, UUID> {
     List<ChatRoom> findAllByUser1OrUser2(User user1, User user2);
 
     boolean existsByUser1IdOrUser2Id(UUID user1Id, UUID user2Id);
+
+    ChatRoom findByUser1AndUser2(User user1, User user2);
 }
