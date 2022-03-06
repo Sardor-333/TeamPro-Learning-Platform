@@ -233,7 +233,7 @@
 
     <a th:if="${role=='ADMIN' or role =='SUPER ADMIN'}" th:href="'lessons/add/video/'+${lesson.getId()}"
        class="btn btn-success">+ ADD VIDEO</a>
-    <a th:if="${role=='ADMIN' or role =='SUPER ADMIN'}" th:href="'lessons/add/task/'+${lesson.getId()}"
+    <a th:if="${role=='ADMIN' or role =='SUPER ADMIN'}" th:href="'lessons/uploadForm/'+${lesson.getId()}"
        class="btn btn-success">+ ADD TASK</a>
 </div>
 <div class="container">
@@ -243,7 +243,6 @@
     <table class="table table-hover">
         <thead>
         <tr>
-            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -253,11 +252,28 @@
         <tr class="table-info">
             <th scope="row" th:text="'Theme: '+${lesson.getTheme()}"></th>
         </tr>
-        <tr class="table-info" th:each="task: ${lesson.getTasks()}">
-            <th scope="row" th:text="'TASK'"></th>
-        </tr>
         </tbody>
     </table>
+    <br>
+    <br>
+    <div class="d-flex" th:style="'padding-right: '+${100 / lesson.getTasks().size()} +'%; padding-left: ' +${100 / lesson.getTasks().size()} + '%; justify-content: space-between;'">
+        <div th:each="task: ${lesson.getTasks()}">
+                <a th:href="'/lessons/show/task/'+${task.getId()}" style="text-decoration: none">
+                    <i class="fas fa-file-alt fa-4x"></i></a>
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div th:if="${infoTask != null}">
+            <p th:text="${infoTask.getQuestion()}" class="center"></p>
+            <p  style="text-decoration: none; padding-left: 40%;">
+                <a th:href="'/lessons/download/'+${infoTask.getId()}">
+                    <i class="fas fa-file-download fa-3x"></i>
+                </a>
+            </p>
+    </div>
     <div>
         <h3 th:if="${videos.size()>0}" style="color: green">Videos</h3>
         <h3 th:if="${videos.size()<1}" style="color: red">NO VIDEO YET</h3>
@@ -316,4 +332,10 @@
     </div>
 </div>
 </body>
+<style>
+    .center {
+        margin: auto;
+        width: 50%;
+    }
+</style>
 </html>

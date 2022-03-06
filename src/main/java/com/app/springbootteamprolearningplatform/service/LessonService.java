@@ -5,10 +5,16 @@ import com.app.springbootteamprolearningplatform.model.Module;
 import com.app.springbootteamprolearningplatform.model.*;
 import com.app.springbootteamprolearningplatform.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -23,18 +29,21 @@ public class LessonService {
     private VideoRepository videoRepository;
     private LessonCommentRepository lessonCommentRepository;
     private ModuleRepository moduleRepository;
+    private TaskRepository taskRepository;
 
     @Autowired
     LessonService(UserRepository userRepository,
                   LessonRepository lessonRepository,
                   VideoRepository videoRepository,
                   LessonCommentRepository lessonCommentRepository,
-                  ModuleRepository moduleRepository) {
+                  ModuleRepository moduleRepository,
+                  TaskRepository taskRepository) {
         this.userRepository = userRepository;
         this.lessonRepository = lessonRepository;
         this.videoRepository = videoRepository;
         this.lessonCommentRepository = lessonCommentRepository;
         this.moduleRepository = moduleRepository;
+        this.taskRepository = taskRepository;
     }
 
 
@@ -147,5 +156,35 @@ public class LessonService {
             return moduleId;
         }
         return null;
+    }
+
+    public ResponseEntity<ByteArrayResource> downloadTask(UUID taskId) {
+        Task task = taskRepository.findById(taskId).get();
+        Attachment attachment = task.getAttachment();
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(attachment.getContentType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + attachment.getFileName())
+                .body(new ByteArrayResource(attachment.getBytes()));
+
+    }
+
+    public void saveTask(UUID lessonId, MultipartFile task, String question) {
+        try {
+            Task task1 = new Task();
+            Attachment attachment = new Attachment();
+            attachment.setBytes(task.getBytes());
+            attachment.setFileName(task.getOriginalFilename());
+            attachment.setContentType(task.getContentType());
+            task1.setLesson(lessonRepository.findById(lessonId).get());
+            task1.setQuestion(question);
+            task1.setAttachment(attachment);
+            taskRepository.save(task1);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public Task findTaskByid(UUID taskId) {
+        return taskRepository.findById(taskId).get();
     }
 }

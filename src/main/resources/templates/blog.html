@@ -106,7 +106,7 @@
                                 </div>
 
                                 <h2 class="entry-title">
-                                    <a href="blog-single.html" th:text="${course.name}"/>
+                                    <a th:href="'/modules/'+${course.getId()}" th:text="${course.name}"/>
                                 </h2>
                                 <div class="entry-content">
                                     <p th:text="${course.description}">

@@ -23,8 +23,8 @@ public class Attachment {
     @Column(updatable = false)
     UUID id;
 
-    @Column(name = "file_location")
-    String fileLocation;
+    @Column(name = "content_type")
+    String contentType;
 
     @Column(name = "file_name")
     String fileName;

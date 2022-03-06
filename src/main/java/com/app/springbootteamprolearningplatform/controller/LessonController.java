@@ -2,17 +2,25 @@ package com.app.springbootteamprolearningplatform.controller;
 
 import com.app.springbootteamprolearningplatform.model.Lesson;
 import com.app.springbootteamprolearningplatform.model.LessonComment;
+import com.app.springbootteamprolearningplatform.model.Task;
 import com.app.springbootteamprolearningplatform.model.Video;
 import com.app.springbootteamprolearningplatform.repository.RoleRepository;
 import com.app.springbootteamprolearningplatform.repository.VideoRepository;
 import com.app.springbootteamprolearningplatform.service.LessonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -126,25 +134,6 @@ public class LessonController {
         return "redirect:/lessons?id=" + comment.getLesson().getId() + "";
     }
 
-    @ModelAttribute(value = "role")
-    public String getModelId(HttpServletRequest req) {
-        HttpSession session = req.getSession();
-        return (String) session.getAttribute("role");
-    }
-
-    @ModelAttribute(value = "userId")
-    public UUID getUserId(HttpServletRequest req) {
-        HttpSession session = req.getSession();
-        return (UUID) session.getAttribute("userId");
-    }
-
-    //    @ModelAttribute(value = "photo")
-    public String getPhoto(HttpServletRequest req) {
-        HttpSession session = req.getSession();
-        UUID userId = (UUID) session.getAttribute("userId");
-        return lessonService.getPhoto(userId);
-    }
-
     @GetMapping("/del/{lesId}/{com}")
     public String deletePost(@PathVariable UUID lesId, @PathVariable UUID com) {
         lessonService.deleteComment(lesId, com);
@@ -167,5 +156,54 @@ public class LessonController {
     public String deleteVideo(@PathVariable UUID videoId) {
         UUID lessonId = lessonService.deleteVideo(videoId);
         return "redirect:/lessons?id=" + lessonId;
+    }
+
+
+    @GetMapping("/uploadForm/{lessonId}")
+    public String fileUploadForm(@PathVariable UUID lessonId, Model model){
+        model.addAttribute("lessonId", lessonId);
+        return "upload-file";
+    }
+
+    @PostMapping("/upload/{lessonId}")
+    public String uploadFile(@PathVariable UUID lessonId, MultipartFile task, String question) {
+        lessonService.saveTask(lessonId,task, question);
+        return "redirect:/lessons?id=" + lessonId;
+    }
+
+    @GetMapping("/download/{taskId}")
+    @ResponseBody
+    public ResponseEntity<ByteArrayResource> downloadTask(@PathVariable UUID taskId){
+        return lessonService.downloadTask(taskId);
+    }
+
+    @GetMapping("/show/task/{taskId}")
+    public String getInfoTask(@PathVariable UUID taskId, RedirectAttributes redirectAttributes){
+        Task taskByid = lessonService.findTaskByid(taskId);
+        redirectAttributes.addFlashAttribute("infoTask", taskByid);
+        return "redirect:/lessons?id=" + taskByid.getLesson().getId();
+    }
+
+
+
+
+    ////////////    MODEL ATTRIBUTE /////////////////////////
+    @ModelAttribute(value = "role")
+    public String getModelId(HttpServletRequest req) {
+        HttpSession session = req.getSession();
+        return (String) session.getAttribute("role");
+    }
+
+    @ModelAttribute(value = "userId")
+    public UUID getUserId(HttpServletRequest req) {
+        HttpSession session = req.getSession();
+        return (UUID) session.getAttribute("userId");
+    }
+
+    //    @ModelAttribute(value = "photo")
+    public String getPhoto(HttpServletRequest req) {
+        HttpSession session = req.getSession();
+        UUID userId = (UUID) session.getAttribute("userId");
+        return lessonService.getPhoto(userId);
     }
 }
