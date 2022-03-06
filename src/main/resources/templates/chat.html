@@ -37,9 +37,11 @@
                 <div class="card-header">
                     <div class="input-group">
                         <form class="d-flex" action="/chats/search" method="post">
-                            <input type="text" placeholder="Search..." name="email" th:value="${search}" class="form-control search">
+                            <input type="text" placeholder="Search..." name="email" th:value="${search}"
+                                   class="form-control search">
                             <div class="input-group-prepend">
-                                <button type="submit" class="input-group-text search_btn"><i class="fas fa-search"></i></button>
+                                <button type="submit" class="input-group-text search_btn"><i class="fas fa-search"></i>
+                                </button>
                             </div>
                         </form>
 
@@ -47,8 +49,9 @@
                 </div>
                 <div class="card-body contacts_body">
                     <ui class="contacts">
-                        <div th:if="${wanted != null and wanted.size()>0}" >
-                            <li class="btn btn-primary btn-rounded" th:each="want: ${wanted}"  style="background-color: #0b5ed7">
+                        <div th:if="${wanted != null and wanted.size()>0}">
+                            <li class="btn btn-primary btn-rounded" th:each="want: ${wanted}"
+                                style="background-color: #0b5ed7">
                                 <a class="d-flex bd-highlight" th:href="'/chats/createChat/'+${want.getId()}">
                                     <div class="img_cont">
                                         <img th:if="${want.getBase64() != null}"
@@ -61,7 +64,7 @@
                                     </div>
                                     <div class="user_info">
                                         <span th:text="${want.getFirstName()+' '+want.getLastName()}"></span>
-                                        <p>Taherah left 7 mins ago</p>
+                                        <p th:text="${want.getLeftAtS}"></p>
                                     </div>
                                 </a>
                             </li>
@@ -72,49 +75,117 @@
                                 <p style="color: black" th:text="'MY CONTACTS'"></p>
                             </div>
                         </li>
-                            <!--                        <li class="active">-->
-                            <!--                            <div class="d-flex bd-highlight">-->
-                            <!--                                <div class="img_cont">-->
-                            <!--                                    <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg" class="rounded-circle user_img">-->
-                            <!--                                    <span class="online_icon"></span>-->
-                            <!--                                </div>-->
-                            <!--                                <div class="user_info">-->
-                            <!--                                    <span>Khalid</span>-->
-                            <!--                                    <p>Kalid is online</p>-->
-                            <!--                                </div>-->
-                            <!--                            </div>-->
-                            <!--                        </li>-->
+                        <!--                        <li class="active">-->
+                        <!--                            <div class="d-flex bd-highlight">-->
+                        <!--                                <div class="img_cont">-->
+                        <!--                                    <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg" class="rounded-circle user_img">-->
+                        <!--                                    <span class="online_icon"></span>-->
+                        <!--                                </div>-->
+                        <!--                                <div class="user_info">-->
+                        <!--                                    <span>Khalid</span>-->
+                        <!--                                    <p>Kalid is online</p>-->
+                        <!--                                </div>-->
+                        <!--                            </div>-->
+                        <!--                        </li>-->
 
-                            <div th:each="chat: ${userChats}">
-                            <li class="btn btn-primary btn-rounded" style="background-color: #0b5ed7">
-                                <a class="d-flex bd-highlight" th:href="'/chats/messages/'+${chat.getId()}">
-                                    <div class="img_cont">
-                                        <img th:if="${chat.getGuestUserImg() != null}"
-                                             th:src="'data:image/jpg;base64, '+${chat.getGuestUserImg()}"
-                                             class="rounded-circle user_img">
-                                        <img th:if="${chat.getGuestUserImg() == null}"
-                                             src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Flag_of_Libya_%281977%E2%80%932011%2C_3-2%29.svg/1200px-Flag_of_Libya_%281977%E2%80%932011%2C_3-2%29.svg.png"
-                                             class="rounded-circle user_img">
-                                        <span class="online_icon offline"></span>
-                                    </div>
-                                    <div class="user_info">
-                                        <span th:text="${chat.getUser2().getFirstName()+' '+chat.getUser2().getLastName()}"></span>
-                                        <p>Taherah left 7 mins ago</p>
-                                    </div>
-                                </a>
-                            </li>
+                        <div th:each="chat: ${userChats}">
+                            <div th:if="${guestInfo==null}">
+                                <li class="inactive">
+                                    <a class="d-flex bd-highlight" th:href="'/chats/messages/'+${chat.getId()}">
+                                        <div class="img_cont">
+                                            <img th:if="${chat.getGuestUserImg() != null}"
+                                                 th:src="'data:image/jpg;base64, '+${chat.getGuestUserImg()}"
+                                                 class="rounded-circle user_img">
+                                            <img th:if="${chat.getGuestUserImg() == null}"
+                                                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Flag_of_Libya_%281977%E2%80%932011%2C_3-2%29.svg/1200px-Flag_of_Libya_%281977%E2%80%932011%2C_3-2%29.svg.png"
+                                                 class="rounded-circle user_img">
+                                            <span class="online_icon offline"></span>
+                                        </div>
+                                        <div class="user_info">
+                                            <div class="d-flex">
+                                                <span th:text="${chat.getUser2().getFirstName()+' '+chat.getUser2().getLastName()}"></span>
+                                                <div class="d-flex  justify-content-end mb-4">
+                                                    <div th:if="${chat.newMessagesCount>0}"
+                                                         class="badge bg-success float-right"
+                                                         th:text="${chat.newMessagesCount}">5
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <p th:text="${chat.getUser2().getLeftAtS()}"></p>
+
+                                        </div>
+                                    </a>
+                                </li>
+                            </div>
+                            <div th:if="${guestInfo!=null}">
+                                <li th:if="${guestInfo.getId() == chat.getUser2().getId()}"
+                                    class="active">
+                                    <a class="d-flex bd-highlight" th:href="'/chats/messages/'+${chat.getId()}">
+                                        <div class="img_cont">
+                                            <img th:if="${chat.getGuestUserImg() != null}"
+                                                 th:src="'data:image/jpg;base64, '+${chat.getGuestUserImg()}"
+                                                 class="rounded-circle user_img">
+                                            <img th:if="${chat.getGuestUserImg() == null}"
+                                                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Flag_of_Libya_%281977%E2%80%932011%2C_3-2%29.svg/1200px-Flag_of_Libya_%281977%E2%80%932011%2C_3-2%29.svg.png"
+                                                 class="rounded-circle user_img">
+                                            <span class="online_icon offline"></span>
+                                        </div>
+                                        <div class="user_info">
+                                            <div class="d-flex">
+                                                <span th:text="${chat.getUser2().getFirstName()+' '+chat.getUser2().getLastName()}"></span>
+                                                <div class="d-flex  justify-content-end mb-4">
+                                                    <div th:if="${chat.newMessagesCount>0}"
+                                                         class="badge bg-success float-right"
+                                                         th:text="${chat.newMessagesCount}">5
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <p th:text="${chat.getUser2().getLeftAtS()}"></p>
+
+                                        </div>
+                                    </a>
+                                </li>
+                                <li th:if="${guestInfo.getId() != chat.getUser2().getId()}"
+                                    class="inactive">
+                                    <a class="d-flex bd-highlight" th:href="'/chats/messages/'+${chat.getId()}">
+                                        <div class="img_cont">
+                                            <img th:if="${chat.getGuestUserImg() != null}"
+                                                 th:src="'data:image/jpg;base64, '+${chat.getGuestUserImg()}"
+                                                 class="rounded-circle user_img">
+                                            <img th:if="${chat.getGuestUserImg() == null}"
+                                                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Flag_of_Libya_%281977%E2%80%932011%2C_3-2%29.svg/1200px-Flag_of_Libya_%281977%E2%80%932011%2C_3-2%29.svg.png"
+                                                 class="rounded-circle user_img">
+                                            <span class="online_icon offline"></span>
+                                        </div>
+                                        <div class="user_info">
+                                            <div class="d-flex">
+                                                <span th:text="${chat.getUser2().getFirstName()+' '+chat.getUser2().getLastName()}"></span>
+                                                <div class="d-flex  justify-content-end mb-4">
+                                                    <div th:if="${chat.newMessagesCount>0}"
+                                                         class="badge bg-success float-right"
+                                                         th:text="${chat.newMessagesCount}">5
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <p th:text="${chat.getUser2().getLeftAtS()}"></p>
+
+                                        </div>
+                                    </a>
+                                </li>
+                            </div>
+
 
                             <!--                        <li>-->
-<!--                                                        <div class="d-flex bd-highlight">-->
-<!--                                                            <div class="img_cont">-->
-<!--                                                                <img src="https://i.pinimg.com/originals/ac/b9/90/acb990190ca1ddbb9b20db303375bb58.jpg" class="rounded-circle user_img">-->
-<!--                                                                <span class="online_icon"></span>-->
-<!--                                                            </div>-->
-<!--                                                            <div class="user_info">-->
-<!--                                                                <span>Sami Rafi</span>-->
-<!--                                                                <p>Sami is online</p>-->
-<!--                                                            </div>-->
-<!--                                                        </div>-->
+                            <!--                                                        <div class="d-flex bd-highlight">-->
+                            <!--                                                            <div class="img_cont">-->
+                            <!--                                                                <img src="https://i.pinimg.com/originals/ac/b9/90/acb990190ca1ddbb9b20db303375bb58.jpg" class="rounded-circle user_img">-->
+                            <!--                                                                <span class="online_icon"></span>-->
+                            <!--                                                            </div>-->
+                            <!--                                                            <div class="user_info">-->
+                            <!--                                                                <span>Sami Rafi</span>-->
+                            <!--                                                                <p>Sami is online</p>-->
+                            <!--                                                            </div>-->
+                            <!--                                                        </div>-->
                             <!--                        </li>-->
                             <!--                        <li>-->
                             <!--                            <div class="d-flex bd-highlight">-->
@@ -141,7 +212,6 @@
                             <!--                            </div>-->
                             <!--                        </li>-->
                         </div>
-
                     </ui>
                 </div>
                 <div class="card-footer"></div>
@@ -182,12 +252,14 @@
                 <div class="card-body msg_card_body">
                     <div th:each="message: ${chatMessages}">
                         <div class="d-flex justify-content-start mb-4"
-                             th:if="${message.getFrom().getId()}!= ${userId_id}">
+                             th:if="${message.getFrom().getId() != userId_id  and message.isRead} ">
                             <div class="msg_cotainer">
                                 <div class="d-flex">
                                     <p th:text="${message.getMessage()}"></p>
                                 </div>
                                 <span class="msg_time" th:text="${message.getSentAt()}"></span>
+                                <a th:href="'/chats/delete/'+${message.getId()}"><i class="fas fa-trash fa-sm"
+                                                                                    style="color: red"></i></a>
                             </div>
                         </div>
                         <div class="d-flex justify-content-end mb-4" th:if="${message.getFrom().getId()}==${userId_id}">
@@ -200,11 +272,33 @@
                                     <p th:text="${message.getMessage()}"></p>
                                     <p><i class="fas fa-check-double"></i></p>
                                 </div>
+                                <div class="d-flex">
+                                    <a th:href="'/chats/edit/'+${message.getId()}+'?chatId='+${message.getChatRoom().getId()}"><i
+                                            class="fas fa-edit fa-sm" style="color: #0b5ed7"></i></a>
+                                    <a th:href="'/chats/delete/'+${message.getId()}"><i class="fas fa-trash fa-sm"
+                                                                                        style="color: red"></i></a>
+                                </div>
                                 <span class="msg_time" th:text="${message.getSentAt()}"></span>
                             </div>
                         </div>
                     </div>
-
+                    <button style="width: 100%" th:if="${newMessages!= null and newMessages.size()>0}" class="btn-info"
+                            disabled>New Message
+                    </button>
+                    <div th:each="message: ${newMessages}">
+                        <div class="d-flex justify-content-start mb-4">
+                            <div class="msg_cotainer">
+                                <div class="d-flex">
+                                    <p th:text="${message.getMessage()}"></p>
+                                </div>
+                                <div class="d-flex">
+                                    <a th:href="'/chats/delete/'+${message.getId()}"><i class="fas fa-trash fa-sm"
+                                                                                        style="color: red"></i></a>
+                                </div>
+                                <span class="msg_time" th:text="${message.getSentAt()}"></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-footer">
                     <form th:if="${guestInfo!=null}" th:action="'/chats/save/message/'+${guestInfo.id}" method="post">
@@ -212,8 +306,14 @@
                             <div class="input-group-append">
                                 <span class="input-group-text attach_btn"><i class="fas fa-paperclip"></i></span>
                             </div>
-                            <textarea name="message" class="form-control type_msg"
-                                      placeholder="Type your message..."></textarea>
+                            <input th:if="${editMessage==null}" name="message" class="form-control type_msg"
+                                   placeholder="Type your message...">
+                            <div th:if="${editMessage != null}">
+                                <input name="message" style="width: 100%" th:value="${editMessage.getMessage()}"
+                                       class="form-control type_msg">
+                                <input class="form-control type_msg" type="hidden" name="editedMessageId"
+                                       th:value="${editMessage.getId()}">
+                            </div>
                             <div class="input-group-append">
                                 <button type="submit" class="input-group-text send_btn"><i
                                         class="fas fa-location-arrow"></i></button>
@@ -281,6 +381,27 @@
     .search:focus {
         box-shadow: none !important;
         outline: 0px !important;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 0.25em 0.4em;
+        font-size: 90%;
+        font-weight: 700;
+        line-height: 1;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
+        border-radius: 0.25rem;
+        transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    }
+
+    .bg-success {
+        background-color: #ff0e18 !important;
+    }
+
+    .float-right {
+        float: right !important;
     }
 
     .type_msg {
@@ -410,7 +531,6 @@
         border-radius: 25px;
         background-color: #82ccdd;
         padding: 10px;
-        height: 45px;
         position: relative;
     }
 

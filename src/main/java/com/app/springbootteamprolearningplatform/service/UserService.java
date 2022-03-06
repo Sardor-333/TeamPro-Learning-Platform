@@ -1,10 +1,7 @@
 package com.app.springbootteamprolearningplatform.service;
 
 import com.app.springbootteamprolearningplatform.dto.UserDto;
-import com.app.springbootteamprolearningplatform.model.Attachment;
-import com.app.springbootteamprolearningplatform.model.Course;
-import com.app.springbootteamprolearningplatform.model.Role;
-import com.app.springbootteamprolearningplatform.model.User;
+import com.app.springbootteamprolearningplatform.model.*;
 import com.app.springbootteamprolearningplatform.repository.CourseRepository;
 import com.app.springbootteamprolearningplatform.repository.RoleRepository;
 import com.app.springbootteamprolearningplatform.repository.UserRepository;
@@ -18,6 +15,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -39,7 +39,6 @@ public class UserService {
         this.roleRepository = roleRepository;
         this.courseRepository = courseRepository;
     }
-
     public boolean registerUser(UserDto userDto) {
         if (
                 !userRepository.existsByEmail(userDto.getEmail())
@@ -71,6 +70,7 @@ public class UserService {
     public String login(String email, String password,
                         HttpServletRequest req, Model model) {
         try {
+            makeLeftAt(req);
             Optional<User> studentOptional = userRepository.findByEmail(email);
             if (studentOptional.isPresent()) {
                 User user = studentOptional.get();
@@ -100,6 +100,7 @@ public class UserService {
         if (userId != null) {
             HttpSession session = req.getSession();
             session.setAttribute("role", role);
+            makeLeftAt(req);
             return "redirect:/courses";
         }
         return "redirect:/auth/login";
@@ -107,6 +108,7 @@ public class UserService {
 
     public void logOut(HttpServletRequest request) {
         HttpSession session = request.getSession();
+        makeLeftAt(request);
         session.invalidate();
     }
 
@@ -152,5 +154,57 @@ public class UserService {
         } else {
             return "You don`t have much money, Fill your balance!";
         }
+    }
+
+    public LocalDateTime makeLeftAt(HttpServletRequest request, LocalDateTime leftAt){
+        UUID userId = (UUID)request.getSession().getAttribute("userId");
+        if(userId != null){
+            User user = userRepository.findById(userId).get();
+            user.setLeftAt(leftAt);
+        }
+        return leftAt;
+    }
+    public LocalDateTime makeLeftAt(HttpServletRequest request){
+        return makeLeftAt(request, LocalDateTime.now());
+    }
+
+    public void setLeftAtS(User user){
+        LocalDateTime leftAt = user.getLeftAt();
+        Duration duration = Duration.between(leftAt,LocalDateTime.now());
+        String status = getStatus(duration,leftAt);
+        user.setLeftAtS(status);
+    }
+
+    public String getStatus(Duration l, LocalDateTime leftAt) {
+        String status;
+        if(l.toDays()==30) {
+            return "a month ago";
+        }
+        if (l.toDays()>29) {
+            status = leftAt.format(DateTimeFormatter.ofPattern("yyyy-MMMM-dd"));
+        }else {
+            if(l.toHours()>24){
+                status = l.toDays()+" days ago";
+            } else {
+                if(l.toHours()>23){
+                    status = "a day ago";
+                } else {
+                    if(l.toHours()>1){
+                        status = l.toHours()+" hours ago";
+                    }else {
+                        if(l.toHours()==1){
+                            status = "a hour ago";
+                        } else {
+                            if (l.toMinutes()>1) {
+                                status = l.toMinutes()+" minutes ago";
+                            }else {
+                                status = "a minute ago";
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return status;
     }
 }

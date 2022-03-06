@@ -10,14 +10,12 @@ import com.app.springbootteamprolearningplatform.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Transactional
@@ -25,14 +23,17 @@ public class ChatService {
     private final ChatRepository chatRepository;
     private final UserRepository userRepository;
     private final MessageRepository messageRepository;
+    private final UserService userService;
 
     @Autowired
     public ChatService(ChatRepository chatRepository,
                        UserRepository userRepository,
-                       MessageRepository messageRepository) {
+                       MessageRepository messageRepository,
+                       UserService userService) {
         this.chatRepository = chatRepository;
         this.userRepository = userRepository;
         this.messageRepository = messageRepository;
+        this.userService = userService;
     }
 
     public ChatRoom createChat(UUID hostId, UUID guestId) {
@@ -125,12 +126,22 @@ public class ChatService {
         return wantedUsers;
     }
 
-    public void makeChatMessagesRead(UUID chatId) {
+    public void makeChatMessagesRead(UUID chatId, UUID userId) {
         if (chatRepository.existsById(chatId)) {
             List<Message> messages = messageRepository.findAllByChatRoomId(chatId);
             for (Message message : messages) {
-                message.setIsRead(true);
+                if (!message.getFrom().getId().equals(userId)) {
+                    message.setIsRead(true);
+                }
             }
+        }
+    }
+
+
+    public void setLeftAtS(List<ChatRoom> chatRooms){
+        for (ChatRoom chatRoom : chatRooms) {
+            userService.setLeftAtS(chatRoom.getUser2());
+            userService.setLeftAtS(chatRoom.getUser1());
         }
     }
 
@@ -154,6 +165,7 @@ public class ChatService {
     }
 
     public UUID saveMessage(UUID guestId, HttpServletRequest request, String message) {
+
             UUID userId = (UUID) request.getSession().getAttribute("userId");
             if (userId != null) {
                 User guestUser = userRepository.getById(guestId);
@@ -165,6 +177,9 @@ public class ChatService {
                 if(chatRoom1 == null){
                     chatRoom1 = chatRepository.findByUser1AndUser2(user, guestUser);
                 }
+                if (message.isBlank() || message.isEmpty()) {
+                    return chatRoom1.getId();
+                }
                 Message message1 = new Message();
                 message1.setMessage(message);
                 message1.setChatRoom(chatRoom1);
@@ -175,5 +190,46 @@ public class ChatService {
                 return chatRoom1.getId();
             }
             return null;
+    }
+
+    public List<MessageDto> getNewMessage(List<MessageDto> chatMessages,UUID userId) {
+        List<MessageDto> messageDtoList = new ArrayList<>();
+        for (MessageDto chatMessage : chatMessages) {
+            if (!chatMessage.getIsRead() && !chatMessage.getFrom().getId().equals(userId)) {
+                messageDtoList.add(chatMessage);
+            }
+        }
+        return messageDtoList;
+    }
+
+    public ChatRoom getEdit(UUID messageId, RedirectAttributes rA, HttpServletRequest rq) {
+        Message message = messageRepository.findById(messageId).get();
+        UUID userId = (UUID)rq.getSession().getAttribute("userId");
+        ChatRoom chatRoom = chatRepository.getById(message.getChatRoom().getId());
+        if(userId.equals(message.getFrom().getId())){
+            rA.addFlashAttribute("editMessage", message);
+            return chatRoom;
+        }
+        return chatRoom;
+    }
+
+    public UUID updateMessage(String message, UUID guestId, HttpServletRequest req, UUID eMI) {
+        Message message1 = messageRepository.findById(eMI).get();
+        message1.setMessage(message);
+        messageRepository.save(message1);
+        return message1.getChatRoom().getId();
+    }
+
+
+    public UUID deleteMessage(UUID msgId) {
+        Message message = messageRepository.findById(msgId).get();
+        messageRepository.delete(message);
+        return message.getChatRoom().getId();
+    }
+
+    public void setLeftAtS(List<User> wantedUsers, boolean noSame) {
+        for (User user : wantedUsers) {
+            userService.setLeftAtS(user);
+        }
     }
 }

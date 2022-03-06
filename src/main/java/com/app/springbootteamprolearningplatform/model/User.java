@@ -5,12 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -57,6 +59,13 @@ public class User {
 
     Double balance;
 
+    @Column(name = "left_at")
+    @ColumnDefault(value = "now()")
+    LocalDateTime leftAt;
+
+    @Transient
+    String leftAtS;
+
     // RELATIONS
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "attachment_id", referencedColumnName = "id")
@@ -101,6 +110,18 @@ public class User {
         this.bio = bio;
         this.attachment = attachment;
         this.balance = balance;
+        this.leftAt = LocalDateTime.now();
+    }
+
+    public User(String firstName, String lastName, String email, String password, String bio, Attachment attachment, Double balance, LocalDateTime leftAt) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.bio = bio;
+        this.attachment = attachment;
+        this.balance = balance;
+        this.leftAt = leftAt;
     }
 
     public String getBase64() {

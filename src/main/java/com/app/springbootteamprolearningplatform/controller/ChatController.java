@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,6 +32,7 @@ public class ChatController {
             return "login-form";
         }
         List<ChatRoom> userChats = chatService.getUserChats(userId);
+        chatService.setLeftAtS(userChats);
         model.addAttribute("userChats", userChats);
         model.addAttribute("userId_id", userId);
         return "chat"; // todo create char room dto
@@ -59,16 +59,18 @@ public class ChatController {
         //      SPECIFIC CHAT MESSAGES
         List<MessageDto> chatMessages = chatService.findChatMessages(chatId);
         model.addAttribute("chatMessages", chatMessages);
-        chatService.makeChatMessagesRead(chatId);
+        chatService.makeChatMessagesRead(chatId, (UUID) request.getSession().getAttribute("userId"));
 
         //      SESSION USER CHATS
         UUID userId = UUID.fromString(request.getSession().getAttribute("userId").toString());
         List<ChatRoom> userChats = chatService.getUserChats(userId);
+        chatService.setLeftAtS(userChats);
 
         model.addAttribute("userChats", userChats);
         model.addAttribute("userId_id", userId);
         model.addAttribute("guestInfo", chatService.getGuestUser(chatId,request,true));
         model.addAttribute("myInfo", chatService.getGuestUser(chatId,request,false));
+        model.addAttribute("newMessages",chatService.getNewMessage(chatMessages, userId));
 
         return "chat"; // todo create chat message dto
     }
@@ -84,11 +86,29 @@ public class ChatController {
         return "redirect:/chats/messages/" + chat.getId();
     }
 
+
+
+    ///////////////////////////////   EDIT MESSAGE GET METHOD////////////////////////////////////
+    @GetMapping("/edit/{messageId}")
+    public String editMessage(@PathVariable UUID messageId, RedirectAttributes redirectAttributes, HttpServletRequest request){
+        ChatRoom chatRoom = chatService.getEdit(messageId, redirectAttributes, request);
+        return "redirect:/chats/messages/"+chatRoom.getId();
+    }
+
+
+    /////////////<<<<<<<<<<<<<DELETE MESSAGE >>>>>>>>>>///////////////////
+    @GetMapping("/delete/{msgId}")
+    public String deleteMessage(@PathVariable UUID msgId){
+        return "redirect:/chats/messages/"+chatService.deleteMessage(msgId);
+    }
+
+
     //      SEARCH USER BY EMAIL
     @PostMapping("/search")
     public String searchUser(@RequestParam(name = "email") String email, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         UUID hostId = UUID.fromString(request.getSession().getAttribute("userId").toString());
         List<User> wantedUsers = chatService.searchUsersForHost(hostId, email);
+        chatService.setLeftAtS(wantedUsers, false);
         redirectAttributes.addFlashAttribute("wanted", wantedUsers);
         redirectAttributes.addFlashAttribute("search", email);
 
@@ -97,8 +117,16 @@ public class ChatController {
 
 
     @PostMapping("/save/message/{guestId}")
-    public String saveMessage(String message, @PathVariable UUID guestId, HttpServletRequest req){
-        UUID chatId = chatService.saveMessage(guestId, req, message);
+    public String saveMessage(String message, @PathVariable UUID guestId, @RequestParam(name = "editedMessageId", required = false) UUID editedMessageId, HttpServletRequest req){
+        UUID chatId;
+        if (editedMessageId!=null) {
+            if (message.isEmpty() || message.isBlank()) {
+                return "redirect:/chats/delete/"+editedMessageId;
+            }
+            chatId = chatService.updateMessage(message, guestId, req, editedMessageId);
+        }else {
+            chatId = chatService.saveMessage(guestId, req, message);
+        }
         return "redirect:/chats/messages/"+chatId;
     }
 }
