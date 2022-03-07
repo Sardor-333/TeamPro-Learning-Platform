@@ -29,20 +29,20 @@ public class SpringBootTeamProLearningPlatformApplication implements CommandLine
     public void run(String... args) {
 
         // INITIALIZE ROLES
-        Role user = new Role("USER");
-        Role mentor = new Role("MENTOR");
-        Role admin = new Role("ADMIN");
-        Role superAdmin = new Role("SUPER_ADMIN");
-
-        roleRepository.save(user);
-        roleRepository.save(mentor);
-        roleRepository.save(admin);
-        roleRepository.save(superAdmin);
-
-        // INITIALIZE SUPER_ADMIN
-        User SUPER_ADMIN = new User("Sardor", "Shermatov", "sardor.faang.dev@gmail.com", "_ingMAFASE0308", "Software Engineer Sardor Shermatov",null,0.0);
-        SUPER_ADMIN.getRoles().add(superAdmin);
-
-        userRepository.save(SUPER_ADMIN);
+//        Role user = new Role("USER");
+//        Role mentor = new Role("MENTOR");
+//        Role admin = new Role("ADMIN");
+//        Role superAdmin = new Role("SUPER_ADMIN");
+//
+//        roleRepository.save(user);
+//        roleRepository.save(mentor);
+//        roleRepository.save(admin);
+//        roleRepository.save(superAdmin);
+//
+//        // INITIALIZE SUPER_ADMIN
+//        User SUPER_ADMIN = new User("Sardor", "Shermatov", "sardor.faang.dev@gmail.com", "_ingMAFASE0308", "Software Engineer Sardor Shermatov",null,0.0);
+//        SUPER_ADMIN.getRoles().add(superAdmin);
+//
+//        userRepository.save(SUPER_ADMIN);
     }
 }

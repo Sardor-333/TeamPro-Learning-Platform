@@ -10,12 +10,12 @@
 <body>
 <div class="container">
 
-    <form th:action="'/lessons/add/video?id='+${lessonId}" method="post">
+    <form th:action="'/lessons/add/video?id='+${lessonId}" method="post" enctype="multipart/form-data">
 
         <!--/*@thymesVar id="categories" type="com.app.model.Category"*/-->
         <div class="form-group" style="margin-top:30px">
-            <label for="location">Location</label>
-            <input  id="location" class="form-control" type="text" name="fileLocation">
+            <label for="location">CHOOSE FILE</label>
+            <input  id="location" class="form-control" type="file" name="video">
         </div>
         <button type="submit" class="btn btn-success" style="margin-top:30px">Save</button>
     </form>

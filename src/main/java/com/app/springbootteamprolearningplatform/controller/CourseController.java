@@ -93,6 +93,7 @@ public class CourseController {
             model.addAttribute("courseRate", courseService.getCourseRate(courseId));
             model.addAttribute("courseComments", courseService.getCourseCommentDtos(courseId));
             model.addAttribute("authors", course.getAuthors().stream().map(user -> user.getLastName() + " " + user.getFirstName()).toList());
+            model.addAttribute("myImage", userService.getMyImage(request));
 
             return "course";
         }

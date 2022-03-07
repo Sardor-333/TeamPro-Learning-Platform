@@ -6,15 +6,19 @@ import com.app.springbootteamprolearningplatform.model.*;
 import com.app.springbootteamprolearningplatform.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import reactor.core.publisher.Mono;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -30,6 +34,9 @@ public class LessonService {
     private LessonCommentRepository lessonCommentRepository;
     private ModuleRepository moduleRepository;
     private TaskRepository taskRepository;
+    private ResourceLoader resourceLoader;
+    private static final String FORMAT = "classpath:static/videos/%s";
+
 
     @Autowired
     LessonService(UserRepository userRepository,
@@ -37,13 +44,15 @@ public class LessonService {
                   VideoRepository videoRepository,
                   LessonCommentRepository lessonCommentRepository,
                   ModuleRepository moduleRepository,
-                  TaskRepository taskRepository) {
+                  TaskRepository taskRepository,
+                  ResourceLoader resourceLoader) {
         this.userRepository = userRepository;
         this.lessonRepository = lessonRepository;
         this.videoRepository = videoRepository;
         this.lessonCommentRepository = lessonCommentRepository;
         this.moduleRepository = moduleRepository;
         this.taskRepository = taskRepository;
+        this.resourceLoader = resourceLoader;
     }
 
 
@@ -104,15 +113,28 @@ public class LessonService {
         }
     }
 
-    public void saveVideo(Video video, UUID lessonId) {
+    public void saveVideo(MultipartFile video, UUID lessonId) {
         try {
             Optional<Lesson> lessonOptional = lessonRepository.findById(lessonId);
             if (lessonOptional.isPresent()) {
+                ///////////// Get Absolute Path////////////
+                File currentFilePath = new File(".");
+                String absolutePath = currentFilePath.getAbsolutePath().replace(".", "src/main/resources/static/videos/");
+                //////// CREATE VIDEO //////////////////
+                Video sVideo = new Video();
                 Lesson lesson = lessonOptional.get();
-                String fileName = "file_name=" + UUID.randomUUID();
-                video.setFileName(fileName);
-                video.setLesson(lesson);
-                videoRepository.save(video);
+                sVideo.setLesson(lesson);
+                sVideo.setOriginalFileName(video.getOriginalFilename());
+                String s = UUID.randomUUID() + video.getOriginalFilename();
+                sVideo.setFileName(s);
+                sVideo.setFileLocation(absolutePath);
+                sVideo.setContentType(video.getContentType());
+
+                File file = new File(absolutePath + s);
+                video.transferTo(file);
+                videoRepository.save(sVideo);
+                File resource = new ClassPathResource(absolutePath+sVideo.getFileName()).getFile();
+                System.out.println(resource);
             }
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
@@ -179,12 +201,17 @@ public class LessonService {
             task1.setQuestion(question);
             task1.setAttachment(attachment);
             taskRepository.save(task1);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public Task findTaskByid(UUID taskId) {
         return taskRepository.findById(taskId).get();
+    }
+
+    public Mono<Resource> getVideo(String title) {
+        return Mono.fromSupplier(() -> resourceLoader
+                .getResource(String.format(FORMAT, title)));
     }
 }

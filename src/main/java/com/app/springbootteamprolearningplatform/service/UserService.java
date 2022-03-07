@@ -207,4 +207,8 @@ public class UserService {
         }
         return status;
     }
+
+    public String getMyImage(HttpServletRequest req) {
+       return userRepository.getById((UUID) req.getSession().getAttribute("userId")).getBase64();
+    }
 }
