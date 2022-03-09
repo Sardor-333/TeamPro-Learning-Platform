@@ -59,7 +59,14 @@
                 <li><a href="/courses">Courses</a></li>
                 <li><a href="/contact">Contact Us</a></li>
                 <li><a href="/chats">Chat</a></li>
-                <li><a href="/auth/login">Login</a></li>
+
+                <li th:if="${session.get('userId') == null}">
+                    <a href="/auth/login">Login</a>
+                </li>
+                <li th:if="${session.get('userId') != null}">
+                    <a href="/auth/logOut">Log Out</a>
+                </li>
+
             </ul>
             <i class="bi bi-list mobile-nav-toggle"></i>
         </nav><!-- .navbar -->
@@ -132,7 +139,8 @@
 
             <div class="row" data-aos="fade-up">
                 <div class="col-md-5">
-                    <img src="https://media.geeksforgeeks.org/wp-content/cdn-uploads/20190911190208/How-to-Become-A-Successful-Java-Developer.png" class="img-fluid" alt="">
+                    <img src="https://media.geeksforgeeks.org/wp-content/cdn-uploads/20190911190208/How-to-Become-A-Successful-Java-Developer.png"
+                         class="img-fluid" alt="">
                 </div>
                 <div class="col-md-7 pt-4">
                     <h3>Voluptatem dignissimos provident quasi corporis voluptates sit assumenda.</h3>
@@ -150,7 +158,8 @@
 
             <div class="row" data-aos="fade-up">
                 <div class="col-md-5 order-1 order-md-2">
-                    <img src="https://ortdnipro.org/wp-content/uploads/programming-illustration-3.png" class="img-fluid" alt="">
+                    <img src="https://ortdnipro.org/wp-content/uploads/programming-illustration-3.png" class="img-fluid"
+                         alt="">
                 </div>
                 <div class="col-md-7 pt-5 order-2 order-md-1">
                     <h3>Corporis temporibus maiores provident</h3>
@@ -171,7 +180,8 @@
 
             <div class="row" data-aos="fade-up">
                 <div class="col-md-5">
-                    <img src="https://itvdn.blob.core.windows.net/specialities-covers/cplspls-92bfc5fe-64b5-4a80-a8bc-1569628beaa3.png" class="img-fluid" alt="">
+                    <img src="https://itvdn.blob.core.windows.net/specialities-covers/cplspls-92bfc5fe-64b5-4a80-a8bc-1569628beaa3.png"
+                         class="img-fluid" alt="">
                 </div>
                 <div class="col-md-7 pt-5">
                     <h3>Sunt consequatur ad ut est nulla consectetur reiciendis animi voluptas</h3>

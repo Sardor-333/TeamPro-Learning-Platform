@@ -134,8 +134,8 @@ public class UserService {
     }
 
     public String buyCourse(UUID userId, UUID courseId) {
-        User user = userRepository.getById(userId);
-        Course course = courseRepository.getById(courseId);
+        User user = userRepository.findById(userId).get();
+        Course course = courseRepository.findById(courseId).get();
         if (course.getPrice() < user.getBalance()) {
             user.setBalance(user.getBalance() - course.getPrice());
 

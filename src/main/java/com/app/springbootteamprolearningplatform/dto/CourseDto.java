@@ -21,11 +21,12 @@ public class CourseDto {
     UUID categoryId;
     MultipartFile img;
 
+    Double price;
+
     // FOR DTO
     UUID id;
     String description;
     String name;
-    Double price;
     Boolean status;
     String base64;
     List<String> authors;

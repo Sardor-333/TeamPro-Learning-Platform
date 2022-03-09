@@ -75,6 +75,7 @@ public class CourseService {
     private Course initializeCourse(CourseDto courseDto, HttpSession session) {
         Course course = new Course(courseDto.getName(), courseDto.getDescription());
         course.setId(courseDto.getId());
+        course.setPrice(courseDto.getPrice());
 
         UUID mainAuthorId = UUID.fromString(session.getAttribute("userId").toString());
         User mainAuthor = userRepository.getById(mainAuthorId);
