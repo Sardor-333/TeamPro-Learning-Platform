@@ -59,7 +59,12 @@
                 <li><a href="/courses">Courses</a></li>
                 <li><a href="/contact">Contact Us</a></li>
                 <li><a href="/chats">Chat</a></li>
-                <li><a href="/auth/login">Login</a></li>
+                <li th:if="${session.get('userId') == null}">
+                    <a href="/auth/login">Login</a>
+                </li>
+                <li th:if="${session.get('userId') != null}">
+                    <a href="/auth/logOut">Log Out</a>
+                </li>
             </ul>
             <i class="bi bi-list mobile-nav-toggle"></i>
         </nav><!-- .navbar -->
