@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Courses</title>
@@ -122,7 +121,7 @@
 <div class="container">
     <br>
     <a th:href="@{'/modules/get-save-form?courseId=' + ${courseId}}"
-       th:if="${role=='ADMIN' or role =='SUPER ADMIN'}"
+       th:if="${role=='ADMIN' or role =='SUPER_ADMIN'}"
        class="btn btn-success"> + Add Module</a>
     <br>
     <br>
@@ -131,8 +130,8 @@
         <tr>
             <th>Name</th>
             <th>Price</th>
-            <th th:if="${role == 'ADMIN' or role == 'SUPER ADMIN' or role == 'MENTOR'}">Edit</th>
-            <th th:if="${role == 'ADMIN' or role == 'SUPER ADMIN' or role == 'MENTOR'}">Delete</th>
+            <th th:if="${role == 'ADMIN' or role == 'SUPER_ADMIN' or role == 'MENTOR'}">Edit</th>
+            <th th:if="${role == 'ADMIN' or role == 'SUPER_ADMIN' or role == 'MENTOR'}">Delete</th>
         </tr>
         </thead>
         <tbody>
@@ -147,14 +146,14 @@
 
             <td>
                 <a th:href="@{'/modules/get-save-form?id=' + ${module.id}}"
-                   th:if="${role == 'ADMIN' or role == 'SUPER ADMIN' or role == 'MENTOR'}"
+                   th:if="${role == 'ADMIN' or role == 'SUPER_ADMIN' or role == 'MENTOR'}"
                    class="btn btn-primary btn-sm">
                     Edit
                 </a>
             </td>
 
             <td><a th:href="@{'/modules/delete/' + ${module.id}}"
-                   th:if="${role == 'ADMIN' or role == 'SUPER ADMIN' or role == 'MENTOR'}"
+                   th:if="${role == 'ADMIN' or role == 'SUPER_ADMIN' or role == 'MENTOR'}"
                    class="btn btn-danger btn-sm">
                 <span class="glyphicon glyphicon-trash"></span> Delete </a></td>
         </tr>

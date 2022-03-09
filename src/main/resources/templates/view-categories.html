@@ -146,17 +146,16 @@
 </nav>
 <div class="container">
     <br>
-    <a th:if="${role == 'ADMIN' or role == 'SUPER ADMIN' or role == 'MENTOR'}" th:href="@{/categories/add}"
-       class="btn btn-success"> + Add
-        Category </a>
+    <a th:if="${role == 'ADMIN' or role == 'SUPER_ADMIN' or role == 'MENTOR'}" th:href="@{/categories/add}"
+       class="btn btn-success"> + Add Category </a>
     <br>
     <br>
     <table class="table table-hover">
         <thead>
         <tr>
             <th>Name</th>
-            <th th:if="${role == 'ADMIN' or role == 'SUPER ADMIN' or role == 'MENTOR'}">Edit</th>
-            <th th:if="${role == 'ADMIN' or role == 'SUPER ADMIN' or role == 'MENTOR'}">Delete</th>
+            <th th:if="${role == 'ADMIN' or role == 'SUPER_ADMIN' or role == 'MENTOR'}">Edit</th>
+            <th th:if="${role == 'ADMIN' or role == 'SUPER_ADMIN' or role == 'MENTOR'}">Delete</th>
 
         </tr>
         </thead>
@@ -164,12 +163,12 @@
         <tr th:each="category : ${categories}">
             <td th:text="${category.name}"></td>
 
-            <td><a th:if="${role == 'ADMIN' or role == 'SUPER ADMIN' or role == 'MENTOR'}"
+            <td><a th:if="${role == 'ADMIN' or role == 'SUPER_ADMIN' or role == 'MENTOR'}"
                    th:href="@{'/categories/edit/' + ${category.id}}"
                    class="btn btn-primary btn-sm">
                 <span class="glyphicon glyphicon-edit"></span> Edit </a></td>
 
-            <td><a th:if="${role == 'ADMIN' or role == 'SUPER ADMIN' or role == 'MENTOR'}"
+            <td><a th:if="${role == 'ADMIN' or role == 'SUPER_ADMIN' or role == 'MENTOR'}"
                    th:href="@{/categories/delete(id=${category.id})}" class="btn btn-danger btn-sm">
                 <span class="glyphicon glyphicon-trash"></span> Delete </a></td>
         </tr>

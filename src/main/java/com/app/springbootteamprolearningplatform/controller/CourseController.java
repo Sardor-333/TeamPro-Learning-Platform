@@ -25,7 +25,7 @@ public class CourseController {
     private final UserService userService;
 
     @Autowired
-    public CourseController(CourseService courseService, UserService userService, CategoryRepository categoryRepository) {
+    public CourseController(CourseService courseService, UserService userService) {
         this.courseService = courseService;
         this.userService = userService;
     }
@@ -89,6 +89,7 @@ public class CourseController {
             model.addAttribute("courseRate", courseService.getCourseRate(courseId));
             model.addAttribute("courseComments", courseService.getCourseCommentDtos(courseId));
             model.addAttribute("authors", course.getAuthors().stream().map(user -> user.getLastName() + " " + user.getFirstName()).toList());
+            model.addAttribute("myImage", userService.getMyImage(request));
 
             return "course";
         }

@@ -31,7 +31,7 @@ public class Task {
     @JoinColumn(name = "lesson_id", nullable = false)
     Lesson lesson;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "attachment_id", nullable = false, referencedColumnName = "id")
     Attachment attachment;
 

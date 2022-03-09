@@ -2,14 +2,20 @@ package com.app.springbootteamprolearningplatform.controller;
 
 import com.app.springbootteamprolearningplatform.model.Lesson;
 import com.app.springbootteamprolearningplatform.model.LessonComment;
-import com.app.springbootteamprolearningplatform.model.Video;
+import com.app.springbootteamprolearningplatform.model.Task;
 import com.app.springbootteamprolearningplatform.repository.RoleRepository;
 import com.app.springbootteamprolearningplatform.repository.VideoRepository;
 import com.app.springbootteamprolearningplatform.service.LessonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import reactor.core.publisher.Mono;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -50,7 +56,7 @@ public class LessonController {
             model.addAttribute("lesson", lessonService.findById(id));
             model.addAttribute("comments", lessonService.getComment(id));
             model.addAttribute("photo", getPhoto(req));
-            model.addAttribute("videos", videoRepository.findAllByLessonId(id));
+            model.addAttribute("lessonVideos", videoRepository.findAllByLessonId(id));
             return "view-lesson";
         }
         return "redirect:/auth/login";
@@ -104,7 +110,7 @@ public class LessonController {
         if (role != null) {
             Lesson lesson = new Lesson();
             lesson.setTheme(theme);
-            lessonService.saveLesson(moduleId,lesson);
+            lessonService.saveLesson(moduleId, lesson);
             return "redirect:/lessons/" + moduleId;
         }
         return "redirect:/auth/login";
@@ -126,6 +132,70 @@ public class LessonController {
         return "redirect:/lessons?id=" + comment.getLesson().getId() + "";
     }
 
+    @GetMapping("/del/{lesId}/{com}")
+    public String deletePost(@PathVariable UUID lesId, @PathVariable UUID com) {
+        lessonService.deleteComment(lesId, com);
+        return "redirect:/lessons?id=" + lesId;
+    }
+
+    @GetMapping("/add/video/{lessonId}")
+    public String addVideoUrl(@PathVariable UUID lessonId, Model model) {
+        model.addAttribute("lessonId", lessonId);
+        return "add-video";
+    }
+
+    @PostMapping("/add/video")
+    public String addVideo(MultipartFile video, @RequestParam(value = "id") UUID lessonId) {
+        lessonService.saveVideo(video, lessonId);
+        return "redirect:/lessons?id=" + lessonId;
+    }
+
+    @GetMapping("/del/video/{videoId}")
+    public String deleteVideo(@PathVariable UUID videoId) {
+        UUID lessonId = lessonService.deleteVideo(videoId);
+        return "redirect:/lessons?id=" + lessonId;
+    }
+
+
+    @GetMapping("/uploadForm/{lessonId}")
+    public String fileUploadForm(@PathVariable UUID lessonId, Model model) {
+        model.addAttribute("lessonId", lessonId);
+        return "upload-file";
+    }
+
+    @PostMapping("/upload/{lessonId}")
+    public String uploadFile(@PathVariable UUID lessonId, MultipartFile task, String question) {
+        lessonService.saveTask(lessonId, task, question);
+        return "redirect:/lessons?id=" + lessonId;
+    }
+
+    @GetMapping("/download/{taskId}")
+    @ResponseBody
+    public ResponseEntity<ByteArrayResource> downloadTask(@PathVariable UUID taskId) {
+        return lessonService.downloadTask(taskId);
+    }
+
+    @GetMapping("/show/task/{taskId}")
+    public String getInfoTask(@PathVariable UUID taskId, RedirectAttributes redirectAttributes) {
+        Task taskByid = lessonService.findTaskByid(taskId);
+        redirectAttributes.addFlashAttribute("infoTask", taskByid);
+        return "redirect:/lessons?id=" + taskByid.getLesson().getId();
+    }
+
+
+    @GetMapping("/redirect/video/{name}")
+    public String redirectVideoHtml(@PathVariable String name, Model model){
+        model.addAttribute("url", name);
+        return "showVideo";
+    }
+
+    @ResponseBody
+    @GetMapping(value = "/show/video/{title}")
+    public Mono<Resource> getVideos(@PathVariable String title, @RequestHeader("Range") String range) {
+        return lessonService.getVideo(title);
+    }
+
+    ////////////    MODEL ATTRIBUTE /////////////////////////
     @ModelAttribute(value = "role")
     public String getModelId(HttpServletRequest req) {
         HttpSession session = req.getSession();
@@ -143,29 +213,5 @@ public class LessonController {
         HttpSession session = req.getSession();
         UUID userId = (UUID) session.getAttribute("userId");
         return lessonService.getPhoto(userId);
-    }
-
-    @GetMapping("/del/{lesId}/{com}")
-    public String deletePost(@PathVariable UUID lesId, @PathVariable UUID com) {
-        lessonService.deleteComment(lesId, com);
-        return "redirect:/lessons?id=" + lesId;
-    }
-
-    @GetMapping("/add/video/{lessonId}")
-    public String addVideoUrl(@PathVariable UUID lessonId, Model model) {
-        model.addAttribute("lessonId", lessonId);
-        return "add-video";
-    }
-
-    @PostMapping("/add/video")
-    public String addVideo(Video video, @RequestParam(value = "id") UUID lessonId) {
-        lessonService.saveVideo(video, lessonId);
-        return "redirect:/lessons?id=" + lessonId;
-    }
-
-    @GetMapping("/del/video/{videoId}")
-    public String deleteVideo(@PathVariable UUID videoId) {
-        UUID lessonId = lessonService.deleteVideo(videoId);
-        return "redirect:/lessons?id=" + lessonId;
     }
 }

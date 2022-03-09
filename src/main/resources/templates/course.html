@@ -176,7 +176,8 @@
 <body>
 
 <div class="card" style="width: 18rem;">
-    <img th:src="@{'data:image/jpeg;data:image/png;base64,'+${img}}" class="card-img-top"/>
+    <img th:if="${img!=null}" th:src="@{'data:image/jpeg;data:image/png;base64,'+${img}}" class="card-img-top"/>
+    <img th:if="${img==null}" src="https://image.freepik.com/free-vector/website-template-online-education-training-courses_42775-396.jpg" class="card-img-top"/>
 
     <div class="card-body">
         <h5 th:text="${course.name}" class="card-title"></h5>
@@ -247,7 +248,11 @@
                 </div>
                 <form th:action="'/courses/comments/leaveComment/'+${course.id}" method="post">
                     <div class="mt-3 d-flex flex-row align-items-center p-3 form-color">
-                        <img src="https://i.imgur.com/zQZSWrt.jpg"
+                        <img th:if="${myImage!=null}" th:src="'data:image/jpg; base64, '+${myImage}"
+                             width="50"
+                             class="rounded-circle mr-2"
+                        >
+                        <img th:if="${myImage==null}" src="https://us.123rf.com/450wm/tuktukdesign/tuktukdesign1608/tuktukdesign160800043/61010830-user-icon-man-profile-businessman-avatar-person-glyph-vector-illustration.jpg?ver=6"
                              width="50"
                              class="rounded-circle mr-2"
                         >
@@ -258,8 +263,14 @@
                 </form>
                 <div class="mt-2" th:each="comment : ${courseComments}">
                     <div class="d-flex flex-row p-3">
-                        <img
+                        <img th:if="${comment.base64!=null}"
                                 th:src="'data:image/png;data:image/jpeg;base64, '+${comment.base64}"
+                                width="40"
+                                height="40"
+                                class="rounded-circle mr-3" alt="img"
+                        >
+                        <img th:if="${comment.base64==null}"
+                                src="https://us.123rf.com/450wm/tuktukdesign/tuktukdesign1608/tuktukdesign160800043/61010830-user-icon-man-profile-businessman-avatar-person-glyph-vector-illustration.jpg?ver=6"
                                 width="40"
                                 height="40"
                                 class="rounded-circle mr-3" alt="img"

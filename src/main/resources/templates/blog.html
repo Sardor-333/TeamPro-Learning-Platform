@@ -101,12 +101,14 @@
                             <article class="entry mx-3" th:each="course : ${courses}">
 
                                 <div class="entry-img">
-                                    <img th:src="'data:image/jpg;base64, ' + ${course.getBase64()}" alt="card img"
+                                    <img th:if="${course.getBase64()==null}" src="https://image.freepik.com/free-vector/website-template-online-education-training-courses_42775-396.jpg" alt="card img"
+                                         class="img-fluid">
+                                    <img th:if="${course.getBase64() != null and course.getBase64().length()>1000}" th:src="'data:image/jpg;base64, ' + ${course.getBase64()}" alt="card img"
                                          class="img-fluid">
                                 </div>
 
                                 <h2 class="entry-title">
-                                    <a href="blog-single.html" th:text="${course.name}"/>
+                                    <a th:href="'/modules/'+${course.getId()}" th:text="${course.name}"/>
                                 </h2>
                                 <div class="entry-content">
                                     <p th:text="${course.description}">
@@ -138,11 +140,50 @@
                         </div>
                     </div>
                     <div class="blog-pagination">
-                        <ul class="justify-content-center">
-                            <li><a href="#">1</a></li>
-                            <li class="active"><a href="#">2</a></li>
-                            <li><a href="#">3</a></li>
-                        </ul>
+                        <div class="d-flex justify-content-center" th:if="${pageCount>1}">
+                            <div th:if="${currentPage>1}">
+                                <a class="btn btn-warning" style="color: black" th:href="'/courses?page='+(${currentPage}-1)"
+                                   th:text="'PREV'"></a>
+                            </div>
+                            <a class="btn btn-warning" th:if="${currentPage!=1}" style="color: black" th:href="'/courses?page=1'"
+                               th:text="'1'"></a>
+                            <button class="btn btn-info" th:if="${currentPage==1}" style="color: black" disabled th:text="'1'"></button>
+                            <a class="btn btn-warning" th:if="${currentPage!=2}" style="color: black" th:href="'/courses?page=2'"
+                               th:text="'2'"></a>
+                            <button class="btn btn-info" th:if="${currentPage==2}" style="color: black" disabled th:text="'2'"></button>
+                            <div th:if="${beginPage>3}">
+                                <button class="btn btn-warning" style="color: black" disabled th:text="'...'"></button>
+                            </div>
+                            <!--//////////////////////////////////////////////////////////////////////-->
+
+                            <div th:each="v_page: ${listPage}">
+                                <a class="btn btn-warning" th:if="${currentPage!=v_page}" style="color: black"
+                                   th:href="'/courses?page='+${v_page}" th:text="${v_page}"></a>
+                                <button class="btn btn-info" th:if="${currentPage==v_page}" style="color: black" disabled
+                                        th:text="${v_page}"></button>
+                            </div>
+
+                            <!--//////////////////////////////////////////////////////////////////////-->
+                            <div th:if="${endPage} < ${pageCount}-2">
+                                <button class="btn btn-warning" style="color: black" disabled th:text="'...'"></button>
+                            </div>
+                            <div th:if="${pageCount>3}">
+                                <a class="btn btn-warning" th:if="${currentPage}!=${pageCount}-1" style="color: black"
+                                   th:href="'/courses?page='+(${pageCount}-1)" th:text="${pageCount}-1"></a>
+                                <button class="btn btn-info" th:if="${currentPage}==${pageCount}-1" style="color: black" disabled
+                                        th:text="${pageCount}-1"></button>
+                            </div>
+                            <div th:if="${pageCount>2}">
+                                <a class="btn btn-warning" th:if="${currentPage!=pageCount}" style="color: black"
+                                   th:href="'/courses?page='+${pageCount}" th:text="${pageCount}"></a>
+                                <button class="btn btn-info" th:if="${currentPage==pageCount}" style="color: black" disabled
+                                        th:text="${pageCount}"></button>
+                            </div>
+                            <div th:if="${pageCount>currentPage}">
+                                <a class="btn btn-warning" style="color: black" th:href="'/courses?page='+(${currentPage}+1)"
+                                   th:text="'NEXT'"></a>
+                            </div>
+                        </div>
                     </div>
 
                 </div><!-- End blog entries list -->
