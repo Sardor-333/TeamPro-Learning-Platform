@@ -114,14 +114,15 @@ public class CourseService {
     public void rateCourse(UUID courseId, UUID userId, Integer rank) {
         Course course = courseRepository.getById(courseId);
         User user = userRepository.getById(userId);
-
-        CourseRate courseVote = new CourseRate(course, user, rank);
-        courseRateRepository.save(courseVote);
+        CourseRate vote = courseRateRepository.findByCourseIdAndUserId(courseId, userId);
+        if(vote == null) vote = new CourseRate(course, user, rank);
+        else vote.setRank(rank);
+        courseRateRepository.save(vote);
     }
 
     public Integer getCourseRate(UUID courseId) {
         Double rate = courseRepository.findCourseRate(courseId);
-        return 1;
+        return Math.toIntExact(Math.round(rate));
     }
 
     public List<CourseCommentDto> getCourseCommentDtos(UUID courseId) {
@@ -171,9 +172,11 @@ public class CourseService {
     }
 
     public List<CourseDto> getCoursesPageable(User user, int page) {
-        List<Course> courses = courseRepository.findAll(PageRequest.of(page, limit)).get().toList();
+        List<Course> courses = courseRepository.findAll(PageRequest.of(page-1, limit)).get().toList();
         return courseDtoFactory(user, courses);
     }
+
+
 
     public List<CourseDto> getCoursesByCategory(UUID categoryId, User user) {
         List<Course> courses = courseRepository.findAllByCategoryId(categoryId);
@@ -183,6 +186,9 @@ public class CourseService {
     private List<CourseDto> courseDtoFactory(User user, List<Course> courses) {
         List<CourseDto> userCourseDtoList = new ArrayList<>();
         for (Course course : courses) {
+            Double voteDouble = courseRepository.findCourseRate(course.getId());
+            if (voteDouble==null) voteDouble = 0.0;
+            int courseRate = (int)Math.round(voteDouble);
             boolean status = false;
             for (Course userCourse : user.getUserCourses()) {
                 if (course.getId().equals(userCourse.getId())) {
@@ -191,7 +197,7 @@ public class CourseService {
                 }
             }
             CourseDto courseDto = new CourseDto(course.getId(), course.getName(), course.getDescription(),
-                    course.getPrice(), status, course.getBase64Encode());
+                    course.getPrice(), status, course.getBase64Encode(), courseRate);
             userCourseDtoList.add(courseDto);
         }
         return userCourseDtoList;
@@ -204,5 +210,12 @@ public class CourseService {
             category.setCoursesCount(courseRepository.countAllByCategoryId(category.getId()));
         }
         return categories;
+    }
+
+    public Integer getCourseRate(UUID courseId, UUID userId) {
+        CourseRate rate = courseRateRepository.findByCourseIdAndUserId(courseId, userId);
+        if (rate==null) {
+            return 0;
+        }else return rate.getRank();
     }
 }

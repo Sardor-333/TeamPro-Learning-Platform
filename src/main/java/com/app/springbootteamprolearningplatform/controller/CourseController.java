@@ -37,7 +37,7 @@ public class CourseController {
     @GetMapping
     public String getCourses(Model model,
                              HttpServletRequest request,
-                             @RequestParam(required = false, defaultValue = "0") Integer page) {
+                             @RequestParam(required = false, defaultValue = "1") Integer page) {
         HttpSession session = request.getSession();
         if (!sessionHasAttributes(session, "userId", "role")) {
             return "login-form";
@@ -90,7 +90,7 @@ public class CourseController {
 
             model.addAttribute("course", course);
             model.addAttribute("img", course.getBase64Encode());
-            model.addAttribute("courseRate", courseService.getCourseRate(courseId));
+            model.addAttribute("courseRate", courseService.getCourseRate(courseId, (UUID)session.getAttribute("userId")));
             model.addAttribute("courseComments", courseService.getCourseCommentDtos(courseId));
             model.addAttribute("authors", course.getAuthors().stream().map(user -> user.getLastName() + " " + user.getFirstName()).toList());
             model.addAttribute("myImage", userService.getMyImage(request));

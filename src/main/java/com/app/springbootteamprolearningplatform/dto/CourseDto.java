@@ -29,6 +29,7 @@ public class CourseDto {
     Boolean status;
     String base64;
     List<String> authors;
+    Integer vote;
 
     public CourseDto(String name, String description) {
         this.name = name;
@@ -42,12 +43,13 @@ public class CourseDto {
         this.categoryId = categoryId;
     }
 
-    public CourseDto(UUID id, String name, String description, Double price, Boolean status, String base64) {
+    public CourseDto(UUID id, String name, String description, Double price, Boolean status, String base64,Integer vote) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.status = status;
         this.base64 = base64;
+        this.vote = vote;
     }
 }

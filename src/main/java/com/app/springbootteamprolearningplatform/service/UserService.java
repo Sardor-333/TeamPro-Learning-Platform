@@ -183,7 +183,7 @@ public class UserService {
         if (l.toDays()>29) {
             status = leftAt.format(DateTimeFormatter.ofPattern("yyyy-MMMM-dd"));
         }else {
-            if(l.toHours()>24){
+            if(l.toHours()>47){
                 status = l.toDays()+" days ago";
             } else {
                 if(l.toHours()>23){

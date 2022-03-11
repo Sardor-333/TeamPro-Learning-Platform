@@ -35,7 +35,7 @@ public class LessonService {
     private ModuleRepository moduleRepository;
     private TaskRepository taskRepository;
     private ResourceLoader resourceLoader;
-    private static final String FORMAT = "classpath:static/videos/%s";
+    private static final String FORMAT = "classpath:videos/%s";
 
 
     @Autowired
@@ -119,7 +119,7 @@ public class LessonService {
             if (lessonOptional.isPresent()) {
                 ///////////// Get Absolute Path////////////
                 File currentFilePath = new File(".");
-                String absolutePath = currentFilePath.getAbsolutePath().replace(".", "src/main/resources/static/videos/");
+                String absolutePath = currentFilePath.getAbsolutePath().replace(".", "src/main/resources/videos/");
                 //////// CREATE VIDEO //////////////////
                 Video sVideo = new Video();
                 Lesson lesson = lessonOptional.get();
@@ -133,11 +133,11 @@ public class LessonService {
                 File file = new File(absolutePath + s);
                 video.transferTo(file);
                 videoRepository.save(sVideo);
-                File resource = new ClassPathResource(absolutePath+sVideo.getFileName()).getFile();
+                File resource = new File(file.getAbsolutePath());
                 System.out.println(resource);
             }
         } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+            System.out.println("Error: " + e.getLocalizedMessage());
         }
     }
 
@@ -211,7 +211,7 @@ public class LessonService {
     }
 
     public Mono<Resource> getVideo(String title) {
-        return Mono.fromSupplier(() -> resourceLoader
-                .getResource(String.format(FORMAT, title)));
+        return Mono.fromSupplier(() -> resourceLoader.getResource(String.format(FORMAT,title)));
     }
+
 }

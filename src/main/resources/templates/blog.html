@@ -27,6 +27,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/boxicons.min.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/css/glightbox.min.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/css/swiper-bundle.min.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <style>
         a {
@@ -34,6 +35,9 @@
             text-decoration: none;
         }
 
+        .checked {
+            color: orange;
+        }
     </style>
 </head>
 
@@ -56,6 +60,7 @@
                 <li><a href="/team">Team</a></li>
                 <li><a class="active" href="#">Courses</a></li>
                 <li><a href="/contact">Contact Us</a></li>
+                <li><a href="/chats">Chat</a></li>
             </ul>
             <i class="bi bi-list mobile-nav-toggle"></i>
         </nav><!-- .navbar -->
@@ -113,6 +118,13 @@
                                 <div class="entry-content">
                                     <p th:text="${course.description}">
                                     </p>
+                                    <div class="d-flex justify-content-center">
+                                        <div th:each="i: ${#numbers.sequence(0, 4)}">
+                                            <span th:if="${course.vote>i}" class="fa fa-star checked"></span>
+                                            <span th:if="${course.vote<i+1}" class="fa fa-star"></span>
+                                        </div>
+                                    </div>
+
                                     <div class="read-more">
                                         <a th:href="@{'/courses/' + ${course.id}}">Read More</a>
                                     </div>
